@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
+using Microsoft.Extensions.Logging;
+using StudentBase.Domain.Repositories;
+using StudentBase.Infrastructure.EntityFramework;
+using StudentBase.Infrastructure.EntityFramework.Repositories;
 
 namespace StudentBase.MAUI
 {
@@ -15,8 +19,12 @@ namespace StudentBase.MAUI
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<AppDbContext>();
+
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

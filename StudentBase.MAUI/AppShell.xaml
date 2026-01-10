@@ -7,7 +7,7 @@
     Title="СУБД личных данных студентов"
     FlyoutBackgroundColor="LightGrey" 
     FlyoutBehavior="Locked" 
-    FlyoutWidth="250">
+    FlyoutWidth="200">
     
     <FlyoutItem Title="Главная">
         <ShellContent

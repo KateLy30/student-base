@@ -2,5 +2,78 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StudentBase.MAUI.GroupPage">
-    <Label>gggggggg</Label>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <Border  Stroke="DimGrey" StrokeThickness="0.3">
+            <ScrollView Grid.Column="0">
+                <CollectionView x:Name="groupsList" Grid.Row="0" SelectionMode="Single" SelectionChanged="groupsList_SelectionChanged" >
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ContentView Padding="3">
+                                <Border Padding="3" Stroke="LightSlateGrey" StrokeThickness="0.3">
+                                    <StackLayout Padding="3">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                    </StackLayout>
+                                </Border>
+                            </ContentView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+        </Border>
+        <Border Grid.Column="1" Grid.Row="0">
+            <Border.Content>
+                <ScrollView >
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="Id" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" x:Name="id_Label" FontSize="18"/>
+
+                        <Label Grid.Row="1" Text="Id программы обучения" FontAttributes="Bold"/>
+                        <Label Grid.Row="1" Grid.Column="1" x:Name="programId_Label" FontSize="18" />
+
+                        <Label Grid.Row="2" Text="Название" FontAttributes="Bold"/>
+                        <Label Grid.Row="2" Grid.Column="1" x:Name="name_Label" FontSize="18"/>
+
+                        <Label Grid.Row="3" Text="Год поступления" FontAttributes="Bold"/>
+                        <Label Grid.Row="3" Grid.Column="1" x:Name="year_Label" FontSize="18"/>
+
+                        <Label Grid.Row="4" Text="Продолжительность обучения" FontAttributes="Bold"/>
+                        <Label Grid.Row="4" Grid.Column="1" x:Name="duration_Label" FontSize="18"/>
+
+                        <Label Grid.Row="5" Text="Статус" FontAttributes="Bold"/>
+                        <Label Grid.Row="5" Grid.Column="1" x:Name="status_Label" FontSize="18"/>
+                    </Grid>
+                </ScrollView>
+            </Border.Content>
+        </Border>
+
+        <HorizontalStackLayout HorizontalOptions="Center" Grid.Row="1" Grid.ColumnSpan="2">
+            <Button Text="Добавить" Clicked="Button_Add_Clicked" Margin="0,5,25,10" HeightRequest="35" />
+            <Button Text="Редактировать" Clicked="Button_Edit_Clicked" Margin="0,5,25,10" HeightRequest="35"/>
+            <Button Text="Удалить" Clicked="Button_Delete_Clicked" Margin="0,5,0,10" HeightRequest="35"/>
+        </HorizontalStackLayout>
+    </Grid>
 </ContentPage>

@@ -75,6 +75,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             if (student == null) return false;
 
             UpdateEntity(student, entity);
+            await _context.SaveChangesAsync();
             return true;
         }
 

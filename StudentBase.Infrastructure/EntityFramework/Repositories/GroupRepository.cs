@@ -40,7 +40,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Groups.Where(g => g.ProgramId == programId).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupEntity>?> GetAllByYearOfEntryAsync(DateTime yearOfEntry)
+        public async Task<IEnumerable<GroupEntity>?> GetAllByYearOfEntryAsync(DateOnly yearOfEntry)
         {
             return await _context.Groups.Where(g => g.YearOfEntry ==  yearOfEntry).ToListAsync();   
         }
@@ -55,10 +55,11 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Groups.FirstOrDefaultAsync(g => g.Name == name);
         }
 
-        public async Task<StatusGroups> GetStatusGroupsAsync(int id)
+        public async Task<StatusGroups?> GetStatusGroupsAsync(int id)
         {
             var group = await _context.Groups.FindAsync(id);
-            return group!.Status;
+            if (group == null) return null;
+            return group.Status;
         }
 
         public async Task<bool> UpdateAsync(GroupEntity entity)

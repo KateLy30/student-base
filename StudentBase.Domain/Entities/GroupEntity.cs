@@ -3,11 +3,11 @@ namespace StudentBase.Domain.Entities
 {
     public class GroupEntity
     {
-        public required int Id { get; set; }
-        public required int ProgramId { get; set; }
-        public required string Name { get; set; }
-        public required DateTime YearOfEntry { get; set; }
-        public required TermsOfStudy DurationYears { get; set; }
-        public required StatusGroups Status { get; set; }
+        public int Id { get; set; }
+        public int ProgramId { get; set; }
+        public string? Name { get; set; }
+        public DateOnly YearOfEntry { get; set; }
+        public TermsOfStudy? DurationYears { get; set; }
+        public StatusGroups? Status { get; set; }
     }
 }

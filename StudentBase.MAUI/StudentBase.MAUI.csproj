@@ -74,6 +74,9 @@
 	  <MauiXaml Update="GroupPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="NewGroupModalWindow.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="NewStudentModalWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

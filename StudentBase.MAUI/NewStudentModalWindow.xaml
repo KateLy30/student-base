@@ -42,7 +42,11 @@
             <Entry Text="{Binding Gender}" x:Name="genderEntry" Margin="0,0,0,5"/>
 
             <Label Text="Id группы"/>
-            <Entry Text="{Binding GroupId}" x:Name="groupIdEntry" Margin="0,0,0,5"/>
+            <Picker ItemsSource="{Binding Groups}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedGroup}" />
+            
+            <Entry Text="{Binding GroupId}" x:Name="groupIdEntry" Margin="0,0,0,5"/> 
             
             <Label Text="Id направления"/>
             <Entry Text="{Binding ProgramId}" x:Name="programIdEntry" Margin="0,0,0,5"/>

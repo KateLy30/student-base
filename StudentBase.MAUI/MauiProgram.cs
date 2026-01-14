@@ -20,6 +20,7 @@ namespace StudentBase.MAUI
                 });
 
             builder.Services.AddSingleton<IStudentRepository, StudentRepository>();
+            builder.Services.AddSingleton<IGroupRepository, GroupRepository>();
             builder.Services.AddScoped<AppDbContext>();
 
 

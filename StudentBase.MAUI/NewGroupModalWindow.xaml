@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StudentBase.MAUI.NewGroupModalWindow"
              Title="NewGroupModalWindow">
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
@@ -22,6 +23,7 @@
     </ContentPage.Resources>
 
     <ScrollView>
+        
         <VerticalStackLayout Padding="10" Spacing="3">
             <Label Text="Id программы обучения" />
             <Entry x:Name="programIdEntry" Margin="0,0,0,5"/>
@@ -39,10 +41,12 @@
             <Entry x:Name="statusEntry" Margin="0,0,0,5"/>
 
             <HorizontalStackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
-                <Button Text="Ок" Margin="10" Clicked="Button_Clicked" />
-                <Button Text="Отмена" Margin="10"  />
+                <Button Text="Ок" Margin="10" Clicked="Button_Clicked_Accept" />
+                <Button Text="Отмена" Margin="10" Clicked="Button_Clicked_Cancel" />
             </HorizontalStackLayout>
+            
         </VerticalStackLayout>
 
     </ScrollView>
+    
 </ContentPage>

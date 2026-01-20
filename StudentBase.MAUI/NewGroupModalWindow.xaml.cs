@@ -13,12 +13,16 @@ public partial class NewGroupModalWindow : ContentPage
 	{
 		InitializeComponent();
         _groupRepository = App.Services!.GetRequiredService<IGroupRepository>();
-        
+
+        // инициализация переменной, что бы к ней можно было обращаться вне конструктора
         currentGroup = group;
+
+        // очищаем поля, если окно используется для добавления нового объекта
+        // и заполняем, если существующий объект редактируется
         PrepareFields();
     }
 
-    private async void Button_Clicked(object sender, EventArgs e)
+    private async void Button_Clicked_Accept(object sender, EventArgs e)
     {
         if (currentGroup == null || currentGroup.Id == 0 || string.IsNullOrWhiteSpace(currentGroup.Name))
         {
@@ -67,5 +71,10 @@ public partial class NewGroupModalWindow : ContentPage
             durationEntry.Text = currentGroup.DurationYears.ToString();
             statusEntry.Text = currentGroup.Status.ToString();
         }
+    }
+
+    private async void Button_Clicked_Cancel(object sender, EventArgs e)
+    {
+        await Navigation.PopModalAsync();
     }
 }

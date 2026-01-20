@@ -7,14 +7,18 @@ namespace StudentBase.MAUI;
 
 public partial class GroupPage : ContentPage
 {
-    private ObservableCollection<GroupEntity> _groups;
+    // список групп для заполнения CollectionView
+    private ObservableCollection<GroupEntity> Groups;
     private readonly IGroupRepository _groupRepository;
 	public GroupPage()
 	{
 		InitializeComponent();
+
         _groupRepository = App.Services!.GetRequiredService<IGroupRepository>();
-        _groups = new ObservableCollection<GroupEntity>();
+        Groups = new ObservableCollection<GroupEntity>();
 	}
+
+    // подгрузка списка каждый раз при открытии окна
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -23,13 +27,16 @@ public partial class GroupPage : ContentPage
     private async void LoadGroups()
     {
         var groups = await _groupRepository.GetAllAsync();
-        _groups.Clear();
-        foreach (var group in groups)
+        if (groups == null) return;
+        Groups.Clear();
+        foreach (var group in groups) 
         {
-            _groups.Add(group);
+            Groups.Add(group);
         }
-        groupsList.ItemsSource = _groups;
+        groupsList.ItemsSource = Groups;
     }
+
+     // заполнение данных второго окна при выборе объекта
     private void groupsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         GroupEntity? group = groupsList.SelectedItem as GroupEntity;
@@ -56,12 +63,11 @@ public partial class GroupPage : ContentPage
             await DisplayAlert("Ошибка", "Выберите студента для изменения", "ОК");
             return;
         }
-
         await Navigation.PushModalAsync(new NewGroupModalWindow(selectedGroup));
     }
 
     private void Button_Delete_Clicked(object sender, EventArgs e)
     {
-
+        //TODO
     }
 }

@@ -11,6 +11,7 @@ namespace StudentBase.Domain.Entities
         public string? DateOfReceipt { get; set; }
         public string? Gender { get; set; }
         public  int GroupId { get; set; }
+        public string? GroupName { get; set; }
         public int ProgramId { get; set; }
 
     }

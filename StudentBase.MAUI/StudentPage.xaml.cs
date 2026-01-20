@@ -1,20 +1,23 @@
 using StudentBase.Domain.Entities;
 using StudentBase.Domain.Repositories;
-using StudentBase.Infrastructure.EntityFramework.Repositories;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace StudentBase.MAUI;
 public partial class StudentPage : ContentPage
 {
-    private ObservableCollection<StudentEntity> _students;
+    // список студентов для заполнения CollectionView
+    private ObservableCollection<StudentEntity> Students;
     private readonly IStudentRepository _studentRepository;
     public StudentPage()
     {
         InitializeComponent();
 
-        _students = new ObservableCollection<StudentEntity>();
+        Students = new ObservableCollection<StudentEntity>();
         _studentRepository = App.Services!.GetRequiredService<IStudentRepository>();
     }
+
+    // подгрузка списка каждый раз при открытии окна
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -23,13 +26,15 @@ public partial class StudentPage : ContentPage
     private async void LoadStudents()
     {
         var students = await _studentRepository.GetAllAsync();
-        _students.Clear();
+        if (students == null) return;
+        Students.Clear();
         foreach (var student in students)
         {
-            _students.Add(student);
+            Students.Add(student);
         }
-        studentsList.ItemsSource = _students;
+        studentsList.ItemsSource = Students;
     }
+
     private async void Button_Add_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushModalAsync(new NewStudentModalWindow(null));
@@ -37,20 +42,37 @@ public partial class StudentPage : ContentPage
 
     private  async void Button_Edit_Clicked(object sender, EventArgs e)
     {
+        // получаем выбранный объект
         StudentEntity? selectedStudent = studentsList.SelectedItem as StudentEntity;
         if (selectedStudent == null)
         {
             await DisplayAlert("Ошибка", "Выберите студента для изменения", "ОК");
             return;
         }
-
         await Navigation.PushModalAsync(new NewStudentModalWindow(selectedStudent));
     }
-    private  void Button_Delete_Clicked(object sender, EventArgs e)
+
+    private async void Button_Delete_Clicked(object sender, EventArgs e)
     {
-
+       // получаем выбранный объект
+        StudentEntity? student = studentsList.SelectedItem as StudentEntity;
+        if (student == null)
+        {
+            await DisplayAlert("Ошибка", "Не выбран объект", "ОК");
+            return;
+        }
+        // проверка ответа пользователя
+        if (await DisplayAlert("Удаление", $"Вы действительно хотите удалить студента {student.Name} ?", "Да", "Нет"))
+        {
+            if (!await _studentRepository.DeleteAsync(student.Id))
+            {
+                await DisplayAlert("Ошибка", "Не получилось удалить объект", "ОК");
+                return;
+            }
+        }
+        else return;
     }
-
+    // заполнение данных второго окна при выборе объекта
     private void studentsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         StudentEntity? student = studentsList.SelectedItem as StudentEntity;
@@ -63,7 +85,7 @@ public partial class StudentPage : ContentPage
         dateOfBirth_Label.Text = student.DateOfBirth.ToString();
         dateOfReceipt_Label.Text = student.DateOfReceipt;
         gender_Label.Text = student.Gender;
-        idGroup_Label.Text = student.GroupId.ToString();
+        nameGroup_Label.Text = student.GroupName;
         idProgram_Label.Text = student.ProgramId.ToString();
     }
 }

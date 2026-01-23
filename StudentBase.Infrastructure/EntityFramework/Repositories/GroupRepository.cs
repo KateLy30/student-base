@@ -12,22 +12,35 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             _context = context;
         }
-        public async Task<int> CreateAsync(GroupEntity entity)
+        public async Task<bool> CreateAsync(GroupEntity entity)
         {
-            await _context.Groups.AddAsync(entity);
-            await _context.SaveChangesAsync();
-
-            return entity.Id;
+            try
+            {
+                await _context.Groups.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var group = await _context.Groups.FindAsync(id);
-            if (group == null) return false;
+            try
+            {
+                var group = await _context.Groups.FindAsync(id);
+                if (group == null) return false;
 
-            _context.Remove(group);
-            await _context.SaveChangesAsync();
-            return true;
+                _context.Remove(group);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<IEnumerable<GroupEntity>?> GetAllAsync()
@@ -40,9 +53,9 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Groups.Where(g => g.ProgramId == programId).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupEntity>?> GetAllByYearOfEntryAsync(DateOnly yearOfEntry)
+        public async Task<IEnumerable<GroupEntity>?> GetAllByDateOfCreationAsync(DateOnly dateOfCreation)
         {
-            return await _context.Groups.Where(g => g.YearOfEntry ==  yearOfEntry).ToListAsync();   
+            return await _context.Groups.Where(g => g.DateOfCreation ==  dateOfCreation).ToListAsync();   
         }
 
         public async Task<GroupEntity?> GetByIdAsync(int id)
@@ -64,19 +77,27 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> UpdateAsync(GroupEntity entity)
         {
-            var group = await _context.Groups.FindAsync(entity.Id);
-            if (group == null) return false;
+            try
+            {
+                var group = await _context.Groups.FindAsync(entity.Id);
+                if (group == null) return false;
 
-            UpdateEntity(group, entity);
-            return true;
+                UpdateEntity(group, entity);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public static void UpdateEntity(GroupEntity entityInDatabase, GroupEntity updatedEntity)
         {
             entityInDatabase.ProgramId = updatedEntity.ProgramId;
+            entityInDatabase.ProgramName = updatedEntity.ProgramName;
             entityInDatabase.Name = updatedEntity.Name;
-            entityInDatabase.YearOfEntry = updatedEntity.YearOfEntry;
-            entityInDatabase.DurationYears = updatedEntity.DurationYears;
+            entityInDatabase.DateOfCreation = updatedEntity.DateOfCreation;
+            entityInDatabase.DurationOfTraining = updatedEntity.DurationOfTraining;
             entityInDatabase.Status = updatedEntity.Status;
         }
     }

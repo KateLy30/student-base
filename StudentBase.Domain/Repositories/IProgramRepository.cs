@@ -4,9 +4,11 @@ namespace StudentBase.Domain.Repositories
 {
     public interface IProgramRepository : IRepository<ProgramEntity, int>
     {
-        Task<ProgramEntity?> GetByNameAsync(string name);
-        Task<ProgramEntity?> GetByCodeAsync(string code);
+        Task<ProgramEntity?> GetByQualificationAsync(string qualification);
+        Task<ProgramEntity?> GetBySpecialtyAsync(string specialty);
         Task<IEnumerable<ProgramEntity>?> GetAllByFormOfEducationAsync(FormsOfEducation formsOfEducation);
-        Task<IEnumerable<ProgramEntity>?> GetAllByDurationYearsAsync(TermsOfStudy termsOfStudy);
+        Task<IEnumerable<ProgramEntity>?> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy);
+        Task<IEnumerable<ProgramEntity>?> GetAllByEducationLevelAsync(LevelsOfEducation level);
+        Task<StatusPrograms?> GetStatusProgramAsync(int id);
     }
 }

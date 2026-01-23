@@ -13,39 +13,54 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
-        public async Task<int> CreateAsync(ProgramEntity entity)
+        public async Task<bool> CreateAsync(ProgramEntity entity)
         {
-            await _context.Programs.AddAsync(entity);
-            await _context.SaveChangesAsync();
-
-            return entity.Id;
+            try
+            {
+                await _context.Programs.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var program = await _context.Programs.FindAsync(id);
-            if (program == null) return false;
+            try
+            {
+                var program = await _context.Programs.FindAsync(id);
+                if (program == null) return false;
 
-            _context.Programs.Remove(program);
-            await _context.SaveChangesAsync();
-            return true;
+                _context.Programs.Remove(program);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllAsync()
         {
             return await _context.Programs.ToListAsync();
         }
-
-        public async Task<ProgramEntity?> GetByCodeAsync(string code)
+        //TODO их может быть несколько 
+        public async Task<ProgramEntity?> GetBySpecialtyAsync(string specialty)
         {
-            return await _context.Programs.FirstOrDefaultAsync(p => p.Code == code);
+            var program = await _context.Programs.FirstOrDefaultAsync(p => p.Specialty == specialty);
+            if (program == null) return null;
+            return program;
         }
 
-        public async Task<IEnumerable<ProgramEntity>?> GetAllByDurationYearsAsync(TermsOfStudy termsOfStudy)
+        public async Task<IEnumerable<ProgramEntity>?> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy)
         {
-            return await _context.Programs.Where(p => p.DurationYears == termsOfStudy).ToListAsync();
+            return await _context.Programs.Where(p => p.DurationTraining == termsOfStudy).ToListAsync();
         }
-
+        
         public async Task<IEnumerable<ProgramEntity>?> GetAllByFormOfEducationAsync(FormsOfEducation formsOfEducation)
         {
             return await _context.Programs.Where(p => p.FormOfEducation == formsOfEducation).ToListAsync();
@@ -55,27 +70,49 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             return await _context.Programs.FindAsync(id);
         }
-
-        public async Task<ProgramEntity?> GetByNameAsync(string name)
+        //TODO может быть много
+        public async Task<ProgramEntity?> GetByQualificationAsync(string qualification)
         {
-            return await _context.Programs.FirstOrDefaultAsync(p => p.Name == name);
+            return await _context.Programs.FirstOrDefaultAsync(p => p.Qualification == qualification);
         }
 
         public async Task<bool> UpdateAsync(ProgramEntity entity)
         {
-            var program = await _context.Programs.FindAsync(entity.Id);
-            if (program == null) return false;
+            try
+            {
+                var program = await _context.Programs.FindAsync(entity.Id);
+                if (program == null) return false;
 
-            UpdateEntity(program, entity);
-            return true;
+                UpdateEntity(program, entity);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<IEnumerable<ProgramEntity>?> GetAllByEducationLevelAsync(LevelsOfEducation level)
+        {
+            return await _context.Programs.Where(p => p.EducationLevel == level).ToListAsync();
+        }
+
+        public async Task<StatusPrograms?> GetStatusProgramAsync(int id)
+        {
+            var program = await _context.Programs.FindAsync(id);
+            if (program == null) return null;
+            return program.Status;
         }
 
         public static void UpdateEntity(ProgramEntity entityInDatabase, ProgramEntity updatedEntity)
         {
-            entityInDatabase.Code = updatedEntity.Code;
-            entityInDatabase.Name = updatedEntity.Name;
+            entityInDatabase.Specialty = updatedEntity.Specialty;
+            entityInDatabase.Specialty = updatedEntity.Specialty;
             entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
-            entityInDatabase.DurationYears = updatedEntity.DurationYears;
+            entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
+            entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
+            entityInDatabase.Status = updatedEntity.Status;
         }
+
+        
     }
 }

@@ -6,7 +6,7 @@ namespace StudentBase.Domain.Repositories
     {
         Task<IEnumerable<GroupEntity>?> GetAllByProgramIdAsync(int programId);
         Task<GroupEntity?> GetByNameAsync(string name);
-        Task<IEnumerable<GroupEntity>?> GetAllByYearOfEntryAsync(DateOnly yearOfEntry);
+        Task<IEnumerable<GroupEntity>?> GetAllByDateOfCreationAsync(DateOnly yearOfEntry);
         Task<StatusGroups?> GetStatusGroupsAsync(int id);
     }
 }

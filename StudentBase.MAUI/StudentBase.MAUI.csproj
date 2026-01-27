@@ -71,25 +71,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="GroupPage.xaml">
+	  <MauiXaml Update="Views\GroupPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="NewGroupModalWindow.xaml">
+	  <MauiXaml Update="Views\NewGroupModalWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="NewStudentModalWindow.xaml">
+	  <MauiXaml Update="Views\NewProgramModalWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ProgramPage.xaml">
+	  <MauiXaml Update="Views\NewStudentModalWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="StudentPage.xaml">
+	  <MauiXaml Update="Views\ProgramPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="StudentTransfersPage.xaml">
+	  <MauiXaml Update="Views\StudentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TuitionFeesPage.xaml">
+	  <MauiXaml Update="Views\StudentTransfersPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TuitionFeesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

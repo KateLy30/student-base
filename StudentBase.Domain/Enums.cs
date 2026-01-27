@@ -2,23 +2,23 @@
 namespace StudentBase.Domain;
 public enum StatusGroups
 {
-    Open,
-    Closed
+    Открыта,
+    Закрыта
 }
 public enum StatusStudents
 {
-    Studying,
-    Graduated
+    Обучается,
+    Выпустился
 }
 public enum StatusPrograms
 {
-    Relevant,
-    InArchive
+    Актуальна,
+    В_Архиве
 }
 public enum FormsOfEducation
 {
-    FullTime,
-    Correspondence
+    Очная,
+    Заочная
 }
 public enum TermsOfStudy
 {
@@ -28,6 +28,6 @@ public enum TermsOfStudy
 }
 public enum LevelsOfEducation
 {
-    BasicGeneral,      // 9 classes
-    SecondaryGeneral  // 11 classes
+    Основное_общее,      // 9 classes
+    Среднее_общее  // 11 classes
 }

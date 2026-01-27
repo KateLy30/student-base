@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.StudentPage"
+             x:Name="ThisPage"
+             Title="Список студентов">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <VerticalStackLayout Padding="30,0" Spacing="25">
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
+            <SearchBar x:Name="SearchBar" Placeholder="Поиск.."
+                       Text="{Binding SearchText, Mode=TwoWay}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                            IsVisible="{Binding IsBusy}"
+                            Grid.Row="0" HorizontalOptions="End" />
+            <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
+                            SelectedItem="{Binding SelectedStudent}" 
+                            x:Name="studentsList" Grid.Row="1"  >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding GroupName}" FontAttributes="Bold" TextColor="Gray" />
+                            </StackLayout>
+                            <Button Text="Удалить" BackgroundColor="#DC2626" 
+                                    Grid.Column="1" 
+                                    Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}" 
+                                    CommandParameter="{Binding}" />         
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                                      Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
+                                                      CommandParameter="{Binding}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--<Grid Padding="10">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Text="Id" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" x:Name="id_Label" FontSize="18"/>
+
+                            <Label Grid.Row="1" Text="ФИО" FontAttributes="Bold"/>
+                            <Label Grid.Row="1" Grid.Column="1" x:Name="name_Label" FontSize="18" />
+
+                            <Label Grid.Row="2" Text="Номер телефона" FontAttributes="Bold"/>
+                            <Label Grid.Row="2" Grid.Column="1" x:Name="phone_Label" FontSize="18"/>
+
+                            <Label Grid.Row="3" Text="Электронная почта" FontAttributes="Bold"/>
+                            <Label Grid.Row="3" Grid.Column="1" x:Name="email_Label" FontSize="18"/>
+
+                            <Label Grid.Row="4" Text="Дата рождения" FontAttributes="Bold"/>
+                            <Label Grid.Row="4" Grid.Column="1" x:Name="dateOfBirth_Label" FontSize="18"/>
+
+                            <Label Grid.Row="5" Text="Дата поступления" FontAttributes="Bold"/>
+                            <Label Grid.Row="5" Grid.Column="1" x:Name="dateOfReceipt_Label" FontSize="18"/>
+
+                            <Label Grid.Row="7" Text="Группа" FontAttributes="Bold"/>
+                            <Label Grid.Row="7" Grid.Column="1" x:Name="group_Label" FontSize="18"/>
+
+                            <Label Grid.Row="8" Text="Специальность" FontAttributes="Bold"/>
+                            <Label Grid.Row="8" Grid.Column="1" x:Name="program_Label" FontSize="18"/>
+
+                        </Grid>
+
+                        <HorizontalStackLayout HorizontalOptions="Center" Grid.Row="1" Grid.ColumnSpan="2">
+                <Button Text="Добавить" Command="{Binding AddCommand}" Margin="0,5,25,10" HeightRequest="35" />
+                <Button Text="Редактировать" Command="{Binding EditCommand}" Margin="0,5,25,10" HeightRequest="35"/>
+                <Button Text="Удалить" Command="{Binding DeleteCommand}" Margin="0,5,0,10" HeightRequest="35"/>
+            </HorizontalStackLayout>
+
+        </Grid>-->
+        </Grid>
+    </VerticalStackLayout>
+
+</ContentPage>

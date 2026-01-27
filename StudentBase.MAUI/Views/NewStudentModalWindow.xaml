@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.NewStudentModalWindow"
+             Title="{Binding Title}">
+    <ScrollView>
+
+        <VerticalStackLayout Padding="10" Spacing="3">
+            <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Введите ФИО" x:Name="nameEntry" Margin="0,0,0,5"/>
+
+            <Label Text="Номер телефона"/>
+            <Entry Text="{Binding Phone, Mode=TwoWay}" Placeholder="Введите телефон" Keyboard="Telephone" x:Name="phoneEntry" Margin="0,0,0,5"/>
+
+            <Label Text="Email"/>
+            <Entry Text="{Binding Email,Mode=TwoWay}" Placeholder="Введите электронную почту" Keyboard="Email" x:Name="emailEntry" Margin="0,0,0,5"/>
+
+            <Label Text="Дата рождения"/>
+            <Entry Text="{Binding DateOfBirth, Mode=TwoWay}" Placeholder="Введите дату рождения" x:Name="dateOfBirthEntry" Margin="0,0,0,5"/>
+
+            <Label Text="Дата поступления"/>
+            <Entry Text="{Binding DateOfReceipt, Mode=TwoWay}" Placeholder="Введите дату поступления" x:Name="dateOfReceiptEntry" Margin="0,0,0,5"/>
+
+            <Label Text="Группа"/>
+            <Picker ItemsSource="{Binding Groups}"
+                    ItemDisplayBinding="{Binding Name}" 
+                    SelectedItem="{Binding SelectedGroup, Mode=TwoWay}" x:Name="picker_groups"/>
+
+            <Label Text="Специальность"/>
+            <Picker ItemsSource="{Binding Programs}" 
+                    ItemDisplayBinding="{Binding Specialty}"
+                    SelectedItem="{Binding SelectedProgram, Mode=TwoWay}" x:Name="picker_programs" />
+
+            <Label Text="Статус"/>
+            <Picker ItemsSource="{Binding StatusList}"
+                    SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" x:Name="picker_status"/>
+
+
+            <HorizontalStackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
+                <Button Text="Ок" Margin="10" Command="{Binding SaveCommand}"/>
+                <Button Text="Отмена" Margin="10" Command="{Binding CancelCommand}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+</ContentPage>

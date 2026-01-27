@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.ProgramPage"
+             x:Name="ThisPage"
+             Title="Список программ обучения">
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <VerticalStackLayout Padding="30,0" Spacing="25">
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
+            <SearchBar Placeholder="Поиск.."
+                     Text="{Binding SearchText, Mode=TwoWay}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                      IsVisible="{Binding IsBusy}"
+                      Grid.Row="0" HorizontalOptions="End" />
+            <CollectionView ItemsSource="{Binding Programs}" SelectionMode="Single" 
+                         SelectedItem="{Binding SelectedProgram}"  Grid.Row="1"  >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackLayout>
+                                <Label Text="{Binding Specialty}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding Qualification}" TextColor="Gray" />
+                            </StackLayout>
+                            <Button Text="Удалить" BackgroundColor="#DC2626" 
+                              Grid.Column="1" 
+                              Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}" 
+                              CommandParameter="{Binding}" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                                Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
+                                                CommandParameter="{Binding}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--<Border Grid.Column="1" Grid.Row="0">
+         <Border.Content>
+             <ScrollView >
+                 <Grid Padding="10">
+                     <Grid.RowDefinitions>
+                         <RowDefinition />
+                         <RowDefinition />
+                         <RowDefinition />
+                         <RowDefinition />
+                         <RowDefinition />
+                         <RowDefinition />
+                     </Grid.RowDefinitions>
+                     <Grid.ColumnDefinitions>
+                         <ColumnDefinition Width="150"/>
+                         <ColumnDefinition />
+                     </Grid.ColumnDefinitions>
+
+                     <Label Text="Id" FontAttributes="Bold"/>
+                     <Label Grid.Column="1" x:Name="id_Label" FontSize="18"/>
+
+                     <Label Grid.Row="1" Text="Специальность" FontAttributes="Bold"/>
+                     <Label Grid.Row="1" Grid.Column="1" x:Name="programId_Label" FontSize="18" />
+
+                     <Label Grid.Row="2" Text="Название группы" FontAttributes="Bold"/>
+                     <Label Grid.Row="2" Grid.Column="1" x:Name="name_Label" FontSize="18"/>
+
+                     <Label Grid.Row="3" Text="Год создания группы" FontAttributes="Bold"/>
+                     <Label Grid.Row="3" Grid.Column="1" x:Name="year_Label" FontSize="18"/>
+
+                     <Label Grid.Row="4" Text="Продолжительность обучения" FontAttributes="Bold"/>
+                     <Label Grid.Row="4" Grid.Column="1" x:Name="duration_Label" FontSize="18"/>
+                 </Grid>
+             </ScrollView>
+         </Border.Content>
+     </Border>
+
+     <HorizontalStackLayout HorizontalOptions="Center" Grid.Row="1" Grid.ColumnSpan="2">
+         <Button Text="Добавить" Margin="0,5,25,10" HeightRequest="35" />
+         <Button Text="Редактировать" Margin="0,5,25,10" HeightRequest="35"/>
+         <Button Text="Удалить" Margin="0,5,0,10" HeightRequest="35"/>
+     </HorizontalStackLayout>-->
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

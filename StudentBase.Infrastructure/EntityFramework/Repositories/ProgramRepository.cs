@@ -84,6 +84,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
                 if (program == null) return false;
 
                 UpdateEntity(program, entity);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)

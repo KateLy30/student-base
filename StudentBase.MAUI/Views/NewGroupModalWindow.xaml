@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.NewGroupModalWindow"
+             Title="{Binding Title}">
+
+    <ScrollView>
+
+        <VerticalStackLayout Padding="10" Spacing="3">
+            <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Введите название группы" Margin="0,0,0,5"/>
+
+            <Label Text="Дата создания группы" />
+            <Entry Text="{Binding DateOfCreation, Mode=TwoWay}" Margin="0,0,0,5"/>
+
+            <Picker ItemsSource="{Binding Programs}"
+                    ItemDisplayBinding="{Binding Specialty}"
+                    SelectedItem="{Binding SelectedProgram, Mode=TwoWay}"
+                    Title="Программа обучения" />
+
+            <Picker ItemsSource="{Binding StatusList}"
+                    SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                    Title="Статус" />
+
+            <HorizontalStackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
+                <Button Text="Ок" Margin="10" Command="{Binding SaveCommand}"/>
+                <Button Text="Отмена" Margin="10" Command="{Binding CancelCommand}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

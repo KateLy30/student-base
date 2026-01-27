@@ -4,11 +4,11 @@ namespace StudentBase.Domain.Entities
     public class ProgramEntity
     {
         public int Id { get; set; }
-        public required string Specialty { get; set; }
-        public required string Qualification { get; set; }
-        public required FormsOfEducation FormOfEducation { get; set; }
-        public required TermsOfStudy DurationTraining { get; set; }
-        public required LevelsOfEducation EducationLevel { get; set; }
-        public required StatusPrograms Status {get; set; }
+        public string? Specialty { get; set; }
+        public string? Qualification { get; set; }
+        public FormsOfEducation FormOfEducation { get; set; }
+        public TermsOfStudy DurationTraining { get; set; }
+        public LevelsOfEducation EducationLevel { get; set; }
+        public StatusPrograms Status {get; set; }
     }
 }

@@ -152,7 +152,6 @@ namespace StudentBase.MAUI.ViewModels
             _program.Qualification = Qualification;
             _program.FormOfEducation = SelectedFormOfEducation;
             _program.DurationTraining = SelectedTermOfStudy;
-            _program.EducationLevel = SelectedLevelOfEducation;
             _program.Status = SelectedStatus;
             if (_program.Id == 0)
                 await _programRepository.CreateAsync(_program);
@@ -177,7 +176,6 @@ namespace StudentBase.MAUI.ViewModels
             Qualification = _program.Qualification!;
             SelectedFormOfEducation = _program.FormOfEducation;
             SelectedTermOfStudy = _program.DurationTraining;
-            SelectedLevelOfEducation = _program.EducationLevel;
             SelectedStatus = _program.Status;
         }
     }

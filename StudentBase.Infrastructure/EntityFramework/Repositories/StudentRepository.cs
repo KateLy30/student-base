@@ -111,6 +111,9 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.GroupName = updatedEntity.GroupName;
             entityInDatabase.ProgramId = updatedEntity.ProgramId;
             entityInDatabase.ProgramSpecialty = updatedEntity.ProgramSpecialty;
+            entityInDatabase.ProgramQualification = updatedEntity.ProgramQualification;
+            entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
+            entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
             entityInDatabase.Status = updatedEntity.Status;
         }
     }

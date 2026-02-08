@@ -106,7 +106,6 @@ namespace StudentBase.MAUI.ViewModels
             }
             _group.Name = Name;
             _group.ProgramId = SelectedProgram.Id;
-            _group.ProgramName = SelectedProgram.Specialty;
             if (DateOnly.TryParse(DateOfCreation, out var parsed))
                 _group.DateOfCreation = parsed;
             else

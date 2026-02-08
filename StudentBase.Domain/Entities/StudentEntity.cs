@@ -13,6 +13,9 @@ namespace StudentBase.Domain.Entities
         public string? GroupName { get; set; }
         public int? ProgramId { get; set; }
         public string? ProgramSpecialty { get; set; }
+        public string? ProgramQualification { get; set; }
+        public LevelsOfEducation EducationLevel { get; set; }
+        public TermsOfStudy DurationTraining { get; set; }
         public StatusStudents Status { get; set; }
 
     }

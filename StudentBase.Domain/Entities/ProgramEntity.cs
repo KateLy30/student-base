@@ -8,7 +8,6 @@ namespace StudentBase.Domain.Entities
         public string? Qualification { get; set; }
         public FormsOfEducation FormOfEducation { get; set; }
         public TermsOfStudy DurationTraining { get; set; }
-        public LevelsOfEducation EducationLevel { get; set; }
         public StatusPrograms Status {get; set; }
     }
 }

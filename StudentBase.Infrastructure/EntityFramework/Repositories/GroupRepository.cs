@@ -95,7 +95,8 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         public static void UpdateEntity(GroupEntity entityInDatabase, GroupEntity updatedEntity)
         {
             entityInDatabase.ProgramId = updatedEntity.ProgramId;
-            entityInDatabase.ProgramName = updatedEntity.ProgramName;
+            entityInDatabase.ProgramSpecialty = updatedEntity.ProgramSpecialty;
+            entityInDatabase.ProgramQualification = updatedEntity.ProgramQualification;
             entityInDatabase.Name = updatedEntity.Name;
             entityInDatabase.DateOfCreation = updatedEntity.DateOfCreation;
             entityInDatabase.DurationOfTraining = updatedEntity.DurationOfTraining;

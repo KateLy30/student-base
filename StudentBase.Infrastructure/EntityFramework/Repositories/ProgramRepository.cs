@@ -76,6 +76,12 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Programs.FirstOrDefaultAsync(p => p.Qualification == qualification);
         }
 
+        public async Task<StatusPrograms?> GetStatusProgramAsync(int id)
+        {
+            var program = await _context.Programs.FindAsync(id);
+            if (program == null) return null;
+            return program.Status;
+        }
         public async Task<bool> UpdateAsync(ProgramEntity entity)
         {
             try
@@ -92,25 +98,13 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
                 return false;
             }
         }
-        public async Task<IEnumerable<ProgramEntity>?> GetAllByEducationLevelAsync(LevelsOfEducation level)
-        {
-            return await _context.Programs.Where(p => p.EducationLevel == level).ToListAsync();
-        }
-
-        public async Task<StatusPrograms?> GetStatusProgramAsync(int id)
-        {
-            var program = await _context.Programs.FindAsync(id);
-            if (program == null) return null;
-            return program.Status;
-        }
 
         public static void UpdateEntity(ProgramEntity entityInDatabase, ProgramEntity updatedEntity)
         {
             entityInDatabase.Specialty = updatedEntity.Specialty;
-            entityInDatabase.Specialty = updatedEntity.Specialty;
+            entityInDatabase.Qualification = updatedEntity.Qualification;
             entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
             entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
-            entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
             entityInDatabase.Status = updatedEntity.Status;
         }
 

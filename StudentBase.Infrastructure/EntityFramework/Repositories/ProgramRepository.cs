@@ -48,12 +48,10 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             return await _context.Programs.ToListAsync();
         }
-        //TODO их может быть несколько 
-        public async Task<ProgramEntity?> GetBySpecialtyAsync(string specialty)
+
+        public async Task<IEnumerable<ProgramEntity>?> GetAllBySpecialtyAsync(string specialty)
         {
-            var program = await _context.Programs.FirstOrDefaultAsync(p => p.Specialty == specialty);
-            if (program == null) return null;
-            return program;
+            return await _context.Programs.Where(p => p.Specialty == specialty).ToListAsync();
         }
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy)
@@ -70,7 +68,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             return await _context.Programs.FindAsync(id);
         }
-        //TODO может быть много
+
         public async Task<ProgramEntity?> GetByQualificationAsync(string qualification)
         {
             return await _context.Programs.FirstOrDefaultAsync(p => p.Qualification == qualification);
@@ -107,7 +105,5 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
             entityInDatabase.Status = updatedEntity.Status;
         }
-
-        
     }
 }

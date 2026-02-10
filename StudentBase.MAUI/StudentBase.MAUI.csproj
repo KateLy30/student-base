@@ -83,6 +83,9 @@
 	  <MauiXaml Update="Views\NewStudentModalWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ProgramCardModalWindow.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ProgramPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

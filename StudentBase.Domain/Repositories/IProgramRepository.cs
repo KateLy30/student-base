@@ -5,7 +5,7 @@ namespace StudentBase.Domain.Repositories
     public interface IProgramRepository : IRepository<ProgramEntity, int>
     {
         Task<ProgramEntity?> GetByQualificationAsync(string qualification);
-        Task<ProgramEntity?> GetBySpecialtyAsync(string specialty);
+        Task<IEnumerable<ProgramEntity>?> GetAllBySpecialtyAsync(string specialty);
         Task<IEnumerable<ProgramEntity>?> GetAllByFormOfEducationAsync(FormsOfEducation formsOfEducation);
         Task<IEnumerable<ProgramEntity>?> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy);
         Task<StatusPrograms?> GetStatusProgramAsync(int id);

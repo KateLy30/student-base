@@ -1,19 +1,24 @@
 ﻿using StudentBase.Domain.Entities;
 using StudentBase.Domain.Repositories;
+using StudentBase.Infrastructure.EntityFramework.Repositories;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace StudentBase.MAUI.ViewModels
 {
     public class StudentPageViewModel : BaseViewModel 
     {
+        private readonly IGroupRepository _groupRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly Func<object> _createNewStudentPage;
         public ObservableCollection<StudentEntity> Students { get; } = [];
+        public ObservableCollection<GroupEntity> Filters { get; } = [];
 
-        public StudentPageViewModel(IStudentRepository studentRepository, Func<object> createNewStudentPage)
+        public StudentPageViewModel(IStudentRepository studentRepository,IGroupRepository groupRepository, Func<object> createNewStudentPage)
         {
             _studentRepository = studentRepository;
+            _groupRepository = groupRepository;
             _createNewStudentPage = createNewStudentPage;
 
             LoadCommand = new AsyncCommand(LoadAsync);
@@ -21,7 +26,37 @@ namespace StudentBase.MAUI.ViewModels
             EditCommand = new AsyncCommand(s => EditAsync(s as StudentEntity));
             DeleteCommand = new AsyncCommand(s => DeleteAsync(s as StudentEntity));
         }
-
+        private GroupEntity selectedFilter;
+        public GroupEntity SelectedFilter
+        {
+            get => selectedFilter;
+            set
+            {
+                if(selectedFilter != value)
+                {
+                    selectedFilter = value;
+                    OnPropertyChanged();
+                    ApplyFilter();
+                }
+            }
+        }
+        private async Task ApplyFilter()
+        {
+            if(SelectedFilter == null) return;
+            var list = await _studentRepository.GetAllByGroupIdAsync(SelectedFilter.Id);
+            if(list == null) return;
+            Students.Clear();
+            foreach(var student in list) 
+                Students.Add(student);
+        }
+        public async Task LoadGroupsAsync()
+        {
+            var groupsFromDb = await _groupRepository.GetAllAsync();
+            if (groupsFromDb == null) return;
+            Filters.Clear();
+            foreach (var g in groupsFromDb)
+                Filters.Add(g);
+        }
         private bool _isBusy;
         public bool IsBusy
         {

@@ -11,23 +11,27 @@ namespace StudentBase.MAUI.ViewModels
         private readonly IProgramRepository _programRepository;
         private ProgramEntity _program = new();
 
+        // списки для Enums
         public ObservableCollection<FormsOfEducation> FormsOfEducationList { get; }
         public ObservableCollection<TermsOfStudy> TermsOfStudyList { get; }
-        public ObservableCollection<LevelsOfEducation> LevelsOfEducationList { get; }
         public ObservableCollection<StatusPrograms> StatusList { get; }
+
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
         public NewProgramViewModel(IProgramRepository programRepository)
         {
             _programRepository = programRepository;
+
             SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Specialty));
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
 
-            StatusList =  new ObservableCollection<StatusPrograms>(Enum.GetValues(typeof(StatusPrograms)).Cast<StatusPrograms>());
-            LevelsOfEducationList = new ObservableCollection<LevelsOfEducation>(Enum.GetValues(typeof(LevelsOfEducation)).Cast<LevelsOfEducation>());
-            TermsOfStudyList = new ObservableCollection<TermsOfStudy>(Enum.GetValues(typeof(TermsOfStudy)).Cast<TermsOfStudy>());
-            FormsOfEducationList = new ObservableCollection<FormsOfEducation>(Enum.GetValues(typeof(FormsOfEducation)).Cast<FormsOfEducation>());
+            // заполнение списков из Enums
+            StatusList =  new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
+            TermsOfStudyList = new ObservableCollection<TermsOfStudy>(Enum.GetValues<TermsOfStudy>().Cast<TermsOfStudy>());
+            FormsOfEducationList = new ObservableCollection<FormsOfEducation>(Enum.GetValues<FormsOfEducation>().Cast<FormsOfEducation>());
         }
+
+        // заголовок окна
         private string _title = "Добавление программы обучения";
         public string Title
         {
@@ -39,8 +43,10 @@ namespace StudentBase.MAUI.ViewModels
                 SaveCommand.RaiseCanExecuteChanged();
             }
         }
-        private string specialty;
-        public string Specialty
+
+        // поля для ввода
+        private string? specialty;
+        public string? Specialty
         {
             get => specialty;
             set
@@ -50,24 +56,14 @@ namespace StudentBase.MAUI.ViewModels
                 SaveCommand.RaiseCanExecuteChanged();
             }
         }
-        private string qualification;
-        public string Qualification
+        private string? qualification;
+        public string? Qualification
         {
             get => qualification;
             set
             {
                 if(qualification == value) return;
                 qualification = value; OnPropertyChanged();
-            }
-        }
-        private FormsOfEducation formOfEducation;
-        public FormsOfEducation FormOfEducation
-        {
-            get => formOfEducation;
-            set
-            {
-                if(formOfEducation == value) return;
-                formOfEducation = value; OnPropertyChanged();
             }
         }
         private FormsOfEducation selectedFormOfEducation;
@@ -80,16 +76,6 @@ namespace StudentBase.MAUI.ViewModels
                 selectedFormOfEducation = value; OnPropertyChanged();
             }
         }
-        private TermsOfStudy durationTraining;
-        public TermsOfStudy DurationTraining
-        {
-            get => durationTraining;
-            set
-            {
-                if (durationTraining == value) return;
-                durationTraining = value; OnPropertyChanged();
-            }
-        }
         private TermsOfStudy selectedTermOfStudy;
         public TermsOfStudy SelectedTermOfStudy
         {
@@ -98,36 +84,6 @@ namespace StudentBase.MAUI.ViewModels
             {
                 if(selectedTermOfStudy == value) return;
                 selectedTermOfStudy = value; OnPropertyChanged();
-            }
-        }
-        private LevelsOfEducation educationLevel;
-        public LevelsOfEducation EducationLevel
-        {
-            get => educationLevel;
-            set
-            {
-                if(educationLevel == value) return;
-                educationLevel = value; OnPropertyChanged();
-            }
-        }
-        private LevelsOfEducation selectedLevelOfEducation;
-        public LevelsOfEducation SelectedLevelOfEducation
-        {
-            get => selectedLevelOfEducation;
-            set
-            {
-                if(selectedLevelOfEducation == value) return;
-                selectedLevelOfEducation = value; OnPropertyChanged();
-            }
-        }
-        private StatusPrograms status;
-        public StatusPrograms Status
-        {
-            get => status;
-            set
-            {
-                if (status == value) return;
-                status = value; OnPropertyChanged();
             }
         }
         private StatusPrograms selectedStatus;
@@ -141,11 +97,13 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        // кнопка сохранения
         private async Task SaveAsync()
         {
-            if (string.IsNullOrWhiteSpace(Specialty))
+            if (string.IsNullOrWhiteSpace(Specialty) || string.IsNullOrWhiteSpace(Qualification))
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите специальность.", "Ок");
+                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите данные", "Ок");
                 return;
             }
             _program.Specialty = Specialty;
@@ -164,19 +122,24 @@ namespace StudentBase.MAUI.ViewModels
                 await viewModel.LoadAsync();
             }
         }
+
+        // заполнения формы ввода при редактировании
+        // определение заголовка окна
         public void LoadFrom(ProgramEntity? p)
         {
             _program = p ?? new ProgramEntity();
             if (p == null || p.Id == 0)
-                Title = "Добавление программы обучения";
+                Title = "Добавление новой программы обучения";
             else
+            {
                 Title = "Изменение данных программы обучение";
 
-            Specialty = _program.Specialty!;
-            Qualification = _program.Qualification!;
-            SelectedFormOfEducation = _program.FormOfEducation;
-            SelectedTermOfStudy = _program.DurationTraining;
-            SelectedStatus = _program.Status;
+                Specialty = _program.Specialty!;
+                Qualification = _program.Qualification!;
+                SelectedFormOfEducation = _program.FormOfEducation;
+                SelectedTermOfStudy = _program.DurationTraining;
+                SelectedStatus = _program.Status;
+            }
         }
     }
 }

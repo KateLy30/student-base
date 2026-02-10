@@ -9,16 +9,26 @@ namespace StudentBase.MAUI.ViewModels
     {
         private readonly IProgramRepository _programRepository;
         private readonly Func<object> _createNewProgramPage;
+        private readonly Func<object> _createProgramCardPage;
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
-        public ProgramPageViewModel(IProgramRepository programRepository, Func<object> createNewProgramPage)
+
+        public AsyncCommand OpenProgramCardCommand { get; }
+        public AsyncCommand LoadCommand { get; }
+        public AsyncCommand AddCommand { get; }
+        public AsyncCommand DeleteCommand { get; }
+        public AsyncCommand EditCommand { get; }
+
+        public ProgramPageViewModel(IProgramRepository programRepository, Func<object> createNewProgramPage, Func<object> createCardProgram)
         {
             _programRepository = programRepository;
             _createNewProgramPage = createNewProgramPage;
+            _createProgramCardPage = createCardProgram;
 
             LoadCommand = new AsyncCommand(LoadAsync);
             AddCommand = new AsyncCommand(AddAsync);
             EditCommand = new AsyncCommand(p => EditAsync(p as ProgramEntity));
             DeleteCommand = new AsyncCommand(p => DeleteAsync(p as ProgramEntity));
+            OpenProgramCardCommand = new AsyncCommand(p => OpenProgramCardAsync(p as ProgramEntity));
         }
         private bool _isBusy;
         public bool IsBusy
@@ -27,10 +37,11 @@ namespace StudentBase.MAUI.ViewModels
             set
             {
                 if (_isBusy == value) return;
-                _isBusy = value;
-                OnPropertyChanged();
+                _isBusy = value; OnPropertyChanged();
             }
         }
+
+        // поле поиска
         private string? _searchText;
         public string? SearchText
         {
@@ -43,6 +54,8 @@ namespace StudentBase.MAUI.ViewModels
                 _ = LoadAsync();
             }
         }
+
+        // загрузка списка программ
         public async Task LoadAsync()
         {
             if (IsBusy) return;
@@ -65,14 +78,11 @@ namespace StudentBase.MAUI.ViewModels
                 IsBusy = false;
             }
         }
-        public AsyncCommand LoadCommand { get; }
-        public AsyncCommand AddCommand { get; }
-        public AsyncCommand DeleteCommand { get; }
-        public AsyncCommand EditCommand { get; }
+       
         public async Task DeleteAsync(ProgramEntity? p)
         {
             if (p is null) return;
-            var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {p.Specialty}?", "Да", "Нет");
+            var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить специальность: {p.Specialty}, с квалификацией {p.Qualification}?", "Да", "Нет");
             if (!ok) return;
             await _programRepository.DeleteAsync(p.Id);
             await LoadAsync();
@@ -88,6 +98,14 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_createNewProgramPage();
             if (page.BindingContext is NewProgramViewModel viewModel)
                 viewModel.LoadFrom(p);
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+        public async Task OpenProgramCardAsync(ProgramEntity? p)
+        {
+            if(p is null) return;
+            var page = (Page)_createProgramCardPage();
+            if (page.BindingContext is ProgramCardViewModel viewModel)
+                viewModel.UploadData(p);
             await Shell.Current.Navigation.PushAsync(page);
         }
     }

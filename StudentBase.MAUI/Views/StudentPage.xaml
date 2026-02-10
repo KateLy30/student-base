@@ -10,15 +10,19 @@
     </ContentPage.ToolbarItems>
 
     <VerticalStackLayout Padding="30,0" Spacing="25">
-        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
             <SearchBar x:Name="SearchBar" Placeholder="Поиск.."
                        Text="{Binding SearchText, Mode=TwoWay}" />
+            <Picker Title="Фильтр группы"
+                    ItemsSource="{Binding Filters}"
+                    SelectedItem="{Binding SelectedFilter, Mode=TwoWay}"
+                    Grid.Row="1" />
             <ActivityIndicator IsRunning="{Binding IsBusy}"
                             IsVisible="{Binding IsBusy}"
                             Grid.Row="0" HorizontalOptions="End" />
             <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
                             SelectedItem="{Binding SelectedStudent}" 
-                            x:Name="studentsList" Grid.Row="1"  >
+                            x:Name="studentsList" Grid.Row="2"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="8">

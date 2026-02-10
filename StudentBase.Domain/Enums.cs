@@ -12,13 +12,13 @@ public enum StatusStudents
 }
 public enum StatusPrograms
 {
-    Актуальна,
-    В_Архиве
+    CurrentProgram,
+    ProgramIsArchived
 }
 public enum FormsOfEducation
 {
-    Очная,
-    Заочная
+    FullTime,
+    Correspondence
 }
 public enum TermsOfStudy
 {

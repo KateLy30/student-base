@@ -233,6 +233,7 @@ namespace StudentBase.MAUI.ViewModels
             _student.GroupName = SelectedGroup?.Name;
             _student.ProgramId = SelectedProgram?.Id;
             _student.ProgramSpecialty = SelectedProgram?.Specialty;
+            _student.ProgramQualification = SelectedProgram?.Qualification;
             _student.Status = SelectedStatus;
             if (_student.Id == 0)
                 await _studentRepository.CreateAsync(_student);

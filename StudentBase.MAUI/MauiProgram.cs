@@ -27,24 +27,27 @@ namespace StudentBase.MAUI
             builder.Services.AddScoped<AppDbContext>();
 
             builder.Services.AddTransient<StudentPageViewModel>(p => new StudentPageViewModel(p.GetRequiredService<IStudentRepository>(),
+                p.GetRequiredService<IGroupRepository>(),
                 () => p.GetRequiredService<NewStudentModalWindow>()));
 
             builder.Services.AddTransient<GroupPageViewModel>(g => new GroupPageViewModel(g.GetRequiredService<IGroupRepository>(),
                 () => g.GetRequiredService<NewGroupModalWindow>()));
 
             builder.Services.AddTransient<ProgramPageViewModel>(p => new ProgramPageViewModel(p.GetRequiredService<IProgramRepository>(),
-                () => p.GetRequiredService<NewProgramModalWindow>()));
+                () => p.GetRequiredService<NewProgramModalWindow>(),
+                () => p.GetRequiredService<ProgramCardModalWindow>()));
 
             builder.Services.AddTransient<NewStudentViewModel>();
             builder.Services.AddTransient<NewGroupViewModel>();
             builder.Services.AddTransient<NewProgramViewModel>();
+            builder.Services.AddTransient<ProgramCardViewModel>();
 
             builder.Services.AddTransient<MainPage>();
 
             builder.Services.AddTransient<NewStudentModalWindow >();
             builder.Services.AddTransient<NewGroupModalWindow>();
             builder.Services.AddTransient<NewProgramModalWindow>();
-
+            builder.Services.AddTransient<ProgramCardModalWindow>();
 
 #if DEBUG
             builder.Logging.AddDebug();

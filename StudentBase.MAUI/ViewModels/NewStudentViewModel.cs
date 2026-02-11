@@ -1,6 +1,6 @@
-﻿using StudentBase.Domain;
+﻿using StudentBase.Application.Interfaces;
+using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.Domain.Repositories;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
@@ -8,9 +8,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class NewStudentViewModel : BaseViewModel 
     {
-        private readonly IStudentRepository _studentRepository;
-        private readonly IGroupRepository _groupRepository;
-        private readonly IProgramRepository _programRepository;
+        private readonly IDataService _dataService;
         private StudentEntity _student = new();
         public ObservableCollection<StatusStudents> StatusList { get; }
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
@@ -19,15 +17,12 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
 
-        public NewStudentViewModel(IStudentRepository studentRepository,
-                                   IGroupRepository groupRepository,
-                                   IProgramRepository programRepository)
+        public NewStudentViewModel(IDataService dataService)
         {
-            _studentRepository = studentRepository;
-            _groupRepository = groupRepository;
+            _dataService = dataService;
+
             SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Name));
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
-            _programRepository = programRepository;
 
             StatusList = new ObservableCollection<StatusStudents>(Enum.GetValues(typeof(StatusStudents)).Cast<StatusStudents>());
         }
@@ -42,8 +37,8 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
-        private string name;
-        public string Name
+        private string? name;
+        public string? Name
         {
             get => name;
             set
@@ -54,8 +49,8 @@ namespace StudentBase.MAUI.ViewModels
                 SaveCommand.RaiseCanExecuteChanged();
             }
         }
-        private string phone;
-        public string Phone
+        private string? phone;
+        public string? Phone
         {
             get => phone;
             set
@@ -65,8 +60,8 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
-        private string email;
-        public string Email
+        private string? email;
+        public string? Email
         {
             get => email;
             set
@@ -116,7 +111,7 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadGroupsAsync()
         {
-            var groupsFromDb = await _groupRepository.GetAllAsync();
+            var groupsFromDb = await _dataService.Groups.GetAllAsync();
             if(groupsFromDb == null) return;
             Groups.Clear();
             foreach (var g in groupsFromDb)
@@ -170,7 +165,7 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadProgramsAsync()
         {
-            var programsFromDb = await _programRepository.GetAllAsync();
+            var programsFromDb = await _dataService.Programs.GetAllAsync();
             if (programsFromDb == null) return;
             Programs.Clear();
             foreach (var p in programsFromDb)
@@ -236,9 +231,9 @@ namespace StudentBase.MAUI.ViewModels
             _student.ProgramQualification = SelectedProgram?.Qualification;
             _student.Status = SelectedStatus;
             if (_student.Id == 0)
-                await _studentRepository.CreateAsync(_student);
+                await _dataService.Students.CreateAsync(_student);
             else
-                await _studentRepository.UpdateAsync(_student);
+                await _dataService.Students.UpdateAsync(_student);
 
             await Shell.Current.Navigation.PopAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is StudentPageViewModel viewModel)
@@ -254,8 +249,8 @@ namespace StudentBase.MAUI.ViewModels
             else
                 Title = "Изменение данных студента";
 
-            var group = await _groupRepository.GetByIdAsync((int)_student.GroupId!);
-            var program = await _programRepository.GetByIdAsync((int)_student.ProgramId!);
+            var group = await _dataService.Groups.GetByIdAsync((int)_student.GroupId!);
+            var program = await _dataService.Programs.GetByIdAsync((int)_student.ProgramId!);
 
             Name = _student.Name!;
             Phone = _student.Phone!;

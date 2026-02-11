@@ -1,5 +1,5 @@
-﻿using StudentBase.Domain.Entities;
-using StudentBase.Domain.Repositories;
+﻿using StudentBase.Application.Interfaces;
+using StudentBase.Domain.Entities;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
@@ -7,7 +7,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class ProgramPageViewModel : BaseViewModel 
     {
-        private readonly IProgramRepository _programRepository;
+        private readonly IDataService _dataService;
         private readonly Func<object> _createNewProgramPage;
         private readonly Func<object> _createProgramCardPage;
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
@@ -18,9 +18,9 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand DeleteCommand { get; }
         public AsyncCommand EditCommand { get; }
 
-        public ProgramPageViewModel(IProgramRepository programRepository, Func<object> createNewProgramPage, Func<object> createCardProgram)
+        public ProgramPageViewModel(IDataService dataService, Func<object> createNewProgramPage, Func<object> createCardProgram)
         {
-            _programRepository = programRepository;
+            _dataService = dataService;
             _createNewProgramPage = createNewProgramPage;
             _createProgramCardPage = createCardProgram;
 
@@ -62,7 +62,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _programRepository.GetAllAsync();
+                var list = await _dataService.Programs.GetAllAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -84,7 +84,7 @@ namespace StudentBase.MAUI.ViewModels
             if (p is null) return;
             var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить специальность: {p.Specialty}, с квалификацией {p.Qualification}?", "Да", "Нет");
             if (!ok) return;
-            await _programRepository.DeleteAsync(p.Id);
+            await _dataService.Programs.DeleteAsync(p.Id);
             await LoadAsync();
         }
         public async Task AddAsync()

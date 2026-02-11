@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.Logging;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Repositories;
 using StudentBase.Infrastructure.EntityFramework;
 using StudentBase.Infrastructure.EntityFramework.Repositories;
@@ -21,9 +22,7 @@ namespace StudentBase.MAUI
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            builder.Services.AddSingleton<IStudentRepository, StudentRepository>();
-            builder.Services.AddSingleton<IGroupRepository, GroupRepository>();
-            builder.Services.AddSingleton<IProgramRepository,  ProgramRepository>();
+            builder.Services.AddSingleton<IDataService, DataService>();
             builder.Services.AddScoped<AppDbContext>();
 
             builder.Services.AddTransient<StudentPageViewModel>(p => new StudentPageViewModel(p.GetRequiredService<IStudentRepository>(),

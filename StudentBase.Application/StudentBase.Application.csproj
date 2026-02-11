@@ -12,8 +12,11 @@
 
   <ItemGroup>
     <Folder Include="Validators\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StudentBase.Domain\StudentBase.Domain.csproj" />
   </ItemGroup>
 
 </Project>

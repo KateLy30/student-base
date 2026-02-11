@@ -1,6 +1,6 @@
-﻿using StudentBase.Domain;
+﻿using StudentBase.Application.Interfaces;
+using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.Domain.Repositories;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
@@ -8,17 +8,15 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class NewGroupViewModel : BaseViewModel 
     {
-        private readonly IProgramRepository _programRepository;
-        private readonly IGroupRepository _groupRepository;
+        private readonly IDataService _dataService;
         private GroupEntity _group = new();
         public ObservableCollection<StatusGroups> StatusList { get; }
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
-        public NewGroupViewModel(IProgramRepository programRepository, IGroupRepository groupRepository)
+        public NewGroupViewModel(IDataService dataService)
         {
-            _programRepository = programRepository;
-            _groupRepository = groupRepository;
+            _dataService = dataService;
             SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Name));
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
 
@@ -35,8 +33,8 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
-        private string name;
-        public string Name
+        private string? name;
+        public string? Name
         {
             get => name;
             set
@@ -71,7 +69,7 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadProgramsAsync()
         {
-            var programsFromDb = await _programRepository.GetAllAsync();
+            var programsFromDb = await _dataService.Programs.GetAllAsync();
             if (programsFromDb == null) return;
             Programs.Clear();
             foreach (var p in programsFromDb)
@@ -116,9 +114,9 @@ namespace StudentBase.MAUI.ViewModels
             _group.DurationOfTraining = SelectedProgram.DurationTraining;
             _group.Status = SelectedStatus;
             if (_group.Id == 0)
-                await _groupRepository.CreateAsync(_group);
+                await _dataService.Groups.CreateAsync(_group);
             else
-                await _groupRepository.UpdateAsync(_group);
+                await _dataService.Groups.UpdateAsync(_group);
 
             await Shell.Current.Navigation.PopAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is GroupPageViewModel viewModel)
@@ -134,7 +132,7 @@ namespace StudentBase.MAUI.ViewModels
             else
                 Title = "Изменение данных группы";
 
-            var program = await _programRepository.GetByIdAsync(g!.ProgramId);
+            var program = await _dataService.Programs.GetByIdAsync(g!.ProgramId);
 
             Name = _group.Name!;
             DateOfCreation = _group.DateOfCreation.ToString();

@@ -1,6 +1,6 @@
-﻿using StudentBase.Domain;
+﻿using StudentBase.Application.Interfaces;
+using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.Domain.Repositories;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
@@ -8,7 +8,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class NewProgramViewModel : BaseViewModel
     {
-        private readonly IProgramRepository _programRepository;
+        private readonly IDataService _dataService;
         private ProgramEntity _program = new();
 
         // списки для Enums
@@ -18,9 +18,9 @@ namespace StudentBase.MAUI.ViewModels
 
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
-        public NewProgramViewModel(IProgramRepository programRepository)
+        public NewProgramViewModel(IDataService dataService)
         {
-            _programRepository = programRepository;
+            _dataService = dataService;
 
             SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Specialty));
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
@@ -112,9 +112,9 @@ namespace StudentBase.MAUI.ViewModels
             _program.DurationTraining = SelectedTermOfStudy;
             _program.Status = SelectedStatus;
             if (_program.Id == 0)
-                await _programRepository.CreateAsync(_program);
+                await _dataService.Programs.CreateAsync(_program);
             else
-                await _programRepository.UpdateAsync(_program);
+                await _dataService.Programs.UpdateAsync(_program);
 
             await Shell.Current.Navigation.PopAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is ProgramPageViewModel viewModel)

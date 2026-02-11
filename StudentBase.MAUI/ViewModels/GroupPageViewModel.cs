@@ -1,5 +1,5 @@
-﻿using StudentBase.Domain.Entities;
-using StudentBase.Domain.Repositories;
+﻿using StudentBase.Application.Interfaces;
+using StudentBase.Domain.Entities;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
@@ -7,13 +7,13 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class GroupPageViewModel : BaseViewModel 
     {
-        private readonly IGroupRepository _groupRepository;
+        private readonly IDataService _dataService;
         private readonly Func<object> _createNewGroupPage;
         public ObservableCollection<GroupEntity> Groups { get; } = [];
 
-        public GroupPageViewModel(IGroupRepository groupRepository, Func<object> createNewGroupPage)
+        public GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage)
         {
-            _groupRepository = groupRepository;
+            _dataService = dataService;
             _createNewGroupPage = createNewGroupPage;
 
             LoadCommand = new AsyncCommand(LoadAsync);
@@ -51,7 +51,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _groupRepository.GetAllAsync();
+                var list = await _dataService.Groups.GetAllAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -76,7 +76,7 @@ namespace StudentBase.MAUI.ViewModels
             if (g is null) return;
             var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {g.Name}?", "Да", "Нет");
             if (!ok) return;
-            await _groupRepository.DeleteAsync(g.Id);
+            await _dataService.Groups.DeleteAsync(g.Id);
             await LoadAsync();
         }
         public async Task AddAsync()

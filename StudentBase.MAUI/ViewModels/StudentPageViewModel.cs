@@ -1,24 +1,20 @@
-﻿using StudentBase.Domain.Entities;
-using StudentBase.Domain.Repositories;
-using StudentBase.Infrastructure.EntityFramework.Repositories;
+﻿using StudentBase.Application.Interfaces;
+using StudentBase.Domain.Entities;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace StudentBase.MAUI.ViewModels
 {
     public class StudentPageViewModel : BaseViewModel 
     {
-        private readonly IGroupRepository _groupRepository;
-        private readonly IStudentRepository _studentRepository;
+        private readonly IDataService _dataService;
         private readonly Func<object> _createNewStudentPage;
         public ObservableCollection<StudentEntity> Students { get; } = [];
         public ObservableCollection<GroupEntity> Filters { get; } = [];
 
-        public StudentPageViewModel(IStudentRepository studentRepository,IGroupRepository groupRepository, Func<object> createNewStudentPage)
+        public StudentPageViewModel(IDataService dataService, Func<object> createNewStudentPage)
         {
-            _studentRepository = studentRepository;
-            _groupRepository = groupRepository;
+            _dataService = dataService;
             _createNewStudentPage = createNewStudentPage;
 
             LoadCommand = new AsyncCommand(LoadAsync);
@@ -26,8 +22,8 @@ namespace StudentBase.MAUI.ViewModels
             EditCommand = new AsyncCommand(s => EditAsync(s as StudentEntity));
             DeleteCommand = new AsyncCommand(s => DeleteAsync(s as StudentEntity));
         }
-        private GroupEntity selectedFilter;
-        public GroupEntity SelectedFilter
+        private GroupEntity? selectedFilter;
+        public GroupEntity? SelectedFilter
         {
             get => selectedFilter;
             set
@@ -43,7 +39,7 @@ namespace StudentBase.MAUI.ViewModels
         private async Task ApplyFilter()
         {
             if(SelectedFilter == null) return;
-            var list = await _studentRepository.GetAllByGroupIdAsync(SelectedFilter.Id);
+            var list = await _dataService.Students.GetAllByGroupIdAsync(SelectedFilter.Id);
             if(list == null) return;
             Students.Clear();
             foreach(var student in list) 
@@ -51,7 +47,7 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadGroupsAsync()
         {
-            var groupsFromDb = await _groupRepository.GetAllAsync();
+            var groupsFromDb = await _dataService.Groups.GetAllAsync();
             if (groupsFromDb == null) return;
             Filters.Clear();
             foreach (var g in groupsFromDb)
@@ -86,7 +82,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _studentRepository.GetAllAsync();
+                var list = await _dataService.Students.GetAllAsync();
                 if(list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -112,7 +108,7 @@ namespace StudentBase.MAUI.ViewModels
             if (s is null) return;
             var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {s.Name}?", "Да", "Нет");
             if (!ok) return;
-            await _studentRepository.DeleteAsync(s.Id);
+            await _dataService.Students.DeleteAsync(s.Id);
             await LoadAsync();
         }
         public async Task AddAsync()

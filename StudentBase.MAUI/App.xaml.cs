@@ -1,6 +1,7 @@
-﻿namespace StudentBase.MAUI
+﻿
+namespace StudentBase.MAUI
 {
-    public partial class App : Application
+    public partial class App : Microsoft.Maui.Controls.Application
     {
         public static IServiceProvider? Services { get; private set; }
         public App(IServiceProvider serviceProvider)

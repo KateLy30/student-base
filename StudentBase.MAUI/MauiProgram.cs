@@ -25,14 +25,13 @@ namespace StudentBase.MAUI
             builder.Services.AddSingleton<IDataService, DataService>();
             builder.Services.AddScoped<AppDbContext>();
 
-            builder.Services.AddTransient<StudentPageViewModel>(p => new StudentPageViewModel(p.GetRequiredService<IStudentRepository>(),
-                p.GetRequiredService<IGroupRepository>(),
+            builder.Services.AddTransient<StudentPageViewModel>(p => new StudentPageViewModel(p.GetRequiredService<IDataService>(),
                 () => p.GetRequiredService<NewStudentModalWindow>()));
 
-            builder.Services.AddTransient<GroupPageViewModel>(g => new GroupPageViewModel(g.GetRequiredService<IGroupRepository>(),
+            builder.Services.AddTransient<GroupPageViewModel>(g => new GroupPageViewModel(g.GetRequiredService<IDataService>(),
                 () => g.GetRequiredService<NewGroupModalWindow>()));
 
-            builder.Services.AddTransient<ProgramPageViewModel>(p => new ProgramPageViewModel(p.GetRequiredService<IProgramRepository>(),
+            builder.Services.AddTransient<ProgramPageViewModel>(p => new ProgramPageViewModel(p.GetRequiredService<IDataService>(),
                 () => p.GetRequiredService<NewProgramModalWindow>(),
                 () => p.GetRequiredService<ProgramCardModalWindow>()));
 

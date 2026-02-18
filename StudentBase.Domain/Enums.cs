@@ -1,33 +1,55 @@
 ﻿
+using System.ComponentModel;
+
 namespace StudentBase.Domain;
 public enum StatusGroups
 {
-    Открыта,
-    Закрыта
+    [Description("Открыта")]
+    Open,
+
+    [Description("Закрыта")]
+    Closed
 }
 public enum StatusStudents
 {
-    Обучается,
-    Выпустился
+    [Description("Обучается")]
+    Studying,
+
+    [Description("Выпустился")]
+    Graduated
 }
 public enum StatusPrograms
 {
+    [Description("Актуальная программа")]
     CurrentProgram,
+
+    [Description("Программа в архиве")]
     ProgramIsArchived
 }
 public enum FormsOfEducation
 {
+    [Description("Очная форма")]
     FullTime,
+
+    [Description("Заочная форма")]
     Correspondence
 }
 public enum TermsOfStudy
 {
-    OneYearTenMonths = 22,      // 1 year and 10 months
-    TwoYearsTenMonths = 34,     // 2 years and 10 months
-    ThreeYearsTenMonths = 46    //3 years and 10 months
+    [Description("1 г. 10 мес. ")]
+    OneYearTenMonths = 22,   
+
+    [Description("2 г. 10 мес.")]
+    TwoYearsTenMonths = 34,   
+
+    [Description("3 г. 10 мес.")]
+    ThreeYearsTenMonths = 46  
 }
 public enum LevelsOfEducation
 {
-    Основное_общее,      // 9 classes
-    Среднее_общее  // 11 classes
+    [Description("Основное общее образование (9 классов)")]
+    BasicGeneralEducation,
+
+    [Description("Среднее общее образование (11 классов)")]
+    SecondaryGeneralEducation  
 }

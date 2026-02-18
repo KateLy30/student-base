@@ -9,17 +9,20 @@ namespace StudentBase.MAUI.ViewModels
     {
         private readonly IDataService _dataService;
         private readonly Func<object> _createNewGroupPage;
+        private readonly Func<object> _createCardGroupPage;
         public ObservableCollection<GroupEntity> Groups { get; } = [];
 
-        public GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage)
+        public GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage, Func<object> createCardGroupPage)
         {
             _dataService = dataService;
             _createNewGroupPage = createNewGroupPage;
+            _createCardGroupPage = createCardGroupPage;
 
             LoadCommand = new AsyncCommand(LoadAsync);
             AddCommand = new AsyncCommand(AddAsync);
             EditCommand = new AsyncCommand(g => EditAsync(g as GroupEntity));
             DeleteCommand = new AsyncCommand(g => DeleteAsync(g as GroupEntity));
+            OpenCardCommand = new AsyncCommand(g => OpenCardAsync(g as GroupEntity));
         }
 
         private bool _isBusy;
@@ -67,6 +70,7 @@ namespace StudentBase.MAUI.ViewModels
                 IsBusy = false;
             }
         }
+        public AsyncCommand OpenCardCommand { get; }
         public AsyncCommand LoadCommand { get; }
         public AsyncCommand AddCommand { get; }
         public AsyncCommand DeleteCommand { get; }
@@ -90,6 +94,14 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_createNewGroupPage();
             if (page.BindingContext is NewGroupViewModel viewModel)
                 viewModel.LoadFrom(g);
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+        public async Task OpenCardAsync(GroupEntity? g)
+        {
+            if (g is null) return;
+            var page = (Page)_createCardGroupPage();
+            if (page.BindingContext is GroupCardViewModel viewModel)
+                viewModel.UploadData(g);
             await Shell.Current.Navigation.PushAsync(page);
         }
     }

@@ -1,9 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
 using StudentBase.Application.Interfaces;
-using StudentBase.Domain.Repositories;
 using StudentBase.Infrastructure.EntityFramework;
-using StudentBase.Infrastructure.EntityFramework.Repositories;
 using StudentBase.MAUI.ViewModels;
 using StudentBase.MAUI.Views;
 
@@ -29,7 +27,8 @@ namespace StudentBase.MAUI
                 () => p.GetRequiredService<NewStudentModalWindow>()));
 
             builder.Services.AddTransient<GroupPageViewModel>(g => new GroupPageViewModel(g.GetRequiredService<IDataService>(),
-                () => g.GetRequiredService<NewGroupModalWindow>()));
+                () => g.GetRequiredService<NewGroupModalWindow>(),
+                () => g.GetRequiredService<GroupCardModalWindow>()));
 
             builder.Services.AddTransient<ProgramPageViewModel>(p => new ProgramPageViewModel(p.GetRequiredService<IDataService>(),
                 () => p.GetRequiredService<NewProgramModalWindow>(),
@@ -39,6 +38,7 @@ namespace StudentBase.MAUI
             builder.Services.AddTransient<NewGroupViewModel>();
             builder.Services.AddTransient<NewProgramViewModel>();
             builder.Services.AddTransient<ProgramCardViewModel>();
+            builder.Services.AddTransient<GroupCardViewModel>();
 
             builder.Services.AddTransient<MainPage>();
 
@@ -46,6 +46,7 @@ namespace StudentBase.MAUI
             builder.Services.AddTransient<NewGroupModalWindow>();
             builder.Services.AddTransient<NewProgramModalWindow>();
             builder.Services.AddTransient<ProgramCardModalWindow>();
+            builder.Services.AddTransient<GroupCardModalWindow>();
 
 #if DEBUG
             builder.Logging.AddDebug();

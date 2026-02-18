@@ -16,6 +16,5 @@ public partial class NewStudentModalWindow : ContentPage
     {
         base.OnAppearing();
         await _newStudentViewModel.LoadGroupsAsync();
-        await _newStudentViewModel.LoadProgramsAsync();
     }
 }

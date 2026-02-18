@@ -21,6 +21,7 @@ namespace StudentBase.MAUI.ViewModels
             AddCommand = new AsyncCommand(AddAsync);
             EditCommand = new AsyncCommand(s => EditAsync(s as StudentEntity));
             DeleteCommand = new AsyncCommand(s => DeleteAsync(s as StudentEntity));
+           // OpenCardCommand = new AsyncCommand(s => OpenCardAsync(s as StudentEntity));
         }
         private GroupEntity? selectedFilter;
         public GroupEntity? SelectedFilter
@@ -102,6 +103,15 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand AddCommand { get; }
         public AsyncCommand DeleteCommand { get; }
         public AsyncCommand EditCommand { get; }
+        public AsyncCommand OpenCardCommand { get; }
+        //public async Task OpenCardAsync(StudentEntity? s)
+        //{
+        //    if (s is null) return;
+        //    var page = (Page)_createCardStudentPage();
+        //    if (page.BindingContext is StudentCardViewModel viewModel)
+        //        viewModel.UploadData(s);
+        //    await Shell.Current.Navigation.PushAsync(page);
+        //}
 
         public async Task DeleteAsync(StudentEntity? s)
         {

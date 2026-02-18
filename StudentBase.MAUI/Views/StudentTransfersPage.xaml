@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StudentBase.MAUI.StudentTransfersPage">
-    
+             x:Class="StudentBase.MAUI.StudentTransfersPage"
+             Title="Переводы студентов">
+
+    <ContentPage.ToolbarItems >
+        <ToolbarItem Text="Новый перевод" Command="{Binding TransferCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        
+        <VerticalStackLayout Spacing="25" Padding="30,0">
+            
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5" >
+
+                <SearchBar Text="{Binding SearchText, Mode=TwoWay}" Placeholder="Поиск..." />
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                    IsVisible="{Binding IsBusy}"
+                                    Grid.Row="0" HorizontalOptions="End" />
+
+                <CollectionView ItemsSource="{Binding TransferredStudents}" SelectionMode="Single" 
+                                SelectedItem="{Binding SelectedStudent}" Grid.Row="2" >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+
+                                <Button Text="Перевести" BackgroundColor="DimGray" 
+                                        Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
+                                        CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+                                
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                                            Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 
+                                                            CommandParameter="{Binding}" />
+                                </Grid.GestureRecognizers>
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

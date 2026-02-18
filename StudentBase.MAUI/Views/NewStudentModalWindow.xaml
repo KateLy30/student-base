@@ -6,33 +6,32 @@
     <ScrollView>
 
         <VerticalStackLayout Padding="10" Spacing="3">
-            <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Введите ФИО" x:Name="nameEntry" Margin="0,0,0,5"/>
+            <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Введите ФИО" Margin="0,0,0,5"/>
 
             <Label Text="Номер телефона"/>
-            <Entry Text="{Binding Phone, Mode=TwoWay}" Placeholder="Введите телефон" Keyboard="Telephone" x:Name="phoneEntry" Margin="0,0,0,5"/>
+            <Entry Text="{Binding Phone, Mode=TwoWay}" Placeholder="Введите телефон"  Margin="0,0,0,5"/>
 
             <Label Text="Email"/>
-            <Entry Text="{Binding Email,Mode=TwoWay}" Placeholder="Введите электронную почту" Keyboard="Email" x:Name="emailEntry" Margin="0,0,0,5"/>
+            <Entry Text="{Binding Email,Mode=TwoWay}" Placeholder="Введите электронную почту" Margin="0,0,0,5"/>
 
             <Label Text="Дата рождения"/>
-            <Entry Text="{Binding DateOfBirth, Mode=TwoWay}" Placeholder="Введите дату рождения" x:Name="dateOfBirthEntry" Margin="0,0,0,5"/>
+            <Entry Text="{Binding DateOfBirth, Mode=TwoWay}" Placeholder="Введите дату рождения" Margin="0,0,0,5"/>
 
             <Label Text="Дата поступления"/>
-            <Entry Text="{Binding DateOfReceipt, Mode=TwoWay}" Placeholder="Введите дату поступления" x:Name="dateOfReceiptEntry" Margin="0,0,0,5"/>
+            <Entry Text="{Binding DateOfReceipt, Mode=TwoWay}" Placeholder="Введите дату поступления" Margin="0,0,0,5"/>
 
             <Label Text="Группа"/>
             <Picker ItemsSource="{Binding Groups}"
                     ItemDisplayBinding="{Binding Name}" 
-                    SelectedItem="{Binding SelectedGroup, Mode=TwoWay}" x:Name="picker_groups"/>
-
-            <Label Text="Специальность"/>
-            <Picker ItemsSource="{Binding Programs}" 
-                    ItemDisplayBinding="{Binding Specialty}"
-                    SelectedItem="{Binding SelectedProgram, Mode=TwoWay}" x:Name="picker_programs" />
+                    SelectedItem="{Binding SelectedGroup, Mode=TwoWay}" />
 
             <Label Text="Статус"/>
             <Picker ItemsSource="{Binding StatusList}"
-                    SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" x:Name="picker_status"/>
+                    SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" >
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="." Converter="{StaticResource StatusStudentsToStringConverter}"/>
+                </Picker.ItemDisplayBinding>
+            </Picker>
 
 
             <HorizontalStackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">

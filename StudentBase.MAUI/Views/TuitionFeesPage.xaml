@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StudentBase.MAUI.TuitionFeesPage">
+             x:Class="StudentBase.MAUI.TuitionFeesPage"
+             Title="Оплата">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Создать новую квитанцию" Command="{Binding AddReceiptCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid Padding="9" RowDefinitions="Auto,Auto,*" RowSpacing="20" >
+        
+        <Entry Placeholder="Введите ФИО студента..." HeightRequest="50" />
+        
+        <Button Grid.Row="1" Text="Найти квитанции" Command="{Binding FindReceiptCommand}" HeightRequest="50" FontSize="16" WidthRequest="300" />
+       
+        <ScrollView Grid.Row="2">
+            <Frame >
+                <!-- дописать -->
+            </Frame>
+        </ScrollView>
+        
+    </Grid>
     
 </ContentPage>

@@ -11,7 +11,6 @@ namespace StudentBase.MAUI.ViewModels
         private readonly IDataService _dataService;
         private StudentEntity _student = new();
         public ObservableCollection<StatusStudents> StatusList { get; }
-        public ObservableCollection<ProgramEntity> Programs { get; } = [];
         public ObservableCollection<GroupEntity> Groups { get; } = [];
 
         public AsyncCommand SaveCommand { get; }
@@ -118,71 +117,6 @@ namespace StudentBase.MAUI.ViewModels
                 Groups.Add(g);
         }
 
-
-        private int? groupId;
-        public int? GroupId
-        {
-            get => groupId;
-            set
-            {
-                if (groupId == value) return;
-                groupId = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? groupName;
-        public string? GroupName
-        {
-            get => groupName;
-            set
-            {
-                if (groupName ==  value) return;
-                groupName = value; 
-                OnPropertyChanged();
-            }
-        }
-        private int? programId;
-        public int? ProgramId
-        {
-            get => programId;
-            set
-            {
-                if (programId == value) return;
-                programId = value;
-                OnPropertyChanged();
-            }
-        }
-        ProgramEntity? selectedProgram;
-        public ProgramEntity? SelectedProgram
-        {
-            get => selectedProgram;
-            set
-            {
-                if(selectedProgram == value) return;
-                selectedProgram = value;
-                OnPropertyChanged();
-            }
-        }
-        public async Task LoadProgramsAsync()
-        {
-            var programsFromDb = await _dataService.Programs.GetAllAsync();
-            if (programsFromDb == null) return;
-            Programs.Clear();
-            foreach (var p in programsFromDb)
-                Programs.Add(p);
-        }
-
-        private string? programSpecialty;
-        public string? ProgramSpecialty
-        {
-            get => programSpecialty;
-            set
-            {
-                if (programSpecialty  == value) return;
-                programSpecialty = value;
-                OnPropertyChanged();
-            }
-        }
         private StatusStudents selectedStatus;
         public StatusStudents SelectedStatus
         {
@@ -191,17 +125,6 @@ namespace StudentBase.MAUI.ViewModels
             {
                 if (selectedStatus == value) return;
                 selectedStatus = value;
-                OnPropertyChanged();
-            }
-        }
-        private StatusStudents status;
-        public StatusStudents Status
-        {
-            get => status;
-            set
-            {
-                if(status == value) return;
-                status = value;
                 OnPropertyChanged();
             }
         }
@@ -226,9 +149,9 @@ namespace StudentBase.MAUI.ViewModels
 
             _student.GroupId = SelectedGroup?.Id;
             _student.GroupName = SelectedGroup?.Name;
-            _student.ProgramId = SelectedProgram?.Id;
-            _student.ProgramSpecialty = SelectedProgram?.Specialty;
-            _student.ProgramQualification = SelectedProgram?.Qualification;
+            _student.ProgramId = SelectedGroup?.ProgramId;
+            _student.ProgramSpecialty = SelectedGroup?.ProgramSpecialty;
+            _student.ProgramQualification = SelectedGroup?.ProgramQualification;
             _student.Status = SelectedStatus;
             if (_student.Id == 0)
                 await _dataService.Students.CreateAsync(_student);
@@ -249,8 +172,7 @@ namespace StudentBase.MAUI.ViewModels
             else
                 Title = "Изменение данных студента";
 
-            var group = await _dataService.Groups.GetByIdAsync((int)_student.GroupId!);
-            var program = await _dataService.Programs.GetByIdAsync((int)_student.ProgramId!);
+            var group = await _dataService.Groups.GetByIdAsync((int)s.GroupId);
 
             Name = _student.Name!;
             Phone = _student.Phone!;
@@ -258,7 +180,6 @@ namespace StudentBase.MAUI.ViewModels
             DateOfBirth = _student.DateOfBirth.ToString();
             DateOfReceipt = _student.DateOfReceipt.ToString();
             SelectedGroup = group;
-            SelectedProgram = program;
             SelectedStatus = _student.Status;
         }
 

@@ -20,7 +20,7 @@ namespace StudentBase.MAUI.ViewModels
             SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Name));
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
 
-            StatusList = new ObservableCollection<StatusGroups>(Enum.GetValues(typeof(StatusGroups)).Cast<StatusGroups>());
+            StatusList = new ObservableCollection<StatusGroups>(Enum.GetValues<StatusGroups>().Cast<StatusGroups>());
         }
         private string _title = "Добавление группы";
         public string Title
@@ -130,14 +130,16 @@ namespace StudentBase.MAUI.ViewModels
             if (g == null || g.Id == 0)
                 Title = "Добавление группы";
             else
+            {
                 Title = "Изменение данных группы";
 
-            var program = await _dataService.Programs.GetByIdAsync(g!.ProgramId);
+                var program = await _dataService.Programs.GetByIdAsync(g!.ProgramId);
 
-            Name = _group.Name!;
-            DateOfCreation = _group.DateOfCreation.ToString();
-            SelectedProgram = program!;
-            SelectedStatus = _group.Status;
+                Name = _group.Name!;
+                DateOfCreation = _group.DateOfCreation.ToString();
+                SelectedProgram = program!;
+                SelectedStatus = _group.Status;
+            }
         }
     }
 }

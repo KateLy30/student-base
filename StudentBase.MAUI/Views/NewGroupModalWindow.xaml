@@ -19,7 +19,11 @@
 
             <Picker ItemsSource="{Binding StatusList}"
                     SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
-                    Title="Статус" />
+                    Title="Статус" >
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="." Converter="{StaticResource StatusGroupsToStringConverter}" />
+                </Picker.ItemDisplayBinding>
+            </Picker>
 
             <HorizontalStackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
                 <Button Text="Ок" Margin="10" Command="{Binding SaveCommand}"/>

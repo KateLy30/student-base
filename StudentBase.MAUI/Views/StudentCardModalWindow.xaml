@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.Views.StudentCardModalWindow"
+             Title="Карточка студента">
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Закрыть" Command="{Binding ExitCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <Frame Margin="10"
+         Padding="10"
+         BackgroundColor="White"
+         CornerRadius="15"
+         HasShadow="True">
+            <VerticalStackLayout Spacing="15">
+
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="ID   " FontSize="16" FontAttributes="Bold" TextColor="#555" />
+                    <Label Text="{Binding Id}" FontSize="16" FontAttributes="Bold" TextColor="#333"/>
+                </HorizontalStackLayout>
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="ФИО" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding Name}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Номер телефона" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding Phone}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Электронная почта" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding Email}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Дата рождения" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding DateOfBirth}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Дата поступления" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding DateOfReceipt}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc" />
+
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="ID Группы  " FontSize="16" FontAttributes="Bold" TextColor="#555" />
+                    <Label Text="{Binding GroupId}" FontSize="16" FontAttributes="Bold" TextColor="#333"/>
+                </HorizontalStackLayout>
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Название группы" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding GroupName}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="ID Программы  " FontSize="16" FontAttributes="Bold" TextColor="#555" />
+                    <Label Text="{Binding ProgramId}" FontSize="16" FontAttributes="Bold" TextColor="#333"/>
+                </HorizontalStackLayout>
+
+                <BoxView HeightRequest="1" Color="#ccc" />
+
+                <Label Text="Название группы" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding ProgramSpecialty}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Название группы" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding ProgramQualification}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="" FontSize="16" FontAttributes="Bold" TextColor="#555" />
+                <Label Text="{Binding Path=EducationLevel, Converter={StaticResource LevelsOfEducationToStringConverter}}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <Label Text="Продолжительность обучения" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding Path=DurationTraining, Converter={StaticResource TermsToStringConverter}}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Статус"  FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding Path=Status, Converter={StaticResource StatusStudentsToStringConverter}}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+
+            </VerticalStackLayout>
+        </Frame>
+    </ScrollView>
+</ContentPage>

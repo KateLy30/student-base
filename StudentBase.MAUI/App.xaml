@@ -12,6 +12,9 @@
             <local:TermsToStringConverter x:Key="TermsToStringConverter" />
             <local:StatusProgramsToStringConverter x:Key="StatusProgramsToStringConverter" />
             <local:FormsOfEducationToStringConveter x:Key="FormsOfEducationToStringConveter" />
+            <local:LevelsOfEducationToStringConverter x:Key="LevelsOfEducationToStringConverter" />
+            <local:StatusGroupsToStringConverter x:Key="StatusGroupsToStringConverter" />
+            <local:StatusStudentsToStringConverter x:Key="StatusStudentsToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -6,8 +6,8 @@ namespace StudentBase.Domain.Repositories
     {
         Task<ProgramEntity?> GetByQualificationAsync(string qualification);
         Task<IEnumerable<ProgramEntity>?> GetAllBySpecialtyAsync(string specialty);
-        Task<IEnumerable<ProgramEntity>?> GetAllByFormOfEducationAsync(FormsOfEducation formsOfEducation);
         Task<IEnumerable<ProgramEntity>?> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy);
         Task<StatusPrograms?> GetStatusProgramAsync(int id);
+        Task<int> GetProgramsCountAsync();
     }
 }

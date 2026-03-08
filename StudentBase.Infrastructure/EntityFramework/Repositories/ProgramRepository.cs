@@ -59,10 +59,6 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Programs.Where(p => p.DurationTraining == termsOfStudy).ToListAsync();
         }
         
-        public async Task<IEnumerable<ProgramEntity>?> GetAllByFormOfEducationAsync(FormsOfEducation formsOfEducation)
-        {
-            return await _context.Programs.Where(p => p.FormOfEducation == formsOfEducation).ToListAsync();
-        }
 
         public async Task<ProgramEntity?> GetByIdAsync(int id)
         {
@@ -101,9 +97,15 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             entityInDatabase.Specialty = updatedEntity.Specialty;
             entityInDatabase.Qualification = updatedEntity.Qualification;
-            entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
             entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
+            entityInDatabase.CostPerSemester = updatedEntity.CostPerSemester;
             entityInDatabase.Status = updatedEntity.Status;
         }
+
+        public async Task<int> GetProgramsCountAsync()
+        {
+            return await _context.Programs.CountAsync();
+        }
+
     }
 }

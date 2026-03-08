@@ -49,18 +49,15 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<StudentEntity>?> GetAllByGroupIdAsync(int groupId)
         {
-            return await _context.Students.Where(s => s.GroupId == groupId).ToListAsync();
+            return await _context.Students.Where(s => s.CurrentGroupId == groupId).ToListAsync();
         }
 
-        public async Task<IEnumerable<StudentEntity>?> GetAllByProgramIdAsync(int programId)
-        {
-            return await _context.Students.Where(s => s.ProgramId == programId).ToListAsync();
-        }
+        //public async Task<IEnumerable<StudentEntity>?> GetAllByProgramIdAsync(int programId)
+        //{
+        //    return await _context.Students.Where(s => s.ProgramId == programId).ToListAsync();
+        //}
 
-        public async Task<StudentEntity?> GetByEmailAsync(string email)
-        {
-            return await _context.Students.FirstOrDefaultAsync(s => s.Email == email);
-        }
+       
 
         public async Task<StudentEntity?> GetByIdAsync(int id)
         {
@@ -104,17 +101,33 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             entityInDatabase.Name = updatedEntity.Name;
             entityInDatabase.Phone = updatedEntity.Phone;
-            entityInDatabase.Email = updatedEntity.Email;
             entityInDatabase.DateOfBirth = updatedEntity.DateOfBirth;
             entityInDatabase.DateOfReceipt = updatedEntity.DateOfReceipt;
-            entityInDatabase.GroupId = updatedEntity.GroupId;
-            entityInDatabase.GroupName = updatedEntity.GroupName;
-            entityInDatabase.ProgramId = updatedEntity.ProgramId;
-            entityInDatabase.ProgramSpecialty = updatedEntity.ProgramSpecialty;
-            entityInDatabase.ProgramQualification = updatedEntity.ProgramQualification;
+            entityInDatabase.CurrentGroupId = updatedEntity.CurrentGroupId;
             entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
-            entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
+            entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
             entityInDatabase.Status = updatedEntity.Status;
+        }
+
+        //public async Task<int> GetOverduePaymentsCountAsync()
+        //{
+        //    return await _context.Students.Where(s => !s.IsPaidSemester).CountAsync();
+        //}
+
+        //public async Task<IEnumerable<StudentEntity>?> GetAllStudentsOverdueAsync()
+        //{
+        //    return await _context.Students.Where(s => !s.IsPaidSemester).ToListAsync();
+        //}
+
+        public async Task<IEnumerable<StudentEntity>?> GetAllTransferredStudentsAsync()
+        {
+            List<StudentEntity> students = [];
+            var transfers = await _context.Transfers.ToListAsync();
+            foreach (var transfer in transfers)
+            {
+                students.Add(await _context.Students.FindAsync(transfer.StudentId));
+            }
+            return students;
         }
     }
 }

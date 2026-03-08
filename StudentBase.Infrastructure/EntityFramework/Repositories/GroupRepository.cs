@@ -53,7 +53,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Groups.Where(g => g.ProgramId == programId).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupEntity>?> GetAllByDateOfCreationAsync(DateOnly dateOfCreation)
+        public async Task<IEnumerable<GroupEntity>?> GetAllByDateOfCreationAsync(DateTime dateOfCreation)
         {
             return await _context.Groups.Where(g => g.DateOfCreation ==  dateOfCreation).ToListAsync();   
         }
@@ -95,12 +95,15 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         public static void UpdateEntity(GroupEntity entityInDatabase, GroupEntity updatedEntity)
         {
             entityInDatabase.ProgramId = updatedEntity.ProgramId;
-            entityInDatabase.ProgramSpecialty = updatedEntity.ProgramSpecialty;
-            entityInDatabase.ProgramQualification = updatedEntity.ProgramQualification;
             entityInDatabase.Name = updatedEntity.Name;
             entityInDatabase.DateOfCreation = updatedEntity.DateOfCreation;
-            entityInDatabase.DurationOfTraining = updatedEntity.DurationOfTraining;
             entityInDatabase.Status = updatedEntity.Status;
+            entityInDatabase.EducationalProgram = updatedEntity.EducationalProgram;
+        }
+
+        public async Task<int> GetGroupsCountAsync()
+        {
+            return await _context.Groups.CountAsync();
         }
     }
 }

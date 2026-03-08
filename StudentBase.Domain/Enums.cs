@@ -37,13 +37,13 @@ public enum FormsOfEducation
 public enum TermsOfStudy
 {
     [Description("1 г. 10 мес. ")]
-    OneYearTenMonths = 22,   
+    OneYearTenMonths,   
 
     [Description("2 г. 10 мес.")]
-    TwoYearsTenMonths = 34,   
+    TwoYearsTenMonths,   
 
     [Description("3 г. 10 мес.")]
-    ThreeYearsTenMonths = 46  
+    ThreeYearsTenMonths
 }
 public enum LevelsOfEducation
 {

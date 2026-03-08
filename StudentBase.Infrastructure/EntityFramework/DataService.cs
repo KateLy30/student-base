@@ -14,10 +14,16 @@ public class DataService : IDataService
         Students = new StudentRepository(_context);
         Groups = new GroupRepository(_context);
         Programs = new ProgramRepository(_context);
+        Transfers = new StudentTransferRepository(_context);
+        Receipts = new PaymentRepository(_context);
     }
     public IStudentRepository Students { get; }
 
     public IGroupRepository Groups { get; }
 
     public IProgramRepository Programs { get; }
+
+    public IStudentTransferRepository Transfers { get; }
+
+    public IPaymentRepository Receipts { get; }
 }

@@ -9,7 +9,7 @@ namespace StudentBase.MAUI.ViewModels
     {
         private readonly IDataService _dataService;
         private readonly Func<object> _createNewProgramPage;
-        private readonly Func<object> _createProgramCardPage;
+        private readonly Func<object> _openProgramCardPage;
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
 
         public AsyncCommand OpenProgramCardCommand { get; }
@@ -18,11 +18,11 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand DeleteCommand { get; }
         public AsyncCommand EditCommand { get; }
 
-        public ProgramPageViewModel(IDataService dataService, Func<object> createNewProgramPage, Func<object> createCardProgram)
+        public ProgramPageViewModel(IDataService dataService, Func<object> createNewProgramPage, Func<object> openCardProgram)
         {
             _dataService = dataService;
             _createNewProgramPage = createNewProgramPage;
-            _createProgramCardPage = createCardProgram;
+            _openProgramCardPage = openCardProgram;
 
             LoadCommand = new AsyncCommand(LoadAsync);
             AddCommand = new AsyncCommand(AddAsync);
@@ -103,7 +103,7 @@ namespace StudentBase.MAUI.ViewModels
         public async Task OpenProgramCardAsync(ProgramEntity? p)
         {
             if(p is null) return;
-            var page = (Page)_createProgramCardPage();
+            var page = (Page)_openProgramCardPage();
             if (page.BindingContext is ProgramCardViewModel viewModel)
                 viewModel.UploadData(p);
             await Shell.Current.Navigation.PushAsync(page);

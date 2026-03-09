@@ -12,7 +12,6 @@ namespace StudentBase.MAUI.ViewModels
         private ProgramEntity _program = new();
 
         // списки для Enums
-        public ObservableCollection<FormsOfEducation> FormsOfEducationList { get; }
         public ObservableCollection<TermsOfStudy> TermsOfStudyList { get; }
         public ObservableCollection<StatusPrograms> StatusList { get; }
 
@@ -22,15 +21,17 @@ namespace StudentBase.MAUI.ViewModels
         {
             _dataService = dataService;
 
-            SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Specialty));
+            SaveCommand = new AsyncCommand(SaveAsync, CanSave);
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
 
             // заполнение списков из Enums
             StatusList =  new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
             TermsOfStudyList = new ObservableCollection<TermsOfStudy>(Enum.GetValues<TermsOfStudy>().Cast<TermsOfStudy>());
-            FormsOfEducationList = new ObservableCollection<FormsOfEducation>(Enum.GetValues<FormsOfEducation>().Cast<FormsOfEducation>());
         }
-
+        private bool CanSave()
+        {
+            return !string.IsNullOrWhiteSpace(Specialty) && !string.IsNullOrWhiteSpace(Qualification) && Cost > 0;
+        }
         // заголовок окна
         private string _title = "Добавление программы обучения";
         public string Title
@@ -64,16 +65,7 @@ namespace StudentBase.MAUI.ViewModels
             {
                 if(qualification == value) return;
                 qualification = value; OnPropertyChanged();
-            }
-        }
-        private FormsOfEducation selectedFormOfEducation;
-        public FormsOfEducation SelectedFormOfEducation
-        {
-            get => selectedFormOfEducation;
-            set
-            {
-                if(selectedFormOfEducation == value) return;
-                selectedFormOfEducation = value; OnPropertyChanged();
+                SaveCommand.RaiseCanExecuteChanged();
             }
         }
         private TermsOfStudy selectedTermOfStudy;
@@ -84,6 +76,17 @@ namespace StudentBase.MAUI.ViewModels
             {
                 if(selectedTermOfStudy == value) return;
                 selectedTermOfStudy = value; OnPropertyChanged();
+            }
+        }
+        private decimal cost;
+        public decimal Cost
+        {
+            get => cost;
+            set
+            {
+                cost = value; 
+                OnPropertyChanged();
+                SaveCommand.RaiseCanExecuteChanged();
             }
         }
         private StatusPrograms selectedStatus;
@@ -108,8 +111,8 @@ namespace StudentBase.MAUI.ViewModels
             }
             _program.Specialty = Specialty;
             _program.Qualification = Qualification;
-            _program.FormOfEducation = SelectedFormOfEducation;
             _program.DurationTraining = SelectedTermOfStudy;
+            _program.CostPerSemester = Cost;
             _program.Status = SelectedStatus;
             if (_program.Id == 0)
                 await _dataService.Programs.CreateAsync(_program);
@@ -136,8 +139,8 @@ namespace StudentBase.MAUI.ViewModels
 
                 Specialty = _program.Specialty!;
                 Qualification = _program.Qualification!;
-                SelectedFormOfEducation = _program.FormOfEducation;
                 SelectedTermOfStudy = _program.DurationTraining;
+                Cost = _program.CostPerSemester;
                 SelectedStatus = _program.Status;
             }
         }

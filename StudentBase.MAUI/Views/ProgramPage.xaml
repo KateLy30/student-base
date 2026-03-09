@@ -9,55 +9,57 @@
         <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
     </ContentPage.ToolbarItems>
 
-    <VerticalStackLayout Padding="30,0" Spacing="25">
-        
-        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
-            
-            <SearchBar Placeholder="Поиск.."
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
+
+                <SearchBar Placeholder="Поиск.."
                      Text="{Binding SearchText, Mode=TwoWay}" />
-            
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
                       IsVisible="{Binding IsBusy}"
                       Grid.Row="0" HorizontalOptions="End" />
-            
-            <CollectionView ItemsSource="{Binding Programs}" SelectionMode="Single" 
+
+                <CollectionView ItemsSource="{Binding Programs}" SelectionMode="Single" 
                          SelectedItem="{Binding SelectedProgram}"  Grid.Row="1"  >
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="15" ColumnSpacing="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            
-                            <StackLayout>
-                                <Label Text="{Binding Specialty}" FontAttributes="Bold" FontSize="16" />
-                                <Label Text="{Binding Qualification}" TextColor="Gray" />
-                            </StackLayout>
-                            
-                            <Button Text="Редактировать" BackgroundColor="DimGray" 
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="15" ColumnSpacing="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout>
+                                    <Label Text="{Binding Specialty}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding Qualification}" TextColor="Gray" />
+                                </StackLayout>
+
+                                <Button Text="Редактировать" BackgroundColor="DimGray" 
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
                                     CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
-                            
-                            <Button Text="Удалить" BackgroundColor="OrangeRed"
+
+                                <Button Text="Удалить" BackgroundColor="OrangeRed"
                                     Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
-                                    CommandParameter="{Binding}" FontSize="12" HeightRequest="30"/>
-                            
-                            <!-- При двойном нажатии на элемент списка открывается окно со всеми данными этого элемента -->
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+
+                                <!-- При двойном нажатии на элемент списка открывается окно со всеми данными этого элемента -->
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                 Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenProgramCardCommand}" 
                                                 CommandParameter="{Binding}" />
-                            </Grid.GestureRecognizers>
-                            
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            
-        </Grid>
-        
-    </VerticalStackLayout>
-    
+                                </Grid.GestureRecognizers>
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

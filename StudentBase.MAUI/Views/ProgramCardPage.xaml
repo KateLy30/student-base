@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StudentBase.MAUI.Views.ProgramCardModalWindow"
+             x:Class="StudentBase.MAUI.Views.ProgramCardPage"
              Title="Карточка образовательной программы">
     
     <ContentPage.ToolbarItems>
@@ -31,16 +31,16 @@
                 <Label Text="Квалификация программы" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
                 <Label Text="{Binding Qualification}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
 
-                <BoxView HeightRequest="1" Color="#ccc"/>
-
-                <Label Text="Форма обучения" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
-                <Label Text="{Binding Path=FormOfEducation, Converter={StaticResource FormsOfEducationToStringConveter}}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
-
-                <BoxView HeightRequest="1" Color="#ccc"/>
+                <BoxView HeightRequest="1" Color="#ccc"/> 
 
                 <Label Text="Продолжительность обучения" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
                 <Label Text="{Binding Path=DurationTraining, Converter={StaticResource TermsToStringConverter}}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
 
+                <BoxView HeightRequest="1" Color="#ccc"/>
+
+                <Label Text="Стоимость обучения" FontSize="16" FontAttributes="Bold" TextColor="#555"/>
+                <Label Text="{Binding Cost, StringFormat='{0:C}'}" FontSize="18" TextColor="#333" FontAttributes="Bold" />
+                
                 <BoxView HeightRequest="1" Color="#ccc"/>
 
                 <Label Text="Статус"  FontSize="16" FontAttributes="Bold" TextColor="#555"/>

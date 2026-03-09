@@ -65,6 +65,16 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
+        private decimal cost;
+        public decimal Cost
+        {
+            get => cost;
+            set
+            {
+                cost = value;
+                OnPropertyChanged();
+            }
+        }
         private StatusPrograms status;
         public StatusPrograms Status
         {
@@ -75,6 +85,12 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
+        private int groupsCount;
+        public int GroupsCount
+        {
+            get => groupsCount;
+            set => groupsCount = value;
+        }
 
         // заполнение полей
         public void UploadData(ProgramEntity p)
@@ -82,9 +98,10 @@ namespace StudentBase.MAUI.ViewModels
             Id = p.Id;
             Specialty = p.Specialty;
             Qualification = p.Qualification;
-            FormOfEducation = p.FormOfEducation;
             DurationTraining = p.DurationTraining;
+            Cost = p.CostPerSemester;
             Status = p.Status;
+            GroupsCount = p.EducationalGroups.Count;
         }
     }
 }

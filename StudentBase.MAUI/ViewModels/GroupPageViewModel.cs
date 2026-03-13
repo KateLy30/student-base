@@ -5,18 +5,18 @@ using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class GroupPageViewModel : BaseViewModel 
+    public class GroupPageViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
         private readonly Func<object> _createNewGroupPage;
-        private readonly Func<object> _createCardGroupPage;
+        private readonly Func<object> _openCardGroupPage;
         public ObservableCollection<GroupEntity> Groups { get; } = [];
 
-        public GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage, Func<object> createCardGroupPage)
+        public GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage, Func<object> openCardGroupPage)
         {
             _dataService = dataService;
             _createNewGroupPage = createNewGroupPage;
-            _createCardGroupPage = createCardGroupPage;
+            _openCardGroupPage = openCardGroupPage;
 
             LoadCommand = new AsyncCommand(LoadAsync);
             AddCommand = new AsyncCommand(AddAsync);
@@ -33,6 +33,16 @@ namespace StudentBase.MAUI.ViewModels
             {
                 if (_isBusy == value) return;
                 _isBusy = value;
+                OnPropertyChanged();
+            }
+        }
+        private string? numberOfEntries;
+        public string? NumberOfEntries
+        {
+            get => numberOfEntries;
+            set
+            {
+                numberOfEntries = value;
                 OnPropertyChanged();
             }
         }
@@ -64,6 +74,8 @@ namespace StudentBase.MAUI.ViewModels
                 Groups.Clear();
                 foreach (var group in list)
                     Groups.Add(group);
+
+                NumberOfEntries = $"Записей: {Groups.Count}";
             }
             finally
             {
@@ -99,7 +111,7 @@ namespace StudentBase.MAUI.ViewModels
         public async Task OpenCardAsync(GroupEntity? g)
         {
             if (g is null) return;
-            var page = (Page)_createCardGroupPage();
+            var page = (Page)_openCardGroupPage();
             if (page.BindingContext is GroupCardViewModel viewModel)
                 viewModel.UploadData(g);
             await Shell.Current.Navigation.PushAsync(page);

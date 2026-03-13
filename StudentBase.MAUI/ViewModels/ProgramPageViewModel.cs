@@ -7,7 +7,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class ProgramPageViewModel : BaseViewModel 
     {
-        private readonly IDataService _dataService;
+        private readonly IProgramService _programService;
         private readonly Func<object> _createNewProgramPage;
         private readonly Func<object> _openProgramCardPage;
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
@@ -18,9 +18,9 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand DeleteCommand { get; }
         public AsyncCommand EditCommand { get; }
 
-        public ProgramPageViewModel(IDataService dataService, Func<object> createNewProgramPage, Func<object> openCardProgram)
+        public ProgramPageViewModel(IProgramService programService, Func<object> createNewProgramPage, Func<object> openCardProgram)
         {
-            _dataService = dataService;
+            _programService = programService;
             _createNewProgramPage = createNewProgramPage;
             _openProgramCardPage = openCardProgram;
 
@@ -38,6 +38,16 @@ namespace StudentBase.MAUI.ViewModels
             {
                 if (_isBusy == value) return;
                 _isBusy = value; OnPropertyChanged();
+            }
+        }
+        private string? numberOfEntries;
+        public string? NumberOfEntries
+        {
+            get => numberOfEntries;
+            set
+            {
+                numberOfEntries = value;
+                OnPropertyChanged();
             }
         }
 
@@ -62,7 +72,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _dataService.Programs.GetAllAsync();
+                var list = await _programService.GetAllProgramsAsync(); 
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -72,6 +82,8 @@ namespace StudentBase.MAUI.ViewModels
                 Programs.Clear();
                 foreach (var program in list)
                     Programs.Add(program);
+
+                NumberOfEntries = $"Записей: {Programs.Count}";
             }
             finally
             {
@@ -82,9 +94,22 @@ namespace StudentBase.MAUI.ViewModels
         public async Task DeleteAsync(ProgramEntity? p)
         {
             if (p is null) return;
-            var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить специальность: {p.Specialty}, с квалификацией {p.Qualification}?", "Да", "Нет");
-            if (!ok) return;
-            await _dataService.Programs.DeleteAsync(p.Id);
+            if (p.EducationalGroups.Count != 0)
+            {
+                var deleteProgramWithGroups = await Shell.Current.DisplayAlert("Предупреждение",
+                    $"Количество групп, обучающихся по этой программе: {p.EducationalGroups.Count}. Удалить программу вместе с группами?",
+                    "Да", "Нет");
+                if (!deleteProgramWithGroups) return;
+            }
+            else if (p.EducationalGroups.Count == 0)
+            {
+                var ok = await Shell.Current.DisplayAlert("Подтверждение", 
+                    $"Удалить специальность: {p.Specialty}, с квалификацией {p.Qualification}? Групп, обучающихся по этой программе нет.", 
+                    "Да", "Нет");
+                if (!ok) return;
+            }
+            var result = await _programService.DeleteProgramAsync(p.Id);
+            if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             await LoadAsync();
         }
         public async Task AddAsync()

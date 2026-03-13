@@ -41,7 +41,7 @@ namespace StudentBase.Domain.Entities
         public StatusStudents Status { get; set; }
 
         // навигационные свойства 
-        public GroupEntity? EducationalGroup { get; set; }
+        public GroupEntity EducationalGroup { get; set; }
         public ICollection<StudentTransferEntity>? StudentTransfers { get; set; } = [];
         public ICollection<PaymentEntity>? Payments { get; set; } = [];
 

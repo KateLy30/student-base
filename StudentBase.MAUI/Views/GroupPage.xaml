@@ -8,22 +8,23 @@
         <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
     </ContentPage.ToolbarItems>
 
-    <VerticalStackLayout Padding="30,0" Spacing="25">
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
 
-        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
-
+        <VerticalStackLayout Padding="10,0" Spacing="25">
             <SearchBar Placeholder="Поиск.."
-                        Text="{Binding SearchText, Mode=TwoWay}" />
+                       Text="{Binding SearchText, Mode=TwoWay}" />
 
             <ActivityIndicator IsRunning="{Binding IsBusy}"
-                         IsVisible="{Binding IsBusy}"
-                         Grid.Row="0" HorizontalOptions="End" />
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="End" />
+        </VerticalStackLayout>
 
+        <ScrollView Grid.Row="1">
             <CollectionView ItemsSource="{Binding Groups}" SelectionMode="Single" 
-                            SelectedItem="{Binding SelectedGroup}"  Grid.Row="1"  >
+                            SelectedItem="{Binding SelectedGroup}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="8">
+                        <Grid Padding="15" ColumnSpacing="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -36,11 +37,11 @@
 
                             <Button Text="Редактировать" BackgroundColor="DimGray" 
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
-                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="20"/>
 
                             <Button Text="Удалить" BackgroundColor="OrangeRed"
                                     Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
-                                    CommandParameter="{Binding}" FontSize="12" HeightRequest="30"/>
+                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="20"/>
 
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2" 
@@ -51,6 +52,13 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </Grid>
-    </VerticalStackLayout>
+        </ScrollView>
+
+        <VerticalStackLayout Grid.Row="2">
+            <BoxView BackgroundColor="LightGray"  HeightRequest="0.5"/>
+            <Label HeightRequest="40" HorizontalOptions="End" Text="{Binding NumberOfEntries}" Padding="10" Margin="0,0,10,0" />
+        </VerticalStackLayout>
+        
+    </Grid>
+    
 </ContentPage>

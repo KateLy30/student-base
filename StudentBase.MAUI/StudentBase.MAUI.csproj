@@ -60,39 +60,68 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.3.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\StudentBase.Application\StudentBase.Application.csproj" />
 		<ProjectReference Include="..\StudentBase.Domain\StudentBase.Domain.csproj" />
 		<ProjectReference Include="..\StudentBase.Infrastructure\StudentBase.Infrastructure.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\GroupCardModalWindow.xaml">
+	  <Compile Update="Views\GroupCardPage.xaml.cs">
+	    <DependentUpon>GroupCardPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\NewGroupPage.xaml.cs">
+	    <DependentUpon>NewGroupPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\NewProgramPage.xaml.cs">
+	    <DependentUpon>NewProgramPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\NewStudentPage.xaml.cs">
+	    <DependentUpon>NewStudentPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\NewStudentTransferPage.xaml.cs">
+	    <DependentUpon>NewStudentTransferPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ProgramCardPage.xaml.cs">
+	    <DependentUpon>ProgramCardPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\StudentCardPage.xaml.cs">
+	    <DependentUpon>StudentCardPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\GroupCardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\GroupPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\NewGroupModalWindow.xaml">
+	  <MauiXaml Update="Views\NewGroupPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\NewProgramModalWindow.xaml">
+	  <MauiXaml Update="Views\NewProgramPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\NewStudentModalWindow.xaml">
+	  <MauiXaml Update="Views\NewStudentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\ProgramCardModalWindow.xaml">
+	  <MauiXaml Update="Views\NewStudentTransferPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ProgramCardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ProgramPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\StudentCardModalWindow.xaml">
+	  <MauiXaml Update="Views\StudentCardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\StudentPage.xaml">

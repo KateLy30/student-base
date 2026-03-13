@@ -7,65 +7,78 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
+        <ToolbarItem Text="Удалить" Command="{Binding DeleteCommand}" />
     </ContentPage.ToolbarItems>
-    <ScrollView>
 
-        <VerticalStackLayout Padding="30,0" Spacing="25">
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
 
-            <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
-
-                <SearchBar  Placeholder="Поиск.."
-                       Text="{Binding SearchText, Mode=TwoWay}" />
-
+        <VerticalStackLayout Padding="10,0" Spacing="10">
+            <SearchBar Placeholder="Поиск.."
+               Text="{Binding SearchText, Mode=TwoWay}" />
+            
+            <HorizontalStackLayout Grid.Row="1" Spacing="20" Padding="3">
                 <Picker Title="Фильтр группы"
-                    ItemsSource="{Binding Filters}"
-                    SelectedItem="{Binding SelectedFilter, Mode=TwoWay}"
-                    Grid.Row="1" />
+                        WidthRequest="400" HorizontalOptions="Start"
+                        ItemsSource="{Binding ListGroupsFilter}"
+                        SelectedItem="{Binding SelectedGroupsFilter}"
+                        ItemDisplayBinding="{Binding Name}" />
 
-                <ActivityIndicator IsRunning="{Binding IsBusy}"
-                            IsVisible="{Binding IsBusy}"
-                            Grid.Row="0" HorizontalOptions="End" />
+                <Picker Title="Фильтр программы"
+                        WidthRequest="400" HorizontalOptions="Start"
+                        ItemsSource="{Binding ListProgramsFilter}"
+                        SelectedItem="{Binding SelectedProgramFilter}"
+                        ItemDisplayBinding="{Binding Specialty}"/>
+            </HorizontalStackLayout>
 
-                <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
-                            SelectedItem="{Binding SelectedStudent}" 
-                            x:Name="studentsList" Grid.Row="2"  >
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Padding="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackLayout>
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                       IsVisible="{Binding IsBusy}"
+                       HorizontalOptions="End" />
+        </VerticalStackLayout>
 
-                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
-                                    <Label Text="{Binding GroupName}" TextColor="Gray" />
-                                    <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
-                                    <Label Text="{Binding ProgramQualification}" TextColor="Gray" />
-                                </StackLayout>
+        <ScrollView Grid.Row="1">
+            <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
+                            SelectedItem="{Binding SelectedStudent}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="15" ColumnSpacing="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout>
 
-                                <Button Text="Редактировать" BackgroundColor="DimGray" 
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding GroupName}" TextColor="Gray" />
+                                        <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
+                                        <Label Text="{Binding ProgramQualification}" TextColor="Gray" />
+                                    </StackLayout>
+
+                                    <Button Text="Редактировать" BackgroundColor="DimGray" 
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
                                     CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
 
-                                <Button Text="Удалить" BackgroundColor="OrangeRed"
-                                    Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
-                                    CommandParameter="{Binding}" FontSize="12" HeightRequest="30"/>
+                                    <Button Text="Перевести" BackgroundColor="DimGray" 
+                                        Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
+                                        CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
 
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                       Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 
                                                       CommandParameter="{Binding}" />
-                                </Grid.GestureRecognizers>
+                                    </Grid.GestureRecognizers>
 
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+        </ScrollView>
 
-            </Grid>
+        <VerticalStackLayout Grid.Row="2">
+            <BoxView BackgroundColor="LightGray"  HeightRequest="0.5"/>
+            <Label HeightRequest="40" HorizontalOptions="End" Text="{Binding NumberOfEntries}" Padding="10" Margin="0,0,10,0" />
         </VerticalStackLayout>
-    </ScrollView>
 
+    </Grid>
+    
 </ContentPage>

@@ -16,6 +16,7 @@ public partial class StudentPage : ContentPage
     {
         base.OnAppearing();
         await _studentPageViewModel.LoadAsync();
+        await _studentPageViewModel.LoadPickerFilterAsync();
     }
    
 }

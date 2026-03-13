@@ -3,10 +3,10 @@ using StudentBase.MAUI.ViewModels;
 
 namespace StudentBase.MAUI;
 
-public partial class NewStudentModalWindow : ContentPage
+public partial class NewStudentPage : ContentPage
 {
     private readonly NewStudentViewModel _newStudentViewModel;
-    public NewStudentModalWindow(NewStudentViewModel newStudentViewModel )
+    public NewStudentPage(NewStudentViewModel newStudentViewModel )
     {
         InitializeComponent();
         _newStudentViewModel = newStudentViewModel;

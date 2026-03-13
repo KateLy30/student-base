@@ -44,7 +44,9 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<StudentEntity>?> GetAllAsync()
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Students.Include(s => s.EducationalGroup)
+                                          .ThenInclude(g => g.EducationalProgram)
+                                          .ToListAsync();
         }
 
         public async Task<IEnumerable<StudentEntity>?> GetAllByGroupIdAsync(int groupId)
@@ -52,13 +54,10 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             return await _context.Students.Where(s => s.CurrentGroupId == groupId).ToListAsync();
         }
 
-        //public async Task<IEnumerable<StudentEntity>?> GetAllByProgramIdAsync(int programId)
-        //{
-        //    return await _context.Students.Where(s => s.ProgramId == programId).ToListAsync();
-        //}
-
-       
-
+        public async Task<IEnumerable<StudentEntity>?> GetAllByProgramIdAsync(int programId)
+        {
+            return await _context.Students.Where(s => s.EducationalGroup.ProgramId == programId).ToListAsync();
+        }
         public async Task<StudentEntity?> GetByIdAsync(int id)
         {
             return await _context.Students.FindAsync(id);
@@ -66,7 +65,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<StudentEntity?> GetByNameAsync(string name)
         {
-            return await _context.Students.FirstOrDefaultAsync(s => s.Name == name);    
+            return await _context.Students.FirstOrDefaultAsync(s => s.Name == name);
         }
 
         public async Task<StudentEntity?> GetByPhoneAsync(string phone)

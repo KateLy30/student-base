@@ -45,7 +45,8 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<GroupEntity>?> GetAllAsync()
         {
-            return await _context.Groups.ToListAsync();
+            return await _context.Groups.Include(g => g.EducationalProgram)
+                                        .ToListAsync();
         }
 
         public async Task<IEnumerable<GroupEntity>?> GetAllByProgramIdAsync(int programId)

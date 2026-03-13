@@ -21,13 +21,13 @@ namespace StudentBase.Infrastructure.EntityFramework
                 .HasOne(g => g.EducationalProgram)
                 .WithMany(p => p.EducationalGroups)
                 .HasForeignKey(g => g.ProgramId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<StudentEntity>()
                 .HasOne(s => s.EducationalGroup)
                 .WithMany(g => g.Students)
                 .HasForeignKey(s => s.CurrentGroupId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<StudentTransferEntity>()
                 .HasOne(st => st.Student)
@@ -39,13 +39,13 @@ namespace StudentBase.Infrastructure.EntityFramework
                 .HasOne(st => st.FromGroup)
                 .WithMany()
                 .HasForeignKey(st => st.FromGroupId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<StudentTransferEntity>()
                 .HasOne(st => st.ToGroup)
                 .WithMany()
                 .HasForeignKey(st => st.ToGroupId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PaymentEntity>()
                 .HasOne(p => p.Student)

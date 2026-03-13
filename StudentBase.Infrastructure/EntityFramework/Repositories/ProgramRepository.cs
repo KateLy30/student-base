@@ -15,38 +15,26 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> CreateAsync(ProgramEntity entity)
         {
-            try
-            {
-                await _context.Programs.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            await _context.Programs.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                var program = await _context.Programs.FindAsync(id);
-                if (program == null) return false;
+            var program = await _context.Programs.FindAsync(id);
+            if (program == null) return false;
 
-                _context.Programs.Remove(program);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            _context.Programs.Remove(program);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllAsync()
         {
-            return await _context.Programs.ToListAsync();
+            return await _context.Programs.Include(p => p.EducationalGroups)
+                                          .ThenInclude(p => p.Students)
+                                          .ToListAsync();
         }
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllBySpecialtyAsync(string specialty)
@@ -58,7 +46,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             return await _context.Programs.Where(p => p.DurationTraining == termsOfStudy).ToListAsync();
         }
-        
+
 
         public async Task<ProgramEntity?> GetByIdAsync(int id)
         {
@@ -78,22 +66,15 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         }
         public async Task<bool> UpdateAsync(ProgramEntity entity)
         {
-            try
-            {
-                var program = await _context.Programs.FindAsync(entity.Id);
-                if (program == null) return false;
+            var program = await _context.Programs.FindAsync(entity.Id);
+            if (program == null) return false;
 
-                UpdateEntity(program, entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            UpdateEntity(program, entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public static void UpdateEntity(ProgramEntity entityInDatabase, ProgramEntity updatedEntity)
+        private static void UpdateEntity(ProgramEntity entityInDatabase, ProgramEntity updatedEntity)
         {
             entityInDatabase.Specialty = updatedEntity.Specialty;
             entityInDatabase.Qualification = updatedEntity.Qualification;

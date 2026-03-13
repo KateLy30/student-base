@@ -38,7 +38,7 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<IEnumerable<PaymentEntity>?> GetAllAsync()
     {
-        return await _context.Payments.ToListAsync();
+        return await _context.Payments.Include(p => p.Student).ToListAsync();
     }
 
     public async Task<IEnumerable<PaymentEntity>?> GetAllBuStudentAsync(int studentId)

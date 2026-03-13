@@ -1,11 +1,21 @@
-﻿namespace StudentBase.MAUI
-{
-    public partial class MainPage : ContentPage
-    {
+﻿using StudentBase.MAUI.ViewModels;
 
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+namespace StudentBase.MAUI;
+
+public partial class MainPage : ContentPage
+{
+    private readonly MainPageViewModel _mainPageViewModel;
+    public MainPage(MainPageViewModel mainPageViewModel )
+    {
+        InitializeComponent();
+        _mainPageViewModel = mainPageViewModel;
+        BindingContext = _mainPageViewModel;
+    }
+    // подгрузка списка каждый раз при открытии окна
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _mainPageViewModel.LoadSummaries();
+        await _mainPageViewModel.LoadAsync();
     }
 }

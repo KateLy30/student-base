@@ -10,7 +10,7 @@
 
     <!-- Корневой Grid для адаптивного макета -->
     <Grid RowSpacing="12" ColumnSpacing="12">
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -19,7 +19,6 @@
 
         <!-- Верхняя панель: сводка -->
         <Grid >
-            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -71,43 +70,49 @@
             <Button Text="Создать новую квитанцию" Command="{Binding CreateReceiptCommand}"  HeightRequest="40"/>
         </HorizontalStackLayout>
 
-        <Border Grid.Row="2"  >
-            <Grid Grid.Row="2" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Label Text="Список должников по оплате" HorizontalOptions="Center" Padding="3" FontSize="16" FontAttributes="Bold" TextColor="#444"/>
-                <ScrollView Grid.Column="0" Grid.Row="1">
-                    <CollectionView ItemsSource="{Binding Вebtors}"
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Text="Список должников по оплате" HorizontalOptions="Center" Padding="3" FontSize="16" FontAttributes="Bold" TextColor="#444"/>
+
+            <ScrollView Grid.Column="0" Grid.Row="2">
+                <Border >
+                    <CollectionView ItemsSource="{Binding Debtors}"
                                     SelectedItem="{Binding SelectedDebtors}"
                                     SelectionMode="Single">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <!-- дописать -->
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" Padding="7" />
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                </ScrollView>
-                <Label Text="Переводы" Grid.Column="1" HorizontalOptions="Center" Padding="3" FontSize="16" FontAttributes="Bold" TextColor="#444"/>
-                    <ScrollView Grid.Column="1" Grid.Row="1" >
+                </Border>
+
+            </ScrollView>
+            <Label Text="Последние переводы" Grid.Column="1" HorizontalOptions="Center" Padding="3" FontSize="16" FontAttributes="Bold" TextColor="#444"/>
+            <ScrollView Grid.Column="1" Grid.Row="2" >
+                <Border>
                     <CollectionView ItemsSource="{Binding Translations}" 
                                     SelectedItem="{Binding SelectedTranslations}"
                                     SelectionMode="Single">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <!-- дописать -->
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </ScrollView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" Padding="7" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Border>
+            </ScrollView>
 
 
-            </Grid>
-        </Border>
+        </Grid>
     </Grid>
 </ContentPage>

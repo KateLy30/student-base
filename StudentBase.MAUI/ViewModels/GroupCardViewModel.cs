@@ -65,8 +65,8 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
-        private DateOnly dateOfCreation;
-        public DateOnly DateOfCreation
+        private DateTime dateOfCreation;
+        public DateTime DateOfCreation
         {
             get => dateOfCreation;
             set
@@ -102,11 +102,11 @@ namespace StudentBase.MAUI.ViewModels
         {
             Id = g.Id;
             Name = g.Name;
-            ProgramId = g.ProgramId;
-            ProgramSpecialty = g.ProgramSpecialty;
-            ProgramQualification = g.ProgramQualification;
             DateOfCreation = g.DateOfCreation;
-            DurationTraining = g.DurationOfTraining;
+            ProgramId = g.ProgramId;
+            ProgramSpecialty = g.EducationalProgram.Specialty;
+            ProgramQualification = g.EducationalProgram.Qualification;
+            DurationTraining = g.EducationalProgram.DurationTraining;
             Status = g.Status;
 
         }

@@ -2,10 +2,10 @@ using StudentBase.MAUI.ViewModels;
 
 namespace StudentBase.MAUI.Views;
 
-public partial class GroupCardModalWindow : ContentPage
+public partial class GroupCardPage : ContentPage
 {
 	private readonly GroupCardViewModel _groupCardViewModel;
-	public GroupCardModalWindow(GroupCardViewModel groupCardViewModel)
+	public GroupCardPage(GroupCardViewModel groupCardViewModel)
 	{
 		InitializeComponent();
 		_groupCardViewModel = groupCardViewModel;

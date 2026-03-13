@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class NewGroupViewModel : BaseViewModel 
+    public class NewGroupViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
         private GroupEntity _group = new();
@@ -17,10 +17,16 @@ namespace StudentBase.MAUI.ViewModels
         public NewGroupViewModel(IDataService dataService)
         {
             _dataService = dataService;
-            SaveCommand = new AsyncCommand(SaveAsync, () => !string.IsNullOrWhiteSpace(Name));
+            SaveCommand = new AsyncCommand(SaveAsync, CanSave);
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
 
             StatusList = new ObservableCollection<StatusGroups>(Enum.GetValues<StatusGroups>().Cast<StatusGroups>());
+
+            _ = LoadProgramsAsync();
+        }
+        private bool CanSave()
+        {
+            return !string.IsNullOrWhiteSpace(Name) && SelectedProgram != null;
         }
         private string _title = "Добавление группы";
         public string Title
@@ -39,32 +45,31 @@ namespace StudentBase.MAUI.ViewModels
             get => name;
             set
             {
-                if(name == value) return;
+                if (name == value) return;
                 name = value; OnPropertyChanged();
                 SaveCommand.RaiseCanExecuteChanged();
             }
         }
-        private DateOnly dateOfCreation;
-        public string DateOfCreation
+        private DateTime dateOfCreation;
+        public DateTime DateOfCreation
         {
-            get => dateOfCreation.ToString();
+            get => dateOfCreation;
             set
             {
-                if (DateOnly.TryParse(value, out DateOnly date))
-                {
-                    dateOfCreation = date; 
-                    OnPropertyChanged();
-                }
+                dateOfCreation = value;
+                OnPropertyChanged();
+
             }
         }
-        private ProgramEntity selectedProgram;
-        public ProgramEntity SelectedProgram
+        private ProgramEntity? selectedProgram;
+        public ProgramEntity? SelectedProgram
         {
             get => selectedProgram;
             set
             {
-                if(selectedProgram ==  value) return;
+                if (selectedProgram == value) return;
                 selectedProgram = value; OnPropertyChanged();
+                SaveCommand.RaiseCanExecuteChanged();
             }
         }
         public async Task LoadProgramsAsync()
@@ -75,43 +80,27 @@ namespace StudentBase.MAUI.ViewModels
             foreach (var p in programsFromDb)
                 Programs.Add(p);
         }
-        private StatusGroups status;
-        public StatusGroups Status
-        {
-            get => status;
-            set
-            {
-                if(status == value) return;
-                status = value; OnPropertyChanged();
-            }
-        }
         private StatusGroups selectedStatus;
         public StatusGroups SelectedStatus
         {
             get => selectedStatus;
             set
             {
-                if(value == selectedStatus) return;
+                if (value == selectedStatus) return;
                 selectedStatus = value; OnPropertyChanged();
             }
         }
         private async Task SaveAsync()
         {
-            if (string.IsNullOrWhiteSpace(Name))
+            if (string.IsNullOrWhiteSpace(Name) || SelectedProgram == null)
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите название группы.", "Ок");
+                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите данные.", "Ок");
                 return;
             }
             _group.Name = Name;
+            _group.DateOfCreation = DateOfCreation;
             _group.ProgramId = SelectedProgram.Id;
-            _group.ProgramSpecialty = SelectedProgram.Specialty;
-            _group.ProgramQualification = SelectedProgram.Qualification;
-            if (DateOnly.TryParse(DateOfCreation, out var parsed))
-                _group.DateOfCreation = parsed;
-            else
-                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите корректную дату.", "Ок");
-
-            _group.DurationOfTraining = SelectedProgram.DurationTraining;
+            _group.EducationalProgram = SelectedProgram;
             _group.Status = SelectedStatus;
             if (_group.Id == 0)
                 await _dataService.Groups.CreateAsync(_group);
@@ -124,7 +113,7 @@ namespace StudentBase.MAUI.ViewModels
                 await viewModel.LoadAsync();
             }
         }
-        public async void LoadFrom(GroupEntity? g)
+        public void LoadFrom(GroupEntity? g)
         {
             _group = g ?? new GroupEntity();
             if (g == null || g.Id == 0)
@@ -133,11 +122,9 @@ namespace StudentBase.MAUI.ViewModels
             {
                 Title = "Изменение данных группы";
 
-                var program = await _dataService.Programs.GetByIdAsync(g!.ProgramId);
-
-                Name = _group.Name!;
-                DateOfCreation = _group.DateOfCreation.ToString();
-                SelectedProgram = program!;
+                Name = _group.Name;
+                DateOfCreation = _group.DateOfCreation;
+                SelectedProgram = _group.EducationalProgram;
                 SelectedStatus = _group.Status;
             }
         }

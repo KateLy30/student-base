@@ -8,7 +8,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class NewProgramViewModel : BaseViewModel
     {
-        private readonly IDataService _dataService;
+        private readonly IProgramService _programService;
         private ProgramEntity _program = new();
 
         // списки для Enums
@@ -17,15 +17,15 @@ namespace StudentBase.MAUI.ViewModels
 
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
-        public NewProgramViewModel(IDataService dataService)
+        public NewProgramViewModel(IProgramService programService)
         {
-            _dataService = dataService;
+            _programService = programService;
 
             SaveCommand = new AsyncCommand(SaveAsync, CanSave);
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
 
             // заполнение списков из Enums
-            StatusList =  new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
+            StatusList = new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
             TermsOfStudyList = new ObservableCollection<TermsOfStudy>(Enum.GetValues<TermsOfStudy>().Cast<TermsOfStudy>());
         }
         private bool CanSave()
@@ -52,7 +52,7 @@ namespace StudentBase.MAUI.ViewModels
             get => specialty;
             set
             {
-                if(specialty == value) return;
+                if (specialty == value) return;
                 specialty = value; OnPropertyChanged();
                 SaveCommand.RaiseCanExecuteChanged();
             }
@@ -63,7 +63,7 @@ namespace StudentBase.MAUI.ViewModels
             get => qualification;
             set
             {
-                if(qualification == value) return;
+                if (qualification == value) return;
                 qualification = value; OnPropertyChanged();
                 SaveCommand.RaiseCanExecuteChanged();
             }
@@ -74,7 +74,7 @@ namespace StudentBase.MAUI.ViewModels
             get => selectedTermOfStudy;
             set
             {
-                if(selectedTermOfStudy == value) return;
+                if (selectedTermOfStudy == value) return;
                 selectedTermOfStudy = value; OnPropertyChanged();
             }
         }
@@ -84,7 +84,7 @@ namespace StudentBase.MAUI.ViewModels
             get => cost;
             set
             {
-                cost = value; 
+                cost = value;
                 OnPropertyChanged();
                 SaveCommand.RaiseCanExecuteChanged();
             }
@@ -106,7 +106,7 @@ namespace StudentBase.MAUI.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Specialty) || string.IsNullOrWhiteSpace(Qualification))
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите данные", "Ок");
+                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите данные", "ОK");
                 return;
             }
             _program.Specialty = Specialty;
@@ -114,16 +114,20 @@ namespace StudentBase.MAUI.ViewModels
             _program.DurationTraining = SelectedTermOfStudy;
             _program.CostPerSemester = Cost;
             _program.Status = SelectedStatus;
+
             if (_program.Id == 0)
-                await _dataService.Programs.CreateAsync(_program);
+            {
+                var result = await _programService.CreateProgramAsync(_program);
+                if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+
+            }
             else
-                await _dataService.Programs.UpdateAsync(_program);
+            {
+                var result = await _programService.UpdateProgramAsync(_program);
+                if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+            }
 
             await Shell.Current.Navigation.PopAsync();
-            if (Shell.Current?.CurrentPage?.BindingContext is ProgramPageViewModel viewModel)
-            {
-                await viewModel.LoadAsync();
-            }
         }
 
         // заполнения формы ввода при редактировании

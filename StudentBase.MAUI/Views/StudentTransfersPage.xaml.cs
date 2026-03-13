@@ -1,9 +1,21 @@
+using StudentBase.MAUI.ViewModels;
+
 namespace StudentBase.MAUI;
 
 public partial class StudentTransfersPage : ContentPage
 {
-	public StudentTransfersPage()
+	private readonly StudentTransferViewModel _studentTransferViewModel;
+	public StudentTransfersPage(StudentTransferViewModel studentTransferViewModel)
 	{
 		InitializeComponent();
+		_studentTransferViewModel = studentTransferViewModel;
+		BindingContext = _studentTransferViewModel;
 	}
+
+    // подгрузка списка каждый раз при открытии окна
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _studentTransferViewModel.LoadAsync();
+    }
 }

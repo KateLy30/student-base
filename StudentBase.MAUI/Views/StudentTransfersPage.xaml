@@ -25,17 +25,9 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
                                 <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding GroupHistory}" TextColor="Gray" />
 
-                                <Button Text="Перевести" BackgroundColor="DimGray" 
-                                        Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
-                                        CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
-                                
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                             Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 

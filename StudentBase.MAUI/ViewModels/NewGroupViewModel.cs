@@ -18,7 +18,7 @@ namespace StudentBase.MAUI.ViewModels
         {
             _dataService = dataService;
             SaveCommand = new AsyncCommand(SaveAsync, CanSave);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
+            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
 
             StatusList = new ObservableCollection<StatusGroups>(Enum.GetValues<StatusGroups>().Cast<StatusGroups>());
 
@@ -107,7 +107,7 @@ namespace StudentBase.MAUI.ViewModels
             else
                 await _dataService.Groups.UpdateAsync(_group);
 
-            await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is GroupPageViewModel viewModel)
             {
                 await viewModel.LoadAsync();

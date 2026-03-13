@@ -22,7 +22,7 @@ namespace StudentBase.MAUI.ViewModels
             _programService = programService;
 
             SaveCommand = new AsyncCommand(SaveAsync, CanSave);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
+            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
 
             // заполнение списков из Enums
             StatusList = new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
@@ -127,7 +127,7 @@ namespace StudentBase.MAUI.ViewModels
                 if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             }
 
-            await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopModalAsync();
         }
 
         // заполнения формы ввода при редактировании

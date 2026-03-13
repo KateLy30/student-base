@@ -115,7 +115,7 @@ namespace StudentBase.MAUI.ViewModels
         public async Task AddAsync()
         {
             var page = (Page)_createNewProgramPage();
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
         public async Task EditAsync(ProgramEntity? p)
         {
@@ -123,7 +123,7 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_createNewProgramPage();
             if (page.BindingContext is NewProgramViewModel viewModel)
                 viewModel.LoadFrom(p);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
         public async Task OpenProgramCardAsync(ProgramEntity? p)
         {
@@ -131,7 +131,7 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_openProgramCardPage();
             if (page.BindingContext is ProgramCardViewModel viewModel)
                 viewModel.UploadData(p);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
     }
 }

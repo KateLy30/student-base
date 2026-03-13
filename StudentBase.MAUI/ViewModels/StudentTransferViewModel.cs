@@ -69,7 +69,7 @@ namespace StudentBase.MAUI.ViewModels
         private async Task TransferAsync()
         {
             var page = (Page)_createNewTransferPage();
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
         private async Task OpenCardAsync()
         {

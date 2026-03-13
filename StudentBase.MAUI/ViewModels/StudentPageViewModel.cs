@@ -221,7 +221,7 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_openStudentCardPage();
             if (page.BindingContext is StudentCardViewModel viewModel)
                 viewModel.UploadData(s);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
 
         public async Task DeleteAsync()
@@ -235,7 +235,7 @@ namespace StudentBase.MAUI.ViewModels
         public async Task AddAsync()
         {
             var page = (Page)_createNewStudentPage();
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
         public async Task EditAsync(StudentEntity? s)
         {
@@ -243,7 +243,7 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_createNewStudentPage();
             if (page.BindingContext is NewStudentViewModel viewModel)
                 viewModel.LoadFrom(s);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace StudentBase.MAUI.ViewModels
             _dataService = dataService;
 
             SaveCommand = new AsyncCommand(SaveAsync, CanSave);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
+            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
 
             StatusList = new ObservableCollection<StatusStudents>(Enum.GetValues<StatusStudents>().Cast<StatusStudents>());
             EducationLevelsList = new ObservableCollection<LevelsOfEducation>(Enum.GetValues<LevelsOfEducation>().Cast<LevelsOfEducation>());
@@ -163,7 +163,7 @@ namespace StudentBase.MAUI.ViewModels
         {
             await CreateStudent();
 
-            await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is StudentPageViewModel viewModel)
             {
                 await viewModel.LoadAsync();

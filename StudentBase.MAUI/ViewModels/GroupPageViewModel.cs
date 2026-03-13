@@ -98,7 +98,7 @@ namespace StudentBase.MAUI.ViewModels
         public async Task AddAsync()
         {
             var page = (Page)_createNewGroupPage();
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
         public async Task EditAsync(GroupEntity? g)
         {
@@ -106,7 +106,7 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_createNewGroupPage();
             if (page.BindingContext is NewGroupViewModel viewModel)
                 viewModel.LoadFrom(g);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
         public async Task OpenCardAsync(GroupEntity? g)
         {
@@ -114,7 +114,7 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_openCardGroupPage();
             if (page.BindingContext is GroupCardViewModel viewModel)
                 viewModel.UploadData(g);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace StudentBase.MAUI.ViewModels
             ExitCommand = new AsyncCommand(ExitAsync);
 
         public async Task ExitAsync() =>
-            await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopModalAsync();
 
         // поля для вывода
         private int id;

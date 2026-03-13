@@ -18,7 +18,7 @@ namespace StudentBase.MAUI.ViewModels
             _dataService = dataService;
 
             SaveCommand = new AsyncCommand(SaveAsync, () => SelectedStudent != null && SelectedGroup != null);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopAsync());
+            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
             _ = LoadGroupsAsync();
             _ = LoadStudentsAsync();
         }
@@ -99,7 +99,7 @@ namespace StudentBase.MAUI.ViewModels
             _transfer.EnrollmentDate = TransferDate;
 
 
-            await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is StudentTransferViewModel viewModel)
             {
                 await viewModel.LoadAsync();

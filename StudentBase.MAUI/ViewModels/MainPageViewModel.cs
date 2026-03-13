@@ -121,7 +121,7 @@ namespace StudentBase.MAUI.ViewModels
         private async Task TransferStudentAsync()
         {
             var page = (Page)_createNewTransferPage();
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
 
         private async Task CreateReceiptAsync() { } // #TODO

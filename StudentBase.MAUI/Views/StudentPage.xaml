@@ -11,12 +11,12 @@
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
-
+        
         <VerticalStackLayout Padding="10,0" Spacing="10">
             <SearchBar Placeholder="Поиск.."
                Text="{Binding SearchText, Mode=TwoWay}" />
             
-            <HorizontalStackLayout Grid.Row="1" Spacing="20" Padding="3">
+            <HorizontalStackLayout Spacing="20" Padding="3">
                 <Picker Title="Фильтр группы"
                         WidthRequest="400" HorizontalOptions="Start"
                         ItemsSource="{Binding ListGroupsFilter}"
@@ -48,7 +48,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackLayout>
 
-                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
                                         <Label Text="{Binding GroupName}" TextColor="Gray" />
                                         <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
                                         <Label Text="{Binding ProgramQualification}" TextColor="Gray" />
@@ -58,7 +58,7 @@
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
                                     CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
 
-                                    <Button Text="Перевести" BackgroundColor="DimGray" 
+                                    <Button Text="Перевести" 
                                         Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
                                         CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
 

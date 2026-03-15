@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudentBase.Domain.Entities;
 
@@ -24,5 +25,9 @@ public class StudentTransferEntity
     public StudentEntity Student { get; set; }
     public GroupEntity FromGroup { get; set; }
     public GroupEntity ToGroup { get; set; }
+
+    [NotMapped]
+    public string? DisplayHistory => $"{FromGroup.Name} ---> {ToGroup.Name}";
+    public string? Name => Student.Name;
 
 }

@@ -8,10 +8,12 @@
         <VerticalStackLayout Padding="10" Spacing="3">
 
             <Picker Title="Студент" ItemsSource="{Binding Students}"
-                    SelectedItem="{Binding SelectedStudent}"/>
+                    SelectedItem="{Binding SelectedStudent}"
+                    ItemDisplayBinding="{Binding Name}"/>
 
-            <Picker Title="Группа" ItemsSource="{Binding Groups}"
-                    SelectedItem="{Binding SelectedGroup}" Margin="0,10,0,0"/>
+            <Picker Title="Новая группа" ItemsSource="{Binding Groups}"
+                    SelectedItem="{Binding SelectedGroup}" Margin="0,10,0,0"
+                    ItemDisplayBinding="{Binding Name}"/>
 
             <Label Text="Дата перевода" Margin="0,10,0,0"/>
             <DatePicker Date="{Binding TransferDate}" Format="d" FontSize="16" MinimumDate="01/01/2010"/>

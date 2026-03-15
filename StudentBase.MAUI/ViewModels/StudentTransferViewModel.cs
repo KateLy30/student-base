@@ -9,7 +9,7 @@ namespace StudentBase.MAUI.ViewModels
     {
         private readonly IDataService _dataService;
         private readonly Func<object> _createNewTransferPage;
-        public ObservableCollection<StudentEntity> TransferredStudents { get; } = [];
+        public ObservableCollection<StudentTransferEntity> TransferredStudents { get; } = [];
         public StudentTransferViewModel(IDataService dataService, Func<object> createNewTransferPage)
         {
             _dataService = dataService;
@@ -18,8 +18,8 @@ namespace StudentBase.MAUI.ViewModels
             TransferCommand = new AsyncCommand(TransferAsync);
             _createNewTransferPage = createNewTransferPage;
         }
-        AsyncCommand OpenCardCommand { get; }
-        AsyncCommand TransferCommand { get; }
+        public AsyncCommand OpenCardCommand { get; }
+        public AsyncCommand TransferCommand { get; }
 
         private bool _isBusy;
         public bool IsBusy
@@ -50,12 +50,12 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _dataService.Students.GetAllTransferredStudentsAsync();
+                var list = await _dataService.Transfers.GetAllAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
                 {
-                    list = [.. list.Where(e => (e.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
+                    list = [.. list.Where(e => (e.Student.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
                 }
                 TransferredStudents.Clear();
                 foreach (var student in list)

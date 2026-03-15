@@ -10,45 +10,151 @@
             <Setter Property="TextColor" Value="Red"/>
             <Setter Property="BackgroundColor" Value="#FFF0F0" />
         </Style>
+
+        <!-- Стиль для основных Entry -->
+        <Style x:Key="ModernEntryStyle" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="PlaceholderColor" Value="#9E9E9E"/>
+        </Style>
+
+        <!-- Стиль для Picker -->
+        <Style x:Key="ModernPickerStyle" TargetType="Picker">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="TitleColor" Value="#9E9E9E"/>
+        </Style>
+
+        <!-- Стиль для DatePicker -->
+        <Style x:Key="ModernDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="1"/>
+            <Setter Property="HeightRequest" Value="50"/>
+        </Style>
     </ContentPage.Resources>
 
-    <ScrollView>
+    <Grid RowDefinitions="50, *">
 
-        <VerticalStackLayout Padding="10" Spacing="3">
-            
-            <Label Text="Название группы" />
-            <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Введите название группы" >
-                <Entry.Behaviors >
-                    <toolkit:TextValidationBehavior MinimumLength="1" x:Name="NameValidator"
-                                                    Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
-                                                    InvalidStyle="{StaticResource InvalidEntryStyle}"/>
-                </Entry.Behaviors>
-            </Entry>
-            <Label Text="Поле обязательно" FontSize="12" TextColor="Red" IsVisible="{Binding IsNotValid, Source={x:Reference NameValidator}}" />
+        <!-- Заголовок -->
+        <Border StrokeThickness="0" 
+                Padding="15,10" 
+                BackgroundColor="Gray">
+            <Label Text="{Binding Title}" 
+                    FontSize="20" 
+                    FontAttributes="Bold" 
+                    TextColor="White"
+                    VerticalOptions="Center"/>
+        </Border>
 
-            <Label Text="Дата создания группы" />
-            <DatePicker Date="{Binding DateOfCreation}"  Format="d" FontSize="16" MinimumDate="01/01/2010"/>
+        <ScrollView Grid.Row="1" BackgroundColor="#F5F5F5">
 
-            <Picker ItemsSource="{Binding Programs}"
-                    ItemDisplayBinding="{Binding DisplayText}"
-                    SelectedItem="{Binding SelectedProgram, Mode=TwoWay}"
-                    Title="Программа обучения"  />
+            <VerticalStackLayout Padding="8">
 
-            <Picker ItemsSource="{Binding StatusList}"
-                    SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
-                    Title="Статус">
-                <Picker.ItemDisplayBinding>
-                    <Binding Path="." Converter="{StaticResource StatusGroupsToStringConverter}" />
-                </Picker.ItemDisplayBinding>
-            </Picker>
+                <Border StrokeThickness="1" 
+                        Padding="15"
+                        BackgroundColor="White">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <!-- Название группы -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Название группы" 
+                                FontSize="14" 
+                                TextColor="#757575"/>
+                            <Entry Text="{Binding Name, Mode=TwoWay}" 
+                               Placeholder="Введите название группы"
+                                Style="{StaticResource ModernEntryStyle}">
+                                <Entry.Behaviors>
+                                    <toolkit:TextValidationBehavior x:Name="NameValidator" 
+                                        MinimumLength="1"
+                                        Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Label Text="Поле обязательно" 
+                                FontSize="12" 
+                                TextColor="#DC3545" 
+                                IsVisible="{Binding IsNotValid, Source={x:Reference NameValidator}}" />
+                        </VerticalStackLayout>
 
-            <HorizontalStackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
-                <Button Text="Ок" Margin="10" Command="{Binding SaveCommand}"/>
-                <Button Text="Отмена" Margin="10" Command="{Binding CancelCommand}" />
-            </HorizontalStackLayout>
+                        <!-- Дата создания группы -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Дата создания группы" 
+                                        FontSize="14" 
+                                        TextColor="#757575"/>
+                            <DatePicker Format="d" 
+                                        Date="{Binding DateOfCreation}" 
+                                        MinimumDate="01/01/2010"
+                                        TextColor="#333333"
+                                        FontSize="16"/>
+                        </VerticalStackLayout> 
+                        
+                        <!-- Список программ -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Программа обучения" 
+                                    FontSize="14" 
+                                    TextColor="#757575"/>
+                            <Border StrokeThickness="1" 
+                                    Padding="5"
+                                    BackgroundColor="White">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <Picker ItemsSource="{Binding Programs}"
+                                        ItemDisplayBinding="{Binding DisplayText}"
+                                        SelectedItem="{Binding SelectedProgram, Mode=TwoWay}"
+                                        Title="Выберите программу"  
+                                        Style="{StaticResource ModernPickerStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        
+                        <!-- Статус -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Статус" 
+                                    FontSize="14" 
+                                    TextColor="#757575"/>
+                            <Border StrokeThickness="1" 
+                                    Padding="5"
+                                    BackgroundColor="White">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <Picker ItemsSource="{Binding StatusList}"
+                                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                                        Title="Выберите статус"
+                                        Style="{StaticResource ModernPickerStyle}">
+                                    <Picker.ItemDisplayBinding>
+                                        <Binding Path="." Converter="{StaticResource StatusGroupsToStringConverter}" />
+                                    </Picker.ItemDisplayBinding>
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                
+                <!-- Кнопки действий -->
+                <HorizontalStackLayout Spacing="10" 
+                         HorizontalOptions="Center" 
+                         Margin="20">
 
-        </VerticalStackLayout>
+                    <Button Text="Сохранить" 
+                            Command="{Binding SaveCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"/>
 
-    </ScrollView>
-
+                    <Button Text="Отмена" 
+                            Command="{Binding CancelCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"/>
+                </HorizontalStackLayout>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

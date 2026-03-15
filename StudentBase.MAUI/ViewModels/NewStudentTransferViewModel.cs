@@ -1,5 +1,4 @@
-﻿
-using StudentBase.Application.Interfaces;
+﻿using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
 using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
@@ -19,8 +18,7 @@ namespace StudentBase.MAUI.ViewModels
 
             SaveCommand = new AsyncCommand(SaveAsync, () => SelectedStudent != null && SelectedGroup != null);
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
-            _ = LoadGroupsAsync();
-            _ = LoadStudentsAsync();
+            _ = LoadPickerListAsync();
         }
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
@@ -71,21 +69,22 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
-        public async Task LoadStudentsAsync()
+        public async Task LoadPickerListAsync()
         {
             var studentsFromDb = await _dataService.Students.GetAllAsync();
-            if (studentsFromDb == null) return;
-            Students.Clear();
-            foreach (var student in studentsFromDb) 
-                Students.Add(student);
-        }
-        public async Task LoadGroupsAsync()
-        {
             var groupsFromDB = await _dataService.Groups.GetAllAsync();
-            if (groupsFromDB == null) return;
-            Groups.Clear();
-            foreach(var group in groupsFromDB)
-                Groups.Add(group);
+            if(studentsFromDb != null)
+            {
+                Students.Clear();
+                foreach (var student in studentsFromDb)
+                    Students.Add(student);
+            }
+            if(groupsFromDB != null)
+            {
+                Groups.Clear();
+                foreach (var group in groupsFromDB)
+                    Groups.Add(group);
+            }
         }
 
         private async Task SaveAsync()
@@ -98,6 +97,7 @@ namespace StudentBase.MAUI.ViewModels
             _transfer.ToGroup = SelectedGroup;
             _transfer.EnrollmentDate = TransferDate;
 
+            await _dataService.Transfers.CreateAsync(_transfer);
 
             await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is StudentTransferViewModel viewModel)

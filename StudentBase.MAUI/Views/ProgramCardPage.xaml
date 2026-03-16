@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StudentBase.MAUI.Views.ProgramCardPage">
+             x:Class="StudentBase.MAUI.Views.ProgramCardPage"
+             BackgroundColor="{StaticResource BackgroundPageGray}">
     
-    <Grid RowDefinitions="50,*"  BackgroundColor="#F5F5F5">
+    <Grid RowDefinitions="Auto,*"  BackgroundColor="{StaticResource BackgroundPageGray}">
         
         <!-- Шапка с кнопкой закрытия -->
-        <Border StrokeThickness="0" Padding="15,5" BackgroundColor="Gray">
+        <Border Style="{StaticResource BorderHeader}">
             <Grid ColumnDefinitions="*, Auto">
                 <Label Text="Карточка образовательной программы" 
                         FontSize="20" 
@@ -25,17 +26,10 @@
         </Border>
         
         <!-- Основной контент -->
-        <ScrollView Grid.Row="1" BackgroundColor="#F5F5F5">
-            
+        <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundPageGray}">
+
             <VerticalStackLayout Spacing="12" Padding="10">
-
-                <Border StrokeThickness="1" 
-                        Padding="15"
-                        BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
-
+                <Border>
                     <VerticalStackLayout Spacing="12">
 
                         <Label Text="Основная информация" 
@@ -77,13 +71,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Border StrokeThickness="1" 
-                    Padding="15"
-                    BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
-
+                <Border>
                     <VerticalStackLayout Spacing="12">
 
                         <Label Text="Параметры" 
@@ -112,12 +100,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Border StrokeThickness="1" 
-                    Padding="15"
-                    BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
+                <Border>
 
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="30">
                         <Label Text="Статус:"
@@ -126,9 +109,37 @@
                                Grid.Column="1"
                                FontAttributes="Bold" FontSize="16" />
                     </Grid>
+                </Border>
 
-                </Border> 
-                
+                <Border>
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label Text="Обучающиеся" 
+                                FontSize="18" 
+                                FontAttributes="Bold" 
+                                TextColor="#512BD4"/>
+
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto"
+                                ColumnSpacing="30" RowSpacing="10">
+
+                            <!-- Кол-во студентов -->
+                            <Label Text="Количество студентов:"
+                                    TextColor="#757575" />
+                            <Label Text="{Binding StudentsCount}"
+                                    Grid.Column="1"
+                                    FontAttributes="Bold" FontSize="16" />
+
+                            <!-- Кол-во групп -->
+                            <Label Text="Количество групп:"
+                                    Grid.Row="1"
+                                    TextColor="#757575"/>
+                            <Label Text="{Binding GroupsCount}"
+                                    Grid.Column="1" Grid.Row="1"
+                                    FontAttributes="Bold" FontSize="16" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
             </VerticalStackLayout>
         </ScrollView>
 

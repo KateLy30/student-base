@@ -94,6 +94,9 @@
 	  <Compile Update="Views\StudentCardPage.xaml.cs">
 	    <DependentUpon>StudentCardPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\PaymentPage.xaml.cs">
+	    <DependentUpon>PaymentPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -104,6 +107,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\NewGroupPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\NewPaymentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\NewProgramPage.xaml">
@@ -130,7 +136,7 @@
 	  <MauiXaml Update="Views\StudentTransfersPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\TuitionFeesPage.xaml">
+	  <MauiXaml Update="Views\PaymentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

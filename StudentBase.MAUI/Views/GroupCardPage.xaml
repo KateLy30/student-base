@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StudentBase.MAUI.Views.GroupCardPage">
 
-    <Grid RowDefinitions="50,*" BackgroundColor="#F5F5F5">
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#F5F5F5">
 
         <!-- Шапка с кнопкой закрытия -->
-        <Border StrokeThickness="0" Padding="15,5" BackgroundColor="Gray">
+        <Border Style="{StaticResource BorderHeader}">
             <Grid ColumnDefinitions="*, Auto">
                 <Label Text="Карточка группы" 
                         FontSize="20" 
@@ -29,13 +29,7 @@
             <VerticalStackLayout Spacing="12" Padding="10">
 
                 <!-- Секция: Основная информация -->
-                <Border StrokeThickness="1" 
-                        Padding="15"
-                        BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
-
+                <Border>
                     <VerticalStackLayout Spacing="12">
                         
                         <Label Text="Основная информация" 
@@ -76,13 +70,7 @@
                 </Border>
 
                 <!-- Секция: Программа обучения -->
-                <Border StrokeThickness="1" 
-                        Padding="15"
-                        BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
-
+                <Border>
                     <VerticalStackLayout Spacing="12">
                         <Label Text="Программа обучения" 
                                 FontSize="18" 
@@ -133,12 +121,7 @@
                 </Border>
 
                 <!-- Секция: Статус -->
-                <Border StrokeThickness="1" 
-                        Padding="15"
-                        BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
+                <Border>
                     <Grid ColumnDefinitions="Auto, *" ColumnSpacing="30">
                         <Label Text="Статус:" 
                                 Grid.Column="0" 
@@ -148,7 +131,26 @@
                                 FontAttributes="Bold"
                                 FontSize="16"/>
                     </Grid>
-                </Border> 
+                </Border>
+
+                <Border>
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label Text="Обучающиеся" 
+                                FontSize="18" 
+                                FontAttributes="Bold" 
+                                TextColor="#512BD4"/>
+
+                        <!-- Кол-во студентов -->
+                        <HorizontalStackLayout Spacing="30">
+                            <Label Text="Количество студентов:"
+                                    TextColor="#757575" />
+                            <Label Text="{Binding StudentsCount}"
+                                    FontAttributes="Bold" />
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
 
             </VerticalStackLayout>
         </ScrollView>

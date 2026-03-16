@@ -5,10 +5,30 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:StudentBase.MAUI"
     Title="СУБД личных данных студентов"
-    FlyoutBackgroundColor="LightGrey" 
+    FlyoutBackgroundColor="{StaticResource Gray100}" 
     FlyoutBehavior="Locked" 
-    FlyoutWidth="200">
+    FlyoutWidth="200"
+    TitleColor="{StaticResource Primary}">
+
     
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Padding="15,15" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="●" TextColor="{StaticResource Action}" Margin="0,0,10,0"/>
+                <Label Grid.Column="1" 
+                        Text="{Binding Title}" 
+                        FontAttributes="Bold"
+                       FontSize="16"
+                        TextColor="{StaticResource Primary}"
+                        VerticalOptions="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
     <FlyoutItem Title="Главная">
         <ShellContent
             ContentTemplate="{DataTemplate local:MainPage}"
@@ -41,8 +61,8 @@
 
     <FlyoutItem Title="Оплата">
         <ShellContent 
-            ContentTemplate="{DataTemplate local:TuitionFeesPage}"
-            Route="TuitionFeesPage" />
+            ContentTemplate="{DataTemplate local:PaymentPage}"
+            Route="PaymentPage" />
     </FlyoutItem>
 
 </Shell>

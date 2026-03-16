@@ -11,11 +11,11 @@
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
-        
+
         <VerticalStackLayout Padding="10,0" Spacing="10">
             <SearchBar Placeholder="Поиск.."
                Text="{Binding SearchText, Mode=TwoWay}" />
-            
+
             <HorizontalStackLayout Spacing="20" Padding="3">
                 <Picker Title="Фильтр группы"
                         WidthRequest="400" HorizontalOptions="Start"
@@ -38,40 +38,45 @@
         <ScrollView Grid.Row="1">
             <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
                             SelectedItem="{Binding SelectedStudent}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Padding="15" ColumnSpacing="5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="15" ColumnSpacing="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackLayout>
 
-                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
-                                        <Label Text="{Binding GroupName}" TextColor="Gray" />
-                                        <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
-                                        <Label Text="{Binding ProgramQualification}" TextColor="Gray" />
-                                    </StackLayout>
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
+                                <Label Text="{Binding GroupName}" TextColor="Gray" />
+                                <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
+                                <Label Text="{Binding ProgramQualification}" TextColor="Gray" />
+                            </StackLayout>
 
-                                    <Button Text="Редактировать" BackgroundColor="DimGray" 
+                            <Button Text="Редактировать" BackgroundColor="DimGray" 
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
                                     CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
 
-                                    <Button Text="Перевести" 
+                            <Button Text="Перевести" 
                                         Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
                                         CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+                            
+                            <Button Text="Внести оплату" 
+                                    Grid.Column="3" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.AddPaymentCommand}" 
+                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
 
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer NumberOfTapsRequired="2" 
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                       Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 
                                                       CommandParameter="{Binding}" />
-                                    </Grid.GestureRecognizers>
+                            </Grid.GestureRecognizers>
 
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </ScrollView>
 
         <VerticalStackLayout Grid.Row="2">
@@ -80,5 +85,5 @@
         </VerticalStackLayout>
 
     </Grid>
-    
+
 </ContentPage>

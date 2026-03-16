@@ -2,14 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StudentBase.MAUI.MainPage"
-             Title="Главная">
+             Title="Главная"
+             BackgroundColor="{StaticResource BackgroundPageGray}">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Архив" Command="{Binding ArchiveCommand}" />
     </ContentPage.ToolbarItems>
 
     <!-- Корневой Grid для адаптивного макета -->
-    <Grid RowSpacing="12" ColumnSpacing="12">
+    <Grid RowSpacing="12" ColumnSpacing="12" BackgroundColor="{StaticResource BackgroundPageGray}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <!-- Верхняя панель: сводка -->
-        <Grid >
+        <Grid BackgroundColor="{StaticResource BackgroundPageGray}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -27,40 +28,40 @@
             </Grid.ColumnDefinitions>
 
             <!-- Карточка: Студенты -->
-            <Frame Grid.Column="0" CornerRadius="8" Padding="12" HasShadow="True" >
+            <Border>
                 <StackLayout>
                     <Label Text="Студенты" FontAttributes="Bold" FontSize="16" />
                     <Label Text="{Binding NumberOfStudents}" FontSize="22" FontAttributes="Bold" />
                     <Label Text="активных" FontSize="12" />
                 </StackLayout>
-            </Frame>
+            </Border>
 
             <!-- Карточка: Группы -->
-            <Frame Grid.Column="1" CornerRadius="8" Padding="12" HasShadow="True" >
+            <Border Grid.Column="1">
                 <StackLayout>
                     <Label Text="Группы" FontAttributes="Bold" FontSize="16" />
                     <Label Text="{Binding NumberOfGroups}" FontSize="22" FontAttributes="Bold" />
                     <Label Text="активных" FontSize="12" />
                 </StackLayout>
-            </Frame>
+            </Border>
 
             <!-- Карточка: Программы -->
-            <Frame Grid.Column="2" CornerRadius="8" Padding="12" HasShadow="True" >
+            <Border Grid.Column="2">
                 <StackLayout>
                     <Label Text="Программы" FontAttributes="Bold" FontSize="16" />
                     <Label Text="{Binding NumberOfPrograms}" FontSize="22" FontAttributes="Bold" />
                     <Label Text="доступных" FontSize="12" />
                 </StackLayout>
-            </Frame>
+            </Border>
 
             <!-- Карточка: Просрочки -->
-            <Frame Grid.Column="3" CornerRadius="8" Padding="12" HasShadow="True" >
+            <Border Grid.Column="3">
                 <StackLayout>
                     <Label Text="Просрочки" FontAttributes="Bold" FontSize="16" />
                     <Label Text="{Binding NumberOfOverduePayments}" FontSize="22" FontAttributes="Bold" />
                     <Label Text="требует внимания" FontSize="12" />
                 </StackLayout>
-            </Frame>
+            </Border>
 
         </Grid>
 
@@ -90,7 +91,7 @@
                                     SelectionMode="Single">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" Padding="7" />
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" Padding="15" />
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -105,7 +106,10 @@
                                     SelectionMode="Single">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" Padding="7" />
+                                <VerticalStackLayout Padding="15">
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding DisplayHistory}" TextColor="Gray"/>
+                                </VerticalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

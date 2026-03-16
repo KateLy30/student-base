@@ -2,45 +2,45 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StudentBase.MAUI.StudentTransfersPage"
+             x:Name="ThisPage"
              Title="Переводы студентов">
 
     <ContentPage.ToolbarItems >
         <ToolbarItem Text="Новый перевод" Command="{Binding TransferCommand}" />
     </ContentPage.ToolbarItems>
-
-    <ScrollView>
+    
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15" Padding="10">
         
-        <VerticalStackLayout Spacing="25" Padding="30,0">
-            
-            <Grid RowDefinitions="Auto,Auto,*" RowSpacing="5" Padding="5" >
+        <SearchBar Placeholder="Поиск.."
+                    Text="{Binding SearchText, Mode=TwoWay}" />
 
-                <SearchBar Text="{Binding SearchText, Mode=TwoWay}" Placeholder="Поиск..." />
+        <ScrollView Grid.Row="1" >
+            <CollectionView ItemsSource="{Binding TransferredStudents}" SelectionMode="Single" 
+                                SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="15" ColumnDefinitions="*, Auto" >
+                            <StackLayout Spacing="5">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
+                                <Label Text="{Binding DisplayHistory}" TextColor="Gray" FontSize="16" />
+                            </StackLayout>
+                            <Button Text="Удалить"
+                                    Grid.Column="1"
+                                    Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
+                                    CommandParameter="{Binding}"/>
 
-                <ActivityIndicator IsRunning="{Binding IsBusy}"
-                                    IsVisible="{Binding IsBusy}"
-                                    Grid.Row="1" HorizontalOptions="End" />
-
-                <CollectionView ItemsSource="{Binding TransferredStudents}" SelectionMode="Single" 
-                                SelectedItem="{Binding SelectedStudent}" Grid.Row="2" >
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <StackLayout>
-                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
-                                    <Label Text="{Binding DisplayHistory}" TextColor="Gray" />
-                                </StackLayout>
-
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="2" 
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                             Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 
                                                             CommandParameter="{Binding}" />
-                                </Grid.GestureRecognizers>
-                            </Grid>
+                            </Grid.GestureRecognizers>
+                        </Grid>
 
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
-        </VerticalStackLayout>
-    </ScrollView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+        </ScrollView>
+        
+    </Grid>
 </ContentPage>

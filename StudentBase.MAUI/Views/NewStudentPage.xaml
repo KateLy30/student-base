@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="StudentBase.MAUI.NewStudentPage"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{StaticResource BackgroundPageGray}">
 
     <ContentPage.Resources>
         <Style x:Key="InvalidEntryStyle" TargetType="Entry" >
@@ -34,12 +34,10 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="50, *">
+    <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
 
         <!-- Заголовок -->
-        <Border StrokeThickness="0" 
-                Padding="15,10" 
-                BackgroundColor="Gray">
+        <Border Style="{StaticResource BorderHeader}">
             <Label Text="{Binding Title}" 
                        FontSize="20" 
                        FontAttributes="Bold" 
@@ -48,15 +46,10 @@
         </Border>
 
         <ScrollView Grid.Row="1"
-                    BackgroundColor="#F5F5F5">
+                    BackgroundColor="{StaticResource BackgroundPageGray}">
 
             <VerticalStackLayout Padding="8">
-                <Border StrokeThickness="1" 
-                        Padding="15"
-                        BackgroundColor="White">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10" />
-                    </Border.StrokeShape>
+                <Border>
                     <VerticalStackLayout Spacing="12">
                         <!-- ФИО -->
                         <VerticalStackLayout Spacing="5">
@@ -134,12 +127,7 @@
                                 <Label Text="Уровень образования" 
                                        FontSize="14" 
                                        TextColor="#757575"/>
-                                <Border StrokeThickness="1" 
-                                        Padding="5"
-                                        BackgroundColor="White">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8" />
-                                    </Border.StrokeShape>
+                                <Border Style="{StaticResource BorderPicker}">
                                     <Picker ItemsSource="{Binding EducationLevelsList}"
                                             SelectedItem="{Binding SelectedLevel, Mode=TwoWay}" 
                                             Title="Выберите уровень" 
@@ -156,12 +144,7 @@
                                 <Label Text="Форма обучения" 
                                        FontSize="14" 
                                        TextColor="#757575"/>
-                                <Border StrokeThickness="1" 
-                                        Padding="5"
-                                        BackgroundColor="White">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8" />
-                                    </Border.StrokeShape>
+                                <Border Style="{StaticResource BorderPicker}">
                                     <Picker ItemsSource="{Binding FormsOfEducationList}"
                                             SelectedItem="{Binding SelectedForm, Mode=TwoWay}"
                                             Title="Выберите форму"
@@ -180,12 +163,7 @@
                             <Label Text="Группа" 
                                    FontSize="14" 
                                    TextColor="#757575"/>
-                            <Border StrokeThickness="1" 
-                                    Padding="5"
-                                    BackgroundColor="White">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="8" />
-                                </Border.StrokeShape>
+                            <Border Style="{StaticResource BorderPicker}">
                                 <Picker ItemsSource="{Binding Groups}"
                                         ItemDisplayBinding="{Binding Name}" 
                                         SelectedItem="{Binding SelectedGroup, Mode=TwoWay}"
@@ -200,12 +178,7 @@
                             <Label Text="Статус" 
                                 FontSize="14" 
                                 TextColor="#757575"/>
-                            <Border StrokeThickness="1" 
-                                Padding="5"
-                                BackgroundColor="White">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="8" />
-                                </Border.StrokeShape>
+                            <Border Style="{StaticResource BorderPicker}">
                                 <Picker ItemsSource="{Binding StatusList}"
                                     SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" 
                                     Title="Выберите статус"

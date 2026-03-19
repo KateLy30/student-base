@@ -35,13 +35,13 @@
                                 <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
                             </StackLayout>
 
-                            <Button Text="Редактировать" BackgroundColor="DimGray" 
+                            <Button Text="Редактировать" 
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
-                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="20"/>
+                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
 
-                            <Button Text="Удалить" BackgroundColor="OrangeRed"
+                            <Button Text="Удалить" 
                                     Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
-                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="20"/>
+                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
 
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2" 

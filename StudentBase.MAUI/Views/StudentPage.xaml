@@ -52,20 +52,19 @@
                                 <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
                                 <Label Text="{Binding GroupName}" TextColor="Gray" />
                                 <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
-                                <Label Text="{Binding ProgramQualification}" TextColor="Gray" />
                             </StackLayout>
 
-                            <Button Text="Редактировать" BackgroundColor="DimGray" 
+                            <Button Text="Редактировать" 
                                     Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
-                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
 
                             <Button Text="Перевести" 
                                         Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
-                                        CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+                                        CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
                             
                             <Button Text="Внести оплату" 
                                     Grid.Column="3" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.AddPaymentCommand}" 
-                                    CommandParameter="{Binding}" FontSize="14" HeightRequest="30"/>
+                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
 
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2" 

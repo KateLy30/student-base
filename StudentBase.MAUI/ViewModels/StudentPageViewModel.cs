@@ -9,17 +9,19 @@ namespace StudentBase.MAUI.ViewModels
     public class StudentPageViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
+        private readonly IStudentService _studentService;
         private readonly Func<object> _createNewStudentPage;
         private readonly Func<object> _openStudentCardPage;
         public ObservableCollection<StudentEntity> Students { get; } = [];
         public ObservableCollection<GroupEntity> ListGroupsFilter { get; } = [];
         public ObservableCollection<ProgramEntity> ListProgramsFilter { get; } = [];
 
-        public StudentPageViewModel(IDataService dataService, Func<object> createNewStudentPage, Func<object> openStudentCardPage)
+        public StudentPageViewModel(IDataService dataService,IStudentService studentService, Func<object> createNewStudentPage, Func<object> openStudentCardPage)
         {
             _dataService = dataService;
             _createNewStudentPage = createNewStudentPage;
             _openStudentCardPage = openStudentCardPage;
+            _studentService = studentService;
 
             LoadCommand = new AsyncCommand(LoadAsync);
             AddCommand = new AsyncCommand(AddAsync);
@@ -186,7 +188,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _dataService.Students.GetAllAsync();
+                var list = await _studentService.GetAllStudentsAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -230,7 +232,9 @@ namespace StudentBase.MAUI.ViewModels
             if (SelectedStudent is null) return;
             var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {SelectedStudent.Name}?", "Да", "Нет");
             if (!ok) return;
-            await _dataService.Students.DeleteAsync(SelectedStudent.Id);
+            var result = await _studentService.DeleteStudentAsync(SelectedStudent.Id);
+            if (result.Success == false)
+                await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "ОК");
             await LoadAsync();
         }
         public async Task AddAsync()

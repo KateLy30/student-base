@@ -9,8 +9,5 @@ namespace StudentBase.Domain.Repositories
         Task<StudentEntity?> GetByPhoneAsync(string phone);
         Task<StudentEntity?> GetByNameAsync(string name);
         Task<int> GetStudentsCountAsync();
-        //Task<int> GetOverduePaymentsCountAsync();
-        //Task<IEnumerable<StudentEntity>?> GetAllStudentsOverdueAsync();
-        Task<IEnumerable<StudentEntity>?> GetAllTransferredStudentsAsync();
     }
 }

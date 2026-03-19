@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using StudentBase.Application.implementations;
+using StudentBase.Application.Implementations;
 using StudentBase.Application.Interfaces;
 using StudentBase.Infrastructure.EntityFramework;
 using StudentBase.MAUI.ViewModels;
@@ -25,8 +26,10 @@ namespace StudentBase.MAUI
             builder.Services.AddDbContext<AppDbContext>();
             builder.Services.AddSingleton<IDataService, DataService>();
             builder.Services.AddScoped<IProgramService, ProgramService>();
+            builder.Services.AddScoped<IStudentService, StudentService>();
 
             builder.Services.AddTransient<StudentPageViewModel>(p => new StudentPageViewModel(p.GetRequiredService<IDataService>(),
+                p.GetRequiredService<IStudentService>(),
                 () => p.GetRequiredService<NewStudentPage>(),
                 () => p.GetRequiredService<StudentCardPage>()));
 

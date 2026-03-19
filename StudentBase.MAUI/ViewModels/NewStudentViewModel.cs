@@ -9,6 +9,7 @@ namespace StudentBase.MAUI.ViewModels
     public class NewStudentViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
+        private readonly IStudentService _studentService;
         private StudentEntity _student = new();
         public ObservableCollection<StatusStudents> StatusList { get; }
         public ObservableCollection<LevelsOfEducation> EducationLevelsList { get; }
@@ -18,7 +19,7 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
 
-        public NewStudentViewModel(IDataService dataService)
+        public NewStudentViewModel(IDataService dataService, IStudentService studentService)
         {
             _dataService = dataService;
 
@@ -30,6 +31,7 @@ namespace StudentBase.MAUI.ViewModels
             FormsOfEducationList = new ObservableCollection<FormsOfEducation>(Enum.GetValues<FormsOfEducation>().Cast<FormsOfEducation>());
 
             _ = LoadGroupsAsync();
+            _studentService = studentService;
         }
         private bool CanSave()
         {
@@ -207,9 +209,17 @@ namespace StudentBase.MAUI.ViewModels
             _student.ProgramQualification = SelectedGroup.EducationalProgram.Qualification;
 
             if (_student.Id == 0)
-                await _dataService.Students.CreateAsync(_student);
+            {
+                var result = await _studentService.CreateStudentAsync(_student);
+                if (result.Success == false)
+                    await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+            }
             else
-                await _dataService.Students.UpdateAsync(_student);
+            {
+                var result = await _studentService.UpdateStudentAsync(_student);
+                if (result.Success == false)
+                    await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+            }
         }
 
     }

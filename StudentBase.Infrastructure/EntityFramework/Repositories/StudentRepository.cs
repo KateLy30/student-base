@@ -109,26 +109,5 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.EducationalGroup = updatedEntity.EducationalGroup;
             entityInDatabase.StudentTransfers = updatedEntity.StudentTransfers;
         }
-
-        //public async Task<int> GetOverduePaymentsCountAsync()
-        //{
-        //    return await _context.Students.Where(s => !s.IsPaidSemester).CountAsync();
-        //}
-
-        //public async Task<IEnumerable<StudentEntity>?> GetAllStudentsOverdueAsync()
-        //{
-        //    return await _context.Students.Where(s => !s.IsPaidSemester).ToListAsync();
-        //}
-
-        public async Task<IEnumerable<StudentEntity>?> GetAllTransferredStudentsAsync()
-        {
-            List<StudentEntity> students = [];
-            var transfers = await _context.Transfers.ToListAsync();
-            foreach (var transfer in transfers)
-            {
-                students.Add(await _context.Students.FindAsync(transfer.StudentId));
-            }
-            return students;
-        }
     }
 }

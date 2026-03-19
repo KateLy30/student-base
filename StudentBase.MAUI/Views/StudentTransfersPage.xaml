@@ -23,11 +23,12 @@
                             <StackLayout Spacing="5">
                                 <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
                                 <Label Text="{Binding DisplayHistory}" TextColor="Gray" FontSize="16" />
+                                <Label Text="{Binding EnrollmentDate, StringFormat='{0:dd.MM.yyyy}'}" TextColor="Gray" FontSize="16" />
                             </StackLayout>
                             <Button Text="Удалить"
-                                    Grid.Column="1"
+                                    Grid.Column="1" 
                                     Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
-                                    CommandParameter="{Binding}"/>
+                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
 
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2" 

@@ -95,7 +95,16 @@ namespace StudentBase.MAUI.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        private int studentsCount;
+        public int StudentsCount
+        {
+            get => studentsCount;
+            set
+            {
+                studentsCount = value;
+                OnPropertyChanged();
+            }
+        }
 
         // заполнение полей
         public void UploadData(GroupEntity g)
@@ -108,7 +117,7 @@ namespace StudentBase.MAUI.ViewModels
             ProgramQualification = g.EducationalProgram.Qualification;
             DurationTraining = g.EducationalProgram.DurationTraining;
             Status = g.Status;
-
+            StudentsCount = g.Students.Count;
         }
     }
 }

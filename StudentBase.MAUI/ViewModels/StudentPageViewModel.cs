@@ -214,13 +214,14 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand DeleteCommand { get; }
         public AsyncCommand EditCommand { get; }
         public AsyncCommand OpenCardCommand { get; }
+        public AsyncCommand AddPaymentCommand { get; }
 
         public async Task OpenCardAsync(StudentEntity? s)
         {
             if (s is null) return;
             var page = (Page)_openStudentCardPage();
             if (page.BindingContext is StudentCardViewModel viewModel)
-                viewModel.UploadData(s);
+                await viewModel.UploadData(s);
             await Shell.Current.Navigation.PushModalAsync(page);
         }
 
@@ -244,6 +245,10 @@ namespace StudentBase.MAUI.ViewModels
             if (page.BindingContext is NewStudentViewModel viewModel)
                 viewModel.LoadFrom(s);
             await Shell.Current.Navigation.PushModalAsync(page);
+        }
+        public async Task AddPaymnetAsync(StudentEntity? s)
+        {
+
         }
     }
 }

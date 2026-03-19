@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="StudentBase.MAUI.Views.NewPaymentPage"
+             BackgroundColor="{StaticResource BackgroundPageGray}">
+
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry" >
+            <Setter Property="TextColor" Value="Red"/>
+            <Setter Property="BackgroundColor" Value="#FFF0F0" />
+        </Style>
+
+        <!-- Стиль для основных Entry -->
+        <Style x:Key="ModernEntryStyle" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="PlaceholderColor" Value="#9E9E9E"/>
+        </Style>
+
+        <!-- Стиль для Picker -->
+        <Style x:Key="ModernPickerStyle" TargetType="Picker">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="TitleColor" Value="#9E9E9E"/>
+        </Style>
+
+        <!-- Стиль для DatePicker -->
+        <Style x:Key="ModernDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="FontSize" Value="1"/>
+            <Setter Property="HeightRequest" Value="50"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
+
+        <!-- Заголовок -->
+        <Border Style="{StaticResource BorderHeader}">
+            <Label Text="Новая квитанция" 
+                FontSize="20" 
+                FontAttributes="Bold" 
+                TextColor="White"
+                VerticalOptions="Center"/>
+        </Border>
+
+        <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundPageGray}">
+
+            <VerticalStackLayout Padding="8">
+                <Border>
+                    <VerticalStackLayout Spacing="12">
+
+                        <!-- Список студентов -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Студент"
+                                    FontSize="14"
+                                    TextColor="#757575"/>
+                            <Border Style="{StaticResource BorderPicker}">
+                                <Picker ItemsSource="{Binding Students}"
+                                        ItemDisplayBinding="{Binding Name}" 
+                                        SelectedItem="{Binding SelectedStudent}"
+                                        Title="Выберите студента"
+                                        Style="{StaticResource ModernPickerStyle}">
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Семестр -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Оплачиваемый семестр" 
+                                    FontSize="14" 
+                                    TextColor="#757575"/>
+                            <Entry Text="{Binding Semester, Mode=TwoWay}" 
+                                    Placeholder="Введите цифру семестра"
+                                    Style="{StaticResource ModernEntryStyle}">
+                                <Entry.Behaviors>
+                                    <toolkit:TextValidationBehavior x:Name="SemesterValidator" 
+                                                                    MinimumLength="1"
+                                                                    Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
+                                                                    InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Label Text="Поле обязательно" 
+                                    FontSize="12" 
+                                    TextColor="#DC3545" 
+                                    IsVisible="{Binding IsNotValid, Source={x:Reference SemesterValidator}}" />
+                        </VerticalStackLayout>
+
+                        <!-- Сумма -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Сумма" 
+                                    FontSize="14" 
+                                    TextColor="#757575"/>
+                            <Entry Text="{Binding Amount, Mode=TwoWay}" 
+                                    Placeholder="Введите сумму"
+                                    Style="{StaticResource ModernEntryStyle}">
+                                <Entry.Behaviors>
+                                    <toolkit:TextValidationBehavior x:Name="AmountValidator" 
+                                             MinimumLength="1"
+                                             Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
+                                             InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Label Text="Поле обязательно" 
+                                    FontSize="12" 
+                                    TextColor="#DC3545" 
+                                    IsVisible="{Binding IsNotValid, Source={x:Reference AmountValidator}}" />
+                        </VerticalStackLayout>
+
+                        <!-- Дата платежа -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Дата платежа" 
+                                    FontSize="14" 
+                                        TextColor="#757575"/>
+                            <DatePicker Format="d" 
+                                        Date="{Binding PaymentDate}" 
+                                        MinimumDate="01/01/2010"
+                                        TextColor="#333333"
+                                        FontSize="16"/>
+                        </VerticalStackLayout>
+                    
+                    
+                    </VerticalStackLayout>
+                </Border>
+                
+                <!-- Кнопки действий -->
+                <HorizontalStackLayout Spacing="10" 
+                                        HorizontalOptions="Center" 
+                                        Margin="20">
+
+                    <Button Text="Сохранить" 
+                            Command="{Binding SaveCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"/>
+
+                    <Button Text="Отмена" 
+                            Command="{Binding CancelCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"/>
+                </HorizontalStackLayout>
+                
+            </VerticalStackLayout>
+            
+            
+        </ScrollView>
+    </Grid>
+</ContentPage>

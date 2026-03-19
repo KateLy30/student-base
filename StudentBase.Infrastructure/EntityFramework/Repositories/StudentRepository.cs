@@ -106,6 +106,8 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
             entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
             entityInDatabase.Status = updatedEntity.Status;
+            entityInDatabase.EducationalGroup = updatedEntity.EducationalGroup;
+            entityInDatabase.StudentTransfers = updatedEntity.StudentTransfers;
         }
 
         //public async Task<int> GetOverduePaymentsCountAsync()

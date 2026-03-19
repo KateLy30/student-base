@@ -27,7 +27,7 @@ public class StudentTransferEntity
     public GroupEntity ToGroup { get; set; }
 
     [NotMapped]
-    public string? DisplayHistory => $"{FromGroup.Name} ---> {ToGroup.Name}";
+    public string? DisplayHistory => $"{FromGroup.Name} \t ---> \t {ToGroup.Name}";
     public string? Name => Student.Name;
 
 }

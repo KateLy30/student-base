@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.PaymentPage"
+             Title="Оплата">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Создать новую квитанцию" Command="{Binding AddReceiptCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid Padding="9" RowDefinitions="Auto,Auto,*" RowSpacing="20" >
+
+        <Entry Placeholder="Введите ФИО студента..." 
+               HeightRequest="50" 
+               Text="{Binding SearchText, Mode=TwoWay}"/>
+        
+        <Button Grid.Row="1" Text="Найти квитанции" Command="{Binding FindReceiptCommand}" HeightRequest="50" FontSize="16" WidthRequest="300" />
+       
+        <ScrollView Grid.Row="2">
+            <CollectionView ItemsSource="{Binding Payments}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5">
+                            <Border StrokeThickness="0.3"
+                                    Padding="5"
+                                    BackgroundColor="White">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding PaymentDate, StringFormat='{0:dd.MM.yyyy}'}"/>
+                                    <Label Text="{Binding Amount, StringFormat='{0:C}'}"/>
+                                    <Label Text="{Binding PaidSemester}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+        
+    </Grid>
+    
+</ContentPage>

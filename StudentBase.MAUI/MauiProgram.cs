@@ -42,7 +42,11 @@ namespace StudentBase.MAUI
                 () => p.GetRequiredService<NewStudentTransferPage>()));
 
             builder.Services.AddTransient<StudentTransferViewModel>(p => new StudentTransferViewModel(p.GetRequiredService<IDataService>(), 
-                () => p.GetRequiredService<NewStudentTransferPage>()));
+                () => p.GetRequiredService<NewStudentTransferPage>(),
+                () => p.GetRequiredService<StudentCardPage>()));
+
+            builder.Services.AddTransient<PaymentPageViewModel>(p => new PaymentPageViewModel(p.GetRequiredService<IDataService>(),
+                () => p.GetRequiredService<NewPaymentPage>()));
 
             builder.Services.AddTransient<NewStudentViewModel>();
             builder.Services.AddTransient<NewGroupViewModel>();
@@ -51,6 +55,7 @@ namespace StudentBase.MAUI
             builder.Services.AddTransient<GroupCardViewModel>();
             builder.Services.AddTransient<NewStudentTransferViewModel>();
             builder.Services.AddTransient<StudentCardViewModel>();
+            builder.Services.AddTransient<NewPaymentViewModel>();
 
             builder.Services.AddTransient<MainPage>();
 
@@ -61,6 +66,7 @@ namespace StudentBase.MAUI
             builder.Services.AddTransient<GroupCardPage>();
             builder.Services.AddTransient<NewStudentTransferPage>();
             builder.Services.AddTransient<StudentCardPage>();
+            builder.Services.AddTransient<NewPaymentPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

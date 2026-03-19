@@ -99,6 +99,12 @@ namespace StudentBase.MAUI.ViewModels
 
             await _dataService.Transfers.CreateAsync(_transfer);
 
+            var student = await _dataService.Students.GetByIdAsync(SelectedStudent.Id);
+            student.CurrentGroupId = SelectedGroup.Id;
+            student.EducationalGroup = SelectedGroup;
+            student.StudentTransfers.Add(_transfer); 
+            await _dataService.Students.UpdateAsync(student);
+
             await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is StudentTransferViewModel viewModel)
             {

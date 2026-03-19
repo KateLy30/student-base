@@ -10,7 +10,7 @@ namespace StudentBase.MAUI.ViewModels
         private readonly IDataService _dataService;
         private readonly Func<object> _createNewTransferPage;
         public ObservableCollection<StudentEntity> Debtors { get; } = [];
-        public ObservableCollection<StudentEntity> Translations { get; } = [];
+        public ObservableCollection<StudentTransferEntity> Translations { get; } = [];
         public AsyncCommand ArchiveCommand { get; }
         public AsyncCommand TransferStudentCommand { get; }
         public AsyncCommand CreateReceiptCommand { get; }
@@ -99,7 +99,7 @@ namespace StudentBase.MAUI.ViewModels
                 foreach (var student in list)
                     Debtors.Add(student);
 
-                var list2 = await _dataService.Students.GetAllTransferredStudentsAsync();
+                var list2 = await _dataService.Transfers.GetAllAsync();
                 if (list2 == null) return;
                 Translations.Clear();
                 foreach (var student in list2)

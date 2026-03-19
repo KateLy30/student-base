@@ -89,7 +89,21 @@ namespace StudentBase.MAUI.ViewModels
         public int GroupsCount
         {
             get => groupsCount;
-            set => groupsCount = value;
+            set
+            {
+                groupsCount = value;
+                OnPropertyChanged();
+            }
+        }
+        private int studentsCount;
+        public int StudentsCount
+        {
+            get => studentsCount;
+            set
+            {
+                studentsCount = value;
+                OnPropertyChanged();
+            }
         }
 
         // заполнение полей
@@ -102,6 +116,7 @@ namespace StudentBase.MAUI.ViewModels
             Cost = p.CostPerSemester;
             Status = p.Status;
             GroupsCount = p.EducationalGroups.Count;
+            StudentsCount = p.EducationalGroups.Sum(g => g.Students.Count);
         }
     }
 }

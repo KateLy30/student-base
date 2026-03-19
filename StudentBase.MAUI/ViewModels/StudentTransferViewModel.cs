@@ -9,14 +9,16 @@ namespace StudentBase.MAUI.ViewModels
     {
         private readonly IDataService _dataService;
         private readonly Func<object> _createNewTransferPage;
+        private readonly Func<object> _openStudentCardPage;
         public ObservableCollection<StudentTransferEntity> TransferredStudents { get; } = [];
-        public StudentTransferViewModel(IDataService dataService, Func<object> createNewTransferPage)
+        public StudentTransferViewModel(IDataService dataService, Func<object> createNewTransferPage, Func<object> openStudentCardPage)
         {
             _dataService = dataService;
-
-            OpenCardCommand = new AsyncCommand(OpenCardAsync);
-            TransferCommand = new AsyncCommand(TransferAsync);
             _createNewTransferPage = createNewTransferPage;
+            _openStudentCardPage = openStudentCardPage;
+
+            OpenCardCommand = new AsyncCommand(s => OpenCardAsync(s as StudentEntity));
+            TransferCommand = new AsyncCommand(TransferAsync);
         }
         public AsyncCommand OpenCardCommand { get; }
         public AsyncCommand TransferCommand { get; }
@@ -71,9 +73,13 @@ namespace StudentBase.MAUI.ViewModels
             var page = (Page)_createNewTransferPage();
             await Shell.Current.Navigation.PushModalAsync(page);
         }
-        private async Task OpenCardAsync()
+        private async Task OpenCardAsync(StudentEntity? s)
         {
-            // окно карты
+            if (s is null) return;
+            var page = (Page)_openStudentCardPage();
+            if (page.BindingContext is StudentCardViewModel viewModel)
+                await viewModel.UploadData(s);
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
     }
 }

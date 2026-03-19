@@ -1,20 +1,37 @@
-﻿
-
+﻿using StudentBase.Application.Interfaces;
 using StudentBase.Domain;
 using StudentBase.Domain.Entities;
 using StudentBase.MAUI.Mvvm;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace StudentBase.MAUI.ViewModels
 {
     public class StudentCardViewModel : BaseViewModel
     {
+        private readonly IDataService _dataService;
+        public ObservableCollection<StudentTransferEntity> Transfers { get; } = [];
         public AsyncCommand ExitCommand { get; }
 
-        public StudentCardViewModel() =>
+        public StudentCardViewModel(IDataService dataService)
+        {
+            _dataService = dataService;
             ExitCommand = new AsyncCommand(ExitAsync);
+        }
 
         public async Task ExitAsync() =>
             await Shell.Current.Navigation.PopModalAsync();
+
+        private bool hasTransfers;
+        public bool HasTransfers
+        {
+            get => hasTransfers;
+            set
+            {
+                hasTransfers = value;
+                OnPropertyChanged();
+            }
+        }
 
         // поля для вывода
         private int id;
@@ -173,9 +190,19 @@ namespace StudentBase.MAUI.ViewModels
 
 
         // заполнение полей
-        public void UploadData(StudentEntity s)
+        public async Task UploadData(StudentEntity s)
         {
-            Id = s.Id;
+            if (s.StudentTransfers.Count == 0) HasTransfers = false;
+            else
+            {
+                HasTransfers = true;
+                var list = await _dataService.Transfers.GelAllByStudentAsync(s.Id);
+                Transfers.Clear();
+                foreach( var transfer in list)
+                    Transfers.Add(transfer);
+
+            }
+                Id = s.Id;
             Name = s.Name;
             Phone = s.Phone;
             DateOfBirth = s.DateOfBirth;

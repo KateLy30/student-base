@@ -45,7 +45,10 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<StudentTransferEntity>?> GetAllAsync()
         {
-           return await _context.Transfers.Include(st => st.Student).ToListAsync();
+           return await _context.Transfers.Include(st => st.Student)
+                                            .Include(st => st.ToGroup)
+                                            .Include(st => st.FromGroup)
+                                            .ToListAsync();
         }
 
         public async Task<StudentTransferEntity?> GetByIdAsync(int id)

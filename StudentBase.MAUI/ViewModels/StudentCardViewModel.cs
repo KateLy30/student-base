@@ -195,14 +195,14 @@ namespace StudentBase.MAUI.ViewModels
             if (s.StudentTransfers.Count == 0) HasTransfers = false;
             else
             {
-                HasTransfers = true;
-                var list = await _dataService.Transfers.GelAllByStudentAsync(s.Id);
-                Transfers.Clear();
-                foreach( var transfer in list)
-                    Transfers.Add(transfer);
+                //HasTransfers = true;
+                //var list = await _dataService.Transfers.GelAllByStudentAsync(s.Id);
+                //Transfers.Clear();
+                //foreach( var transfer in list)
+                //    Transfers.Add(transfer);
 
             }
-                Id = s.Id;
+            Id = s.Id;
             Name = s.Name;
             Phone = s.Phone;
             DateOfBirth = s.DateOfBirth;

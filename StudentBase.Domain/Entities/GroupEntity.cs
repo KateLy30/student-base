@@ -14,13 +14,17 @@ namespace StudentBase.Domain.Entities
 
         [Required]
         [MaxLength(50)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         public DateTime DateOfCreation { get; set; }
 
         [Required]
         public StatusGroups Status { get; set; }
+
+        [Required]
+        public DateTime CreateAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
 
         // навигационные свойства
         [Required]

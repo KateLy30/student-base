@@ -15,40 +15,33 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> CreateAsync(StudentTransferEntity entity)
         {
-            try
-            {
-                await _context.Transfers.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception) {  return false;   }
+            entity.CreateAt = DateTime.Now;
+            await _context.Transfers.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                var entity = await _context.Transfers.FindAsync(id);
-                if (entity == null) return false;
+            var entity = await _context.Transfers.FindAsync(id);
+            if (entity == null) return false;
 
-                _context.Remove(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception) { return false; }
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<IEnumerable<StudentTransferEntity>?> GelAllByStudentAsync(int studentId)
+        public async Task<IEnumerable<StudentTransferEntity>?> GetAllByStudentAsync(int studentId)
         {
             return await _context.Transfers.Where(t => t.StudentId == studentId).ToListAsync();
         }
 
         public async Task<IEnumerable<StudentTransferEntity>?> GetAllAsync()
         {
-           return await _context.Transfers.Include(st => st.Student)
-                                            .Include(st => st.ToGroup)
-                                            .Include(st => st.FromGroup)
-                                            .ToListAsync();
+            return await _context.Transfers.Include(st => st.Student)
+                                             .Include(st => st.ToGroup)
+                                             .Include(st => st.FromGroup)
+                                             .ToListAsync();
         }
 
         public async Task<StudentTransferEntity?> GetByIdAsync(int id)
@@ -61,22 +54,23 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> UpdateAsync(StudentTransferEntity entity)
         {
-            try
-            {
-                var entityInDB = await _context.Transfers.FindAsync(entity.Id);
-                if (entityInDB == null) return false;
+            var entityInDB = await _context.Transfers.FindAsync(entity.Id);
+            if (entityInDB == null) return false;
 
-                UpdateEntity(entityInDB, entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch(Exception) { return false; }
+            UpdateEntity(entityInDB, entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
         public static void UpdateEntity(StudentTransferEntity entityInDatabase, StudentTransferEntity updatedEntity)
         {
             entityInDatabase.StudentId = updatedEntity.StudentId;
             entityInDatabase.FromGroupId = updatedEntity.FromGroupId;
             entityInDatabase.ToGroupId = updatedEntity.ToGroupId;
+            entityInDatabase.EnrollmentDate = updatedEntity.EnrollmentDate;
+            entityInDatabase.UpdateAt = DateTime.Now;
+            entityInDatabase.Student = updatedEntity.Student;
+            entityInDatabase.FromGroup = updatedEntity.FromGroup;
+            entityInDatabase.ToGroup = updatedEntity.ToGroup;
         }
     }
 }

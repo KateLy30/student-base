@@ -9,9 +9,7 @@ public record StudentResult<T>
     public string? Message { get; init; }
     public string? ErrorMessage { get; init; }
     public int Count { get; init; }
-    public StatusStudents Status { get; init; }
     public StudentEntity? Student { get; init; }
-    public List<T>? DataList { get; init; }
 
 }
 public interface IStudentService

@@ -53,3 +53,11 @@ public enum LevelsOfEducation
     [Description("Среднее общее образование (11 классов)")]
     SecondaryGeneralEducation  
 }
+public enum PaymentType
+{
+    [Description("Наличные")]
+    Cash,
+
+    [Description("Безналичные")]
+    NonCash
+}

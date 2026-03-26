@@ -93,13 +93,13 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _dataService.Students.GetAllAsync();
+                var list = await _dataService.StudentService.GetAllStudentsAsync();
                 if (list == null) return;
                 Debtors.Clear();
                 foreach (var student in list)
                     Debtors.Add(student);
 
-                var list2 = await _dataService.Transfers.GetAllAsync();
+                var list2 = await _dataService.StudentTransferService.GetAllStudentTransfersAsync();
                 if (list2 == null) return;
                 Translations.Clear();
                 foreach (var student in list2)
@@ -112,10 +112,9 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadSummaries()
         {
-            NumberOfStudents = await _dataService.Students.GetStudentsCountAsync();
-            NumberOfGroups = await _dataService.Groups.GetGroupsCountAsync();
-            NumberOfPrograms = await _dataService.Programs.GetProgramsCountAsync();
-            NumberOfOverduePayments = await _dataService.Students.GetStudentsCountAsync();
+            NumberOfStudents = (await _dataService.StudentService.GetStudentsCountAsync()).Count;
+            NumberOfGroups = (await _dataService.GroupService.GetGroupsCountAsync()).Count;
+            NumberOfPrograms = (await _dataService.ProgramService.GetProgramsCountAsync()).Count;
         }
         private async Task OpenArchiveAsync() { }  // #TODO
         private async Task TransferStudentAsync()

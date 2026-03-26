@@ -2,15 +2,16 @@
 
 using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
+using StudentBase.Domain.Repositories;
 
 namespace StudentBase.Application.Implementations
 {
     public class StudentService : IStudentService
     {
-        private readonly IDataService _dataService;
-        public StudentService(IDataService dataService)
+        private readonly IStudentRepository _studentRepository;
+        public StudentService(IStudentRepository studentRepository)
         {
-            _dataService = dataService;
+            _studentRepository = studentRepository;
         }
 
         public async Task<StudentResult<object>> CreateStudentAsync(StudentEntity entity)
@@ -25,10 +26,10 @@ namespace StudentBase.Application.Implementations
                         ErrorMessage = "Пустые данные."
                     };
                 }
-                var result = await _dataService.Students.CreateAsync(entity);
+                var result = await _studentRepository.CreateAsync(entity);
                 return new StudentResult<object>
                 {
-                    Success = true,
+                    Success = result,
                     Message = "Данные успешно сохранены в базу."
                 };
             }
@@ -46,16 +47,7 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                var student = await _dataService.Students.GetByIdAsync(id);
-                if (student == null)
-                {
-                    return new StudentResult<object>
-                    {
-                        Success = false,
-                        ErrorMessage = $"Студент с ID {id} не найден."
-                    };
-                }
-                var result = await _dataService.Students.DeleteAsync(id);
+                var result = await _studentRepository.DeleteAsync(id);
                 if (result)
                 {
                     return new StudentResult<object>
@@ -87,7 +79,7 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                return await _dataService.Students.GetAllAsync();
+                return await _studentRepository.GetAllAsync();
             }
             catch (Exception)
             {
@@ -99,7 +91,7 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                return await _dataService.Students.GetAllByGroupIdAsync(groupId);
+                return await _studentRepository.GetAllByGroupIdAsync(groupId);
             }
             catch (Exception)
             {
@@ -111,7 +103,7 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                return await _dataService.Students.GetAllByProgramIdAsync(programId);
+                return await _studentRepository.GetAllByProgramIdAsync(programId);
             }
             catch (Exception)
             {
@@ -123,7 +115,7 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                var result = await _dataService.Students.GetByIdAsync(id);
+                var result = await _studentRepository.GetByIdAsync(id);
                 if (result == null)
                 {
                     return new StudentResult<object>
@@ -152,13 +144,13 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                var result = await _dataService.Students.GetByNameAsync(name);
+                var result = await _studentRepository.GetByNameAsync(name);
                 if(result == null)
                 {
                     return new StudentResult<object>
                     {
                         Success = false,
-                        ErrorMessage = "Такого студента нет в базе."
+                        ErrorMessage = $"Студент {name} не найден в базе."
                     };
                 }
                 return new StudentResult<object>
@@ -181,7 +173,7 @@ namespace StudentBase.Application.Implementations
         {
             try
             {
-                var count = await _dataService.Students.GetStudentsCountAsync();
+                var count = await _studentRepository.GetStudentsCountAsync();
                 return new StudentResult<object>
                 {
                     Success = true,
@@ -210,7 +202,7 @@ namespace StudentBase.Application.Implementations
                         Success = false
                     };
                 }
-                var result = await _dataService.Students.UpdateAsync(entity);
+                var result = await _studentRepository.UpdateAsync(entity);
                 if (result)
                 {
                     return new StudentResult<object>

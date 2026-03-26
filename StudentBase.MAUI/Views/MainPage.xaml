@@ -67,7 +67,7 @@
             <Button Text="Создать новую квитанцию" Command="{Binding CreateReceiptCommand}"  Style="{StaticResource ButtonInPage}"/>
         </HorizontalStackLayout>
 
-        <Grid Grid.Row="2" >
+        <Grid Grid.Row="2" ColumnSpacing="5" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

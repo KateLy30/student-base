@@ -13,33 +13,20 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         }
         public async Task<bool> CreateAsync(StudentEntity entity)
         {
-            try
-            {
-                await _context.Students.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            entity.CreateAt = DateTime.Now;
+            await _context.Students.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                var student = await _context.Students.FindAsync(id);
-                if (student == null) return false;
+            var student = await _context.Students.FindAsync(id);
+            if (student == null) return false;
 
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            _context.Students.Remove(student);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<StudentEntity>?> GetAllAsync()
@@ -80,19 +67,12 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> UpdateAsync(StudentEntity entity)
         {
-            try
-            {
-                var student = await _context.Students.FindAsync(entity.Id);
-                if (student == null) return false;
+            var student = await _context.Students.FindAsync(entity.Id);
+            if (student == null) return false;
 
-                UpdateEntity(student, entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            UpdateEntity(student, entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         //mapper
@@ -104,10 +84,13 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.DateOfReceipt = updatedEntity.DateOfReceipt;
             entityInDatabase.CurrentGroupId = updatedEntity.CurrentGroupId;
             entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
+            entityInDatabase.IsPaidCurrentSemester = updatedEntity.IsPaidCurrentSemester;
             entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
             entityInDatabase.Status = updatedEntity.Status;
+            entityInDatabase.UpdateAt = DateTime.Now;
             entityInDatabase.EducationalGroup = updatedEntity.EducationalGroup;
             entityInDatabase.StudentTransfers = updatedEntity.StudentTransfers;
+            entityInDatabase.Payments = updatedEntity.Payments;
         }
     }
 }

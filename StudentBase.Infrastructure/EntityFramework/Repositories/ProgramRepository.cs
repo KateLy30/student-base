@@ -15,6 +15,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> CreateAsync(ProgramEntity entity)
         {
+            entity.CreateAt = DateTime.Now;
             await _context.Programs.AddAsync(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -81,6 +82,8 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
             entityInDatabase.CostPerSemester = updatedEntity.CostPerSemester;
             entityInDatabase.Status = updatedEntity.Status;
+            entityInDatabase.UpdateAt = DateTime.Now;
+            entityInDatabase.EducationalGroups = updatedEntity.EducationalGroups;
         }
 
         public async Task<int> GetProgramsCountAsync()

@@ -1,29 +1,38 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using StudentBase.Application.implementations;
+using StudentBase.Application.Implementations;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Repositories;
-using StudentBase.Infrastructure.EntityFramework.Repositories;
 
 namespace StudentBase.Infrastructure.EntityFramework;
 
 public class DataService : IDataService
 {
-    private readonly AppDbContext _context;
-    public DataService(AppDbContext context)
+    private readonly IProgramRepository _programRepository;
+    private readonly IStudentRepository _studentRepository;
+    private readonly IGroupRepository _groupRepository;
+    private readonly IStudentTransferRepository _studentTransferRepository;
+    private readonly IPaymentRepository _paymentRepository;
+    public DataService(IProgramRepository programRepository, IStudentRepository studentRepository, IGroupRepository groupRepository, IStudentTransferRepository studentTransferRepository, IPaymentRepository paymentRepository)
     {
-        _context = context;
+        _programRepository = programRepository;
+        _studentRepository = studentRepository;
+        _groupRepository = groupRepository;
+        _studentTransferRepository = studentTransferRepository;
+        _paymentRepository = paymentRepository;
 
-        Students = new StudentRepository(_context);
-        Groups = new GroupRepository(_context);
-        Programs = new ProgramRepository(_context);
-        Transfers = new StudentTransferRepository(_context);
-        Receipts = new PaymentRepository(_context);
+        StudentService = new StudentService(_studentRepository);
+        ProgramService = new ProgramService(_programRepository);
+        GroupService = new GroupService(_groupRepository);
+        StudentTransferService = new StudentTransferService(_studentTransferRepository);
+        PaymentsService = new PaymentService(_paymentRepository);
     }
-    public IStudentRepository Students { get; }
+    public IStudentService StudentService { get; }
 
-    public IGroupRepository Groups { get; }
+    public IProgramService ProgramService { get; }
 
-    public IProgramRepository Programs { get; }
+    public IGroupService GroupService { get; }
 
-    public IStudentTransferRepository Transfers { get; }
+    public IStudentTransferService StudentTransferService { get; }
 
-    public IPaymentRepository Receipts { get; }
+    public IPaymentService PaymentsService { get; }
 }

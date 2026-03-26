@@ -4,9 +4,9 @@ namespace StudentBase.Application.Interfaces;
 
 public interface IDataService
 {
-    IStudentRepository Students { get; }
-    IGroupRepository Groups { get; }
-    IProgramRepository Programs { get; }
-    IStudentTransferRepository Transfers { get; }
-    IPaymentRepository Receipts { get; }
+    IStudentService StudentService { get; }
+    IProgramService ProgramService { get; }
+    IGroupService GroupService { get; }
+    IStudentTransferService StudentTransferService { get; }
+    IPaymentService PaymentsService { get; }
 }

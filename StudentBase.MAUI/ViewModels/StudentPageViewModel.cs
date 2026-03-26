@@ -9,19 +9,17 @@ namespace StudentBase.MAUI.ViewModels
     public class StudentPageViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
-        private readonly IStudentService _studentService;
         private readonly Func<object> _createNewStudentPage;
         private readonly Func<object> _openStudentCardPage;
         public ObservableCollection<StudentEntity> Students { get; } = [];
         public ObservableCollection<GroupEntity> ListGroupsFilter { get; } = [];
         public ObservableCollection<ProgramEntity> ListProgramsFilter { get; } = [];
 
-        public StudentPageViewModel(IDataService dataService,IStudentService studentService, Func<object> createNewStudentPage, Func<object> openStudentCardPage)
+        public StudentPageViewModel(IDataService dataService, Func<object> createNewStudentPage, Func<object> openStudentCardPage)
         {
             _dataService = dataService;
             _createNewStudentPage = createNewStudentPage;
             _openStudentCardPage = openStudentCardPage;
-            _studentService = studentService;
 
             LoadCommand = new AsyncCommand(LoadAsync);
             AddCommand = new AsyncCommand(AddAsync);
@@ -121,7 +119,7 @@ namespace StudentBase.MAUI.ViewModels
         private async Task ApplyFilterGroups()
         {
             if (SelectedGroupsFilter == null) return;
-            var list = await _dataService.Students.GetAllByGroupIdAsync(SelectedGroupsFilter.Id);
+            var list = await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
             if (list == null) return;
             Students.Clear();
             foreach (var student in list)
@@ -137,8 +135,8 @@ namespace StudentBase.MAUI.ViewModels
         private async Task ApplyFilterPrograms()
         {
             if (SelectedProgramFilter == null) return;
-            var list = await _dataService.Students.GetAllByProgramIdAsync(SelectedProgramFilter.Id);
-            if(list == null) return;
+            var list = await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
+            if (list == null) return;
             Students.Clear();
             foreach (var student in list)
             {
@@ -153,15 +151,15 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadPickerFilterAsync()
         {
-            var groupsFromDb = await _dataService.Groups.GetAllAsync();
-            var programsFromDb = await _dataService.Programs.GetAllAsync();
+            var groupsFromDb = await _dataService.GroupService.GetAllGroupsAsync();
+            var programsFromDb = await _dataService.ProgramService.GetAllProgramsAsync();
             if (groupsFromDb != null)
             {
                 ListGroupsFilter.Clear();
                 var allGroupsItem = new GroupEntity
                 {
-                    Id = -1,  
-                    Name = "Все группы"  
+                    Id = -1,
+                    Name = "Все группы"
                 };
                 ListGroupsFilter.Add(allGroupsItem);
                 foreach (var g in groupsFromDb)
@@ -173,11 +171,11 @@ namespace StudentBase.MAUI.ViewModels
                 ListProgramsFilter.Clear();
                 var allProgramsItem = new ProgramEntity
                 {
-                    Id = -1,    
+                    Id = -1,
                     Specialty = "Все программы"
                 };
                 ListProgramsFilter.Add(allProgramsItem);
-                foreach(var p in  programsFromDb)
+                foreach (var p in programsFromDb)
                     ListProgramsFilter.Add(p);
                 SelectedProgramFilter = allProgramsItem;
             }
@@ -188,7 +186,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _studentService.GetAllStudentsAsync();
+                var list = await _dataService.StudentService.GetAllStudentsAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -217,6 +215,7 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand EditCommand { get; }
         public AsyncCommand OpenCardCommand { get; }
         public AsyncCommand AddPaymentCommand { get; }
+        public AsyncCommand ImportListCommand { get; }
 
         public async Task OpenCardAsync(StudentEntity? s)
         {
@@ -232,7 +231,7 @@ namespace StudentBase.MAUI.ViewModels
             if (SelectedStudent is null) return;
             var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {SelectedStudent.Name}?", "Да", "Нет");
             if (!ok) return;
-            var result = await _studentService.DeleteStudentAsync(SelectedStudent.Id);
+            var result = await _dataService.StudentService.DeleteStudentAsync(SelectedStudent.Id);
             if (result.Success == false)
                 await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "ОК");
             await LoadAsync();
@@ -251,6 +250,11 @@ namespace StudentBase.MAUI.ViewModels
             await Shell.Current.Navigation.PushModalAsync(page);
         }
         public async Task AddPaymnetAsync(StudentEntity? s)
+        {
+
+        }
+
+        public async Task ImportListAsync()
         {
 
         }

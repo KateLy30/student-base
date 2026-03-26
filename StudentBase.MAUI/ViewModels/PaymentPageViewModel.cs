@@ -44,10 +44,10 @@ namespace StudentBase.MAUI.ViewModels
         public async Task FindReceiptAsync()
         {
             if (SearchText == null) return;
-            var student = await _dataService.Students.GetByNameAsync(SearchText);
-            var payments = await _dataService.Receipts.GetAllBuStudentAsync(student.Id);
+            var student = (await _dataService.StudentService.GetStudentByNameAsync(SearchText)).Student;
+            var payments = await _dataService.PaymentsService.GetAllPaymentsByStudentAsync(student.Id);
             Payments.Clear();
-            foreach(var p in payments)
+            foreach (var p in payments)
                 Payments.Add(p);
         }
     }

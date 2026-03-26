@@ -7,7 +7,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class ProgramPageViewModel : BaseViewModel 
     {
-        private readonly IProgramService _programService;
+        private readonly IDataService _dataService;
         private readonly Func<object> _createNewProgramPage;
         private readonly Func<object> _openProgramCardPage;
         public ObservableCollection<ProgramEntity> Programs { get; } = [];
@@ -18,9 +18,9 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand DeleteCommand { get; }
         public AsyncCommand EditCommand { get; }
 
-        public ProgramPageViewModel(IProgramService programService, Func<object> createNewProgramPage, Func<object> openCardProgram)
+        public ProgramPageViewModel(IDataService dataService, Func<object> createNewProgramPage, Func<object> openCardProgram)
         {
-            _programService = programService;
+            _dataService = dataService;
             _createNewProgramPage = createNewProgramPage;
             _openProgramCardPage = openCardProgram;
 
@@ -72,7 +72,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _programService.GetAllProgramsAsync(); 
+                var list = await _dataService.ProgramService.GetAllProgramsAsync(); 
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -108,7 +108,7 @@ namespace StudentBase.MAUI.ViewModels
                     "Да", "Нет");
                 if (!ok) return;
             }
-            var result = await _programService.DeleteProgramAsync(p.Id);
+            var result = await _dataService.ProgramService.DeleteProgramAsync(p.Id);
             if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             await LoadAsync();
         }

@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudentBase.Domain.Entities
@@ -11,12 +10,12 @@ namespace StudentBase.Domain.Entities
 
         [Required]   // NOT NULL
         [MaxLength(300)]   // ограничение длины
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Phone]   // проверка формата номера
         [Required]
         [MaxLength(11)]
-        public string? Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
 
         [Required]
         public DateTime DateOfBirth { get; set; }
@@ -30,8 +29,7 @@ namespace StudentBase.Domain.Entities
         [Required]
         public FormsOfEducation FormOfEducation { get; set; }
 
-        [Required]  
-        public bool IsPaidCurrentSemester { get; set; }
+        public bool? IsPaidCurrentSemester { get; set; }
 
         // внешний ключ
         [Required]
@@ -39,6 +37,11 @@ namespace StudentBase.Domain.Entities
 
         [Required]
         public StatusStudents Status { get; set; }
+
+        [Required]
+        public DateTime CreateAt { get; set; }
+
+        public DateTime? UpdateAt { get; set; }
 
         // навигационные свойства 
         public GroupEntity EducationalGroup { get; set; }

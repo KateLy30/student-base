@@ -8,10 +8,11 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
         <ToolbarItem Text="Удалить" Command="{Binding DeleteCommand}" />
+        <ToolbarItem Text="Импортировать список из Excel" Command="{Binding ImportListCommand}"/>
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
-
+        
         <VerticalStackLayout Padding="10,0" Spacing="10">
             <SearchBar Placeholder="Поиск.."
                Text="{Binding SearchText, Mode=TwoWay}" />

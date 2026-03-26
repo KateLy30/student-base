@@ -8,7 +8,7 @@ namespace StudentBase.MAUI.ViewModels
 {
     public class NewProgramViewModel : BaseViewModel
     {
-        private readonly IProgramService _programService;
+        private readonly IDataService _dataService;
         private ProgramEntity _program = new();
 
         // списки для Enums
@@ -17,9 +17,9 @@ namespace StudentBase.MAUI.ViewModels
 
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
-        public NewProgramViewModel(IProgramService programService)
+        public NewProgramViewModel(IDataService dataService)
         {
-            _programService = programService;
+            _dataService = dataService;
 
             SaveCommand = new AsyncCommand(SaveAsync, CanSave);
             CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
@@ -117,13 +117,13 @@ namespace StudentBase.MAUI.ViewModels
 
             if (_program.Id == 0)
             {
-                var result = await _programService.CreateProgramAsync(_program);
+                var result = await _dataService.ProgramService.CreateProgramAsync(_program);
                 if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
 
             }
             else
             {
-                var result = await _programService.UpdateProgramAsync(_program);
+                var result = await _dataService.ProgramService.UpdateProgramAsync(_program);
                 if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             }
 

@@ -71,15 +71,15 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadPickerListAsync()
         {
-            var studentsFromDb = await _dataService.Students.GetAllAsync();
-            var groupsFromDB = await _dataService.Groups.GetAllAsync();
-            if(studentsFromDb != null)
+            var studentsFromDb = await _dataService.StudentService.GetAllStudentsAsync();
+            var groupsFromDB = await _dataService.GroupService.GetAllGroupsAsync();
+            if (studentsFromDb != null)
             {
                 Students.Clear();
                 foreach (var student in studentsFromDb)
                     Students.Add(student);
             }
-            if(groupsFromDB != null)
+            if (groupsFromDB != null)
             {
                 Groups.Clear();
                 foreach (var group in groupsFromDB)
@@ -97,13 +97,13 @@ namespace StudentBase.MAUI.ViewModels
             _transfer.ToGroup = SelectedGroup;
             _transfer.EnrollmentDate = TransferDate;
 
-            await _dataService.Transfers.CreateAsync(_transfer);
+            await _dataService.StudentTransferService.CreateStudentTransferAsync(_transfer);
 
-            var student = await _dataService.Students.GetByIdAsync(SelectedStudent.Id);
+            var student = (await _dataService.StudentService.GetStudentByIdAsync(SelectedStudent.Id)).Student;
             student.CurrentGroupId = SelectedGroup.Id;
             student.EducationalGroup = SelectedGroup;
-            student.StudentTransfers.Add(_transfer); 
-            await _dataService.Students.UpdateAsync(student);
+            student.StudentTransfers.Add(_transfer);
+            await _dataService.StudentService.UpdateStudentAsync(student);
 
             await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is StudentTransferViewModel viewModel)

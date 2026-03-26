@@ -9,7 +9,6 @@ namespace StudentBase.MAUI.ViewModels
     public class NewStudentViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
-        private readonly IStudentService _studentService;
         private StudentEntity _student = new();
         public ObservableCollection<StatusStudents> StatusList { get; }
         public ObservableCollection<LevelsOfEducation> EducationLevelsList { get; }
@@ -19,7 +18,7 @@ namespace StudentBase.MAUI.ViewModels
         public AsyncCommand SaveCommand { get; }
         public AsyncCommand CancelCommand { get; }
 
-        public NewStudentViewModel(IDataService dataService, IStudentService studentService)
+        public NewStudentViewModel(IDataService dataService)
         {
             _dataService = dataService;
 
@@ -31,7 +30,6 @@ namespace StudentBase.MAUI.ViewModels
             FormsOfEducationList = new ObservableCollection<FormsOfEducation>(Enum.GetValues<FormsOfEducation>().Cast<FormsOfEducation>());
 
             _ = LoadGroupsAsync();
-            _studentService = studentService;
         }
         private bool CanSave()
         {
@@ -120,7 +118,7 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadGroupsAsync()
         {
-            var groupsFromDb = await _dataService.Groups.GetAllAsync();
+            var groupsFromDb = await _dataService.GroupService.GetAllGroupsAsync();
             if (groupsFromDb == null) return;
             Groups.Clear();
             foreach (var g in groupsFromDb)
@@ -210,13 +208,13 @@ namespace StudentBase.MAUI.ViewModels
 
             if (_student.Id == 0)
             {
-                var result = await _studentService.CreateStudentAsync(_student);
+                var result = await _dataService.StudentService.CreateStudentAsync(_student);
                 if (result.Success == false)
                     await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             }
             else
             {
-                var result = await _studentService.UpdateStudentAsync(_student);
+                var result = await _dataService.StudentService.UpdateStudentAsync(_student);
                 if (result.Success == false)
                     await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             }

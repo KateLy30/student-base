@@ -11,11 +11,11 @@ namespace StudentBase.Domain.Entities
 
         [Required]
         [MaxLength(200)]
-        public string? Specialty { get; set; }
+        public string Specialty { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
-        public string? Qualification { get; set; }
+        public string Qualification { get; set; } = string.Empty;
 
         [Required]
         public TermsOfStudy DurationTraining { get; set; }
@@ -26,10 +26,14 @@ namespace StudentBase.Domain.Entities
         [Required]
         public StatusPrograms Status { get; set; }
 
+        [Required]
+        public DateTime CreateAt { get; set; }
+        public DateTime? UpdateAt {  get; set; }
+
         // навигационное свойство
         public ICollection<GroupEntity> EducationalGroups { get; set; } = [];
 
         [NotMapped]
-        public string? DisplayText => $"{Specialty} с квалификацией {Qualification}";
+        public string DisplayText => $"{Specialty} с квалификацией {Qualification}";
     }
 }

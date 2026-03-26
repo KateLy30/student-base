@@ -75,9 +75,9 @@ namespace StudentBase.MAUI.ViewModels
 
         public async Task LoadStudentsAsync()
         {
-            var list = await _dataService.Students.GetAllAsync();
+            var list = await _dataService.StudentService.GetAllStudentsAsync();
             Students.Clear();
-            foreach(var s in list)
+            foreach (var s in list)
                 Students.Add(s);
         }
 
@@ -89,7 +89,7 @@ namespace StudentBase.MAUI.ViewModels
             _payment.Amount = Amount;
             _payment.PaymentDate = PaymentDate;
 
-            await _dataService.Receipts.CreateAsync(_payment);
+            await _dataService.PaymentsService.CreatePaymentTransferAsync(_payment);
 
             await Shell.Current.Navigation.PopModalAsync();
         }

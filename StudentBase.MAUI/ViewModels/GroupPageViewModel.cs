@@ -64,7 +64,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _dataService.Groups.GetAllAsync();
+                var list = await _dataService.GroupService.GetAllGroupsAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
@@ -92,7 +92,7 @@ namespace StudentBase.MAUI.ViewModels
             if (g is null) return;
             var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {g.Name}?", "Да", "Нет");
             if (!ok) return;
-            await _dataService.Groups.DeleteAsync(g.Id);
+            await _dataService.GroupService.DeleteGroupAsync(g.Id);
             await LoadAsync();
         }
         public async Task AddAsync()

@@ -74,7 +74,7 @@ namespace StudentBase.MAUI.ViewModels
         }
         public async Task LoadProgramsAsync()
         {
-            var programsFromDb = await _dataService.Programs.GetAllAsync();
+            var programsFromDb = await _dataService.ProgramService.GetAllProgramsAsync();
             if (programsFromDb == null) return;
             Programs.Clear();
             foreach (var p in programsFromDb)
@@ -103,9 +103,9 @@ namespace StudentBase.MAUI.ViewModels
             _group.EducationalProgram = SelectedProgram;
             _group.Status = SelectedStatus;
             if (_group.Id == 0)
-                await _dataService.Groups.CreateAsync(_group);
+                await _dataService.GroupService.CreateGroupAsync(_group);
             else
-                await _dataService.Groups.UpdateAsync(_group);
+                await _dataService.GroupService.UpdateGroupAsync(_group);
 
             await Shell.Current.Navigation.PopModalAsync();
             if (Shell.Current?.CurrentPage?.BindingContext is GroupPageViewModel viewModel)

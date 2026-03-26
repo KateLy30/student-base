@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using StudentBase.Application.implementations;
 using StudentBase.Application.Implementations;
 using StudentBase.Application.Interfaces;
+using StudentBase.Domain.Repositories;
 using StudentBase.Infrastructure.EntityFramework;
+using StudentBase.Infrastructure.EntityFramework.Repositories;
 using StudentBase.MAUI.ViewModels;
 using StudentBase.MAUI.Views;
 
@@ -24,12 +26,16 @@ namespace StudentBase.MAUI
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             builder.Services.AddDbContext<AppDbContext>();
+
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
+            builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IStudentTransferRepository, StudentTransferRepository>();
+
             builder.Services.AddSingleton<IDataService, DataService>();
-            builder.Services.AddScoped<IProgramService, ProgramService>();
-            builder.Services.AddScoped<IStudentService, StudentService>();
 
             builder.Services.AddTransient<StudentPageViewModel>(p => new StudentPageViewModel(p.GetRequiredService<IDataService>(),
-                p.GetRequiredService<IStudentService>(),
                 () => p.GetRequiredService<NewStudentPage>(),
                 () => p.GetRequiredService<StudentCardPage>()));
 
@@ -37,7 +43,7 @@ namespace StudentBase.MAUI
                 () => g.GetRequiredService<NewGroupPage>(),
                 () => g.GetRequiredService<GroupCardPage>()));
 
-            builder.Services.AddTransient<ProgramPageViewModel>(p => new ProgramPageViewModel(p.GetRequiredService<IProgramService>(),
+            builder.Services.AddTransient<ProgramPageViewModel>(p => new ProgramPageViewModel(p.GetRequiredService<IDataService>(),
                 () => p.GetRequiredService<NewProgramPage>(),
                 () => p.GetRequiredService<ProgramCardPage>()));
 

@@ -1,15 +1,16 @@
 ﻿using StudentBase.Application.Interfaces;
 using StudentBase.Domain;
 using StudentBase.Domain.Entities;
+using StudentBase.Domain.Repositories;
 
 namespace StudentBase.Application.implementations
 {
     public class ProgramService : IProgramService
     {
-        private readonly IDataService _dataService;
-        public ProgramService(IDataService dataService)
+        private readonly IProgramRepository _programRepository;
+        public ProgramService(IProgramRepository programRepository)
         {
-            _dataService = dataService;
+            _programRepository = programRepository;
         }
         public async Task<ProgramResult<object>> CreateProgramAsync(ProgramEntity entity)
         {
@@ -18,7 +19,7 @@ namespace StudentBase.Application.implementations
                 if (entity == null)
                     return new ProgramResult<object> { ErrorMessage = "Пустые данные.", Success = false };
 
-                var result = await _dataService.Programs.CreateAsync(entity);
+                var result = await _programRepository.CreateAsync(entity);
                 return new ProgramResult<object> { Message = "Данные успешно сохранены в базу.", Success = result };
             }
             catch (Exception ex)
@@ -31,7 +32,7 @@ namespace StudentBase.Application.implementations
         {
             try
             {
-                var program = await _dataService.Programs.GetByIdAsync(id);
+                var program = await _programRepository.GetByIdAsync(id);
                 if (program == null)
                 {
                     return new ProgramResult<object> { Success = false, ErrorMessage = $"Программа с ID {id} не найдена." };
@@ -40,7 +41,7 @@ namespace StudentBase.Application.implementations
                 {
 
                 }
-                var result = await _dataService.Programs.DeleteAsync(id);
+                var result = await _programRepository.DeleteAsync(id);
                 if (result)
                 {
                     return new ProgramResult<object>
@@ -64,11 +65,11 @@ namespace StudentBase.Application.implementations
             }
         }
 
-        public async Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy)
+        public async Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsByDurationTrainingAsync(TermsOfStudy termsOfStudy)
         {
             try
             {
-                var result = await _dataService.Programs.GetAllByDurationTrainingAsync(termsOfStudy);
+                var result = await _programRepository.GetAllByDurationTrainingAsync(termsOfStudy);
                 return new ProgramResult<IEnumerable<ProgramEntity>>
                 {
                     Success = true,
@@ -86,7 +87,7 @@ namespace StudentBase.Application.implementations
             }
         }
 
-        public async Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllBySpecialtyAsync(string specialty)
+        public async Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsBySpecialtyAsync(string specialty)
         {
             try
             {
@@ -99,7 +100,7 @@ namespace StudentBase.Application.implementations
                         DataList = null
                     };
                 }
-                var result = await _dataService.Programs.GetAllBySpecialtyAsync(specialty);
+                var result = await _programRepository.GetAllBySpecialtyAsync(specialty);
                 return new ProgramResult<IEnumerable<ProgramEntity>>
                 {
                     Success = true,
@@ -121,7 +122,7 @@ namespace StudentBase.Application.implementations
         {
             try
             {
-                return await _dataService.Programs.GetAllAsync();
+                return await _programRepository.GetAllAsync();
             }
             catch (Exception)
             {
@@ -129,11 +130,11 @@ namespace StudentBase.Application.implementations
             }
         }
 
-        public async Task<ProgramResult<object>> GetByIdAync(int id)
+        public async Task<ProgramResult<object>> GetProgramByIdAync(int id)
         {
             try
             {
-                var result = await _dataService.Programs.GetByIdAsync(id);
+                var result = await _programRepository.GetByIdAsync(id);
                 if (result == null)
                 {
                     return new ProgramResult<object>
@@ -158,11 +159,11 @@ namespace StudentBase.Application.implementations
             }
         }
 
-        public async Task<ProgramResult<object>> GetByQualificationAsync(string qualification)
+        public async Task<ProgramResult<object>> GetProgramByQualificationAsync(string qualification)
         {
             try
             {
-                var result = await _dataService.Programs.GetByQualificationAsync(qualification);
+                var result = await _programRepository.GetByQualificationAsync(qualification);
                 if (result == null)
                 {
                     return new ProgramResult<object>
@@ -187,7 +188,7 @@ namespace StudentBase.Application.implementations
         {
             try
             {
-                var count = await _dataService.Programs.GetProgramsCountAsync();
+                var count = await _programRepository.GetProgramsCountAsync();
                 return new ProgramResult<object> { Count = count, Success = true };
             }
             catch (Exception ex)
@@ -200,7 +201,7 @@ namespace StudentBase.Application.implementations
         {
             try
             {
-                var status = await _dataService.Programs.GetStatusProgramAsync(id);
+                var status = await _programRepository.GetStatusProgramAsync(id);
                 if (status == null) return new ProgramResult<object> { ErrorMessage = "У программы нет статуса.", Success = false };
                 return new ProgramResult<object> { Success = true, Status = (StatusPrograms)status };
             }
@@ -215,7 +216,7 @@ namespace StudentBase.Application.implementations
             try
             {
                 if (entity == null) return new ProgramResult<object> { ErrorMessage = "Данные пустые.", Success = false };
-                var result = await _dataService.Programs.UpdateAsync(entity);
+                var result = await _programRepository.UpdateAsync(entity);
                 if (result)
                 {
                     return new ProgramResult<object>

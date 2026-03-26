@@ -13,27 +13,20 @@ public class PaymentRepository : IPaymentRepository
     }
     public async Task<bool> CreateAsync(PaymentEntity entity)
     {
-        try
-        {
-            await _context.Payments.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception) { return false; }
+        entity.CreateAt = DateTime.Now;
+        await _context.Payments.AddAsync(entity);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            var entity = await _context.Payments.FindAsync(id);
-            if (entity == null) return false;
+        var entity = await _context.Payments.FindAsync(id);
+        if (entity == null) return false;
 
-            _context.Remove(entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception) { return false; }
+        _context.Remove(entity);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<IEnumerable<PaymentEntity>?> GetAllAsync()
@@ -41,7 +34,7 @@ public class PaymentRepository : IPaymentRepository
         return await _context.Payments.Include(p => p.Student).ToListAsync();
     }
 
-    public async Task<IEnumerable<PaymentEntity>?> GetAllBuStudentAsync(int studentId)
+    public async Task<IEnumerable<PaymentEntity>?> GetAllByStudentAsync(int studentId)
     {
         return await _context.Payments.Where(r => r.StudentId == studentId).ToListAsync();
     }
@@ -53,22 +46,23 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<bool> UpdateAsync(PaymentEntity entity)
     {
-        try
-        {
-            var entityInDB = await _context.Payments.FindAsync(entity.Id);
-            if (entityInDB == null) return false;
+        var entityInDB = await _context.Payments.FindAsync(entity.Id);
+        if (entityInDB == null) return false;
 
-            UpdateEntity(entityInDB, entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception) { return false; }
+        UpdateEntity(entityInDB, entity);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public static void UpdateEntity(PaymentEntity entityInDatabase, PaymentEntity updatedEntity)
     {
         entityInDatabase.StudentId = updatedEntity.StudentId;
-        entityInDatabase.PaymentDate = updatedEntity.PaymentDate;
         entityInDatabase.PaidSemester = updatedEntity.PaidSemester;
+        entityInDatabase.Amount = updatedEntity.Amount;
+        entityInDatabase.PaymentDate = updatedEntity.PaymentDate;
+        entityInDatabase.UpdateAt = updatedEntity.UpdateAt;
+        entityInDatabase.PaymentType = updatedEntity.PaymentType;
+        entityInDatabase.Comment = updatedEntity.Comment;
+        entityInDatabase.Student = updatedEntity.Student;
     }
 }

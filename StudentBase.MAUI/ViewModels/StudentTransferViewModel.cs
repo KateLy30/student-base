@@ -52,7 +52,7 @@ namespace StudentBase.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var list = await _dataService.Transfers.GetAllAsync();
+                var list = await _dataService.StudentTransferService.GetAllStudentTransfersAsync();
                 if (list == null) return;
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)

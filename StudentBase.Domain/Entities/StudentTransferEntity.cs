@@ -19,15 +19,22 @@ public class StudentTransferEntity
     [Required]
     public int ToGroupId { get; set; }
 
+    [Required]
     public DateTime EnrollmentDate { get; set; }
 
+    [Required]
+    public DateTime CreateAt { get; set; }
+    public DateTime? UpdateAt { get; set; }
+
     // навигационные свойства
-    public StudentEntity Student { get; set; }
+    public StudentEntity Student { get; set; } 
     public GroupEntity FromGroup { get; set; }
     public GroupEntity ToGroup { get; set; }
 
     [NotMapped]
     public string? DisplayHistory => $"{FromGroup.Name} \t ---> \t {ToGroup.Name}";
+
+    [NotMapped]
     public string? Name => Student.Name;
 
 }

@@ -19,11 +19,11 @@ public interface IProgramService
     Task<ProgramResult<object>> CreateProgramAsync(ProgramEntity entity);
     Task<ProgramResult<object>> UpdateProgramAsync(ProgramEntity entity);
     Task<ProgramResult<object>> DeleteProgramAsync(int id);
-    Task<ProgramResult<object>> GetByIdAync(int id);
+    Task<ProgramResult<object>> GetProgramByIdAync(int id);
     Task<IEnumerable<ProgramEntity>?> GetAllProgramsAsync();
     Task<ProgramResult<object>> GetProgramsCountAsync();
-    Task<ProgramResult<object>> GetByQualificationAsync(string qualification);
-    Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllBySpecialtyAsync(string specialty);
-    Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy);
+    Task<ProgramResult<object>> GetProgramByQualificationAsync(string qualification);
+    Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsBySpecialtyAsync(string specialty);
+    Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsByDurationTrainingAsync(TermsOfStudy termsOfStudy);
     Task<ProgramResult<object>> GetStatusProgramAsync(int id);
 }

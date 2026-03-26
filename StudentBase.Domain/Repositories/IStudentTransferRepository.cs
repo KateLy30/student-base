@@ -4,5 +4,5 @@ namespace StudentBase.Domain.Repositories;
 
 public interface IStudentTransferRepository : IRepository<StudentTransferEntity, int>
 {
-    Task<IEnumerable<StudentTransferEntity>?> GelAllByStudentAsync(int studentId); 
+    Task<IEnumerable<StudentTransferEntity>?> GetAllByStudentAsync(int studentId); 
 }

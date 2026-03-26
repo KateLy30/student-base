@@ -61,3 +61,14 @@ public enum PaymentType
     [Description("Безналичные")]
     NonCash
 }
+public enum FieldType
+{
+    Text = 0,           // Однострочный текст
+    MultilineText = 1,  // Многострочный текст
+    Number = 2,         // Число
+    Date = 3,           // Дата
+    Boolean = 4,        // Да/Нет
+    Email = 5,          // Email
+    Phone = 6,          // Телефон
+    Enumeration = 7,    // Выпадающий список
+}

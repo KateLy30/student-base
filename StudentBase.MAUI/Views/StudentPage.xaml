@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StudentBase.MAUI.StudentPage"
+             xmlns:viewmodels="clr-namespace:StudentBase.MAUI.ViewModels"
+             x:Class="StudentBase.MAUI.Views.StudentPage"
              x:Name="ThisPage"
              Title="Список студентов">
 
@@ -39,6 +40,15 @@
         <ScrollView Grid.Row="1">
             <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
                             SelectedItem="{Binding SelectedStudent}">
+
+                <CollectionView.EmptyView>
+                    <StackLayout Padding="20" Spacing="10" HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                        <Label Text="Список студентов пуст"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="15" ColumnSpacing="5">

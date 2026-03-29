@@ -1,7 +1,7 @@
 
 using StudentBase.MAUI.ViewModels;
 
-namespace StudentBase.MAUI;
+namespace StudentBase.MAUI.Views;
 
 public partial class NewStudentPage : ContentPage
 {

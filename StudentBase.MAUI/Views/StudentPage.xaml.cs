@@ -1,6 +1,6 @@
 using StudentBase.MAUI.ViewModels;
 
-namespace StudentBase.MAUI;
+namespace StudentBase.MAUI.Views;
 public partial class StudentPage : ContentPage
 {
     private readonly StudentPageViewModel _studentPageViewModel;

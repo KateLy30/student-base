@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.Views.TemplateEditorPage"
+             Title="Редактор шаблона">
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
+
+        <!-- Основные параметры шаблона -->
+        <VerticalStackLayout Padding="10" Spacing="8">
+            
+            <Entry Placeholder="Название шаблона" Text="{Binding TemplateName}" />
+            <Label Text="Строка начала данных (1-индексация)" />
+            <Entry Text="{Binding DataStartRow}" Keyboard="Numeric" />
+            <Picker Title="Ключевое поле для поиска студента" ItemsSource="{Binding KeyFields}"
+                    SelectedItem="{Binding SelectedKeyField}" />
+            
+        </VerticalStackLayout>
+        
+        <!-- Таблица маппинга колонок -->
+        <Label Grid.Row="1" Text="Сопоставление колонок Excel" FontAttributes="Bold" Margin="10,0,0,5"/>
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Mappings}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10,5" ColumnDefinitions="80,*,2*">
+                        <!-- Индекс колонки (можно редактировать) -->
+                        <Entry Text="{Binding ColumnIndex, StringFormat='{0:F0}'}" 
+                               Keyboard="Numeric" HorizontalOptions="Fill"/>
+
+                        <!-- Заголовок из Excel (только для информации) -->
+                        <Label Grid.Column="1" Text="{Binding ExcelHeader}" 
+                               VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+
+                        <!-- Выбор целевого поля -->
+                        <Picker Grid.Column="2" Title="Выберите поле"
+                                ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
+                                                       Path=BindingContext.AvailableFields}"
+                                SelectedItem="{Binding TargetField}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Кнопки управления -->
+        <HorizontalStackLayout Grid.Row="3" Padding="10" Spacing="10">
+            <Button Text="Сохранить шаблон" Command="{Binding SaveTemplateCommand}" />
+            <Button Text="Отмена" Command="{Binding CancelCommand}" />
+        </HorizontalStackLayout>
+        
+    </Grid>
+
+</ContentPage>

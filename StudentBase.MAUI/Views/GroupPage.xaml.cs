@@ -1,14 +1,14 @@
 
 using StudentBase.MAUI.ViewModels;
 
-namespace StudentBase.MAUI;
+namespace StudentBase.MAUI.Views;
 
 public partial class GroupPage : ContentPage
 {
 	private readonly GroupPageViewModel _groupPageViewModel;
 	public GroupPage(GroupPageViewModel groupPageViewModel)
 	{
-		InitializeComponent();
+        InitializeComponent();
 		_groupPageViewModel = groupPageViewModel;
 		BindingContext = _groupPageViewModel;
 	}

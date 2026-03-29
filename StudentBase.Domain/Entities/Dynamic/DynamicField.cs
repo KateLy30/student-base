@@ -1,5 +1,4 @@
-﻿
-namespace StudentBase.Domain.Dynamic;
+﻿namespace StudentBase.Domain.Entities.Dynamic;
 
 /// <summary>
 /// Значение кастомного поля для конкретной записи (экземпляра сущности)

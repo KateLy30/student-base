@@ -1,5 +1,4 @@
-﻿
-namespace StudentBase.Domain.Dynamic;
+﻿namespace StudentBase.Domain.Entities.Dynamic;
 
 /// <summary>
 /// Определение кастомного поля для любой сущности

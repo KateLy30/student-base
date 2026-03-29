@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StudentBase.Domain.Dynamic;
+using Microsoft.Extensions.Logging;
 using StudentBase.Domain.Entities;
+using StudentBase.Domain.Entities.Dynamic;
+using StudentBase.Domain.Entities.Templates;
 
 namespace StudentBase.Infrastructure.EntityFramework
 {
@@ -13,48 +15,95 @@ namespace StudentBase.Infrastructure.EntityFramework
         public DbSet<PaymentEntity> Payments { get; set; } = null!;
         public DbSet<StudentEntity> Students { get; set; } = null!;
 
+        // шаблон
+        public DbSet<StudentTemplate> StudentTemplates { get; set; } = null!;
+        public DbSet<StudentTemplateColumn> StudentTemplateColumns { get; set; } = null!;
+
 
         // Динамические сущности
-        public DbSet<CustomField> CustomFields { get; set; }
-        public DbSet<DynamicField> DynamicFields { get; set; }
+        public DbSet<CustomField> CustomFields { get; set; } = null!;
+        public DbSet<DynamicField> DynamicFields { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=databaseStudents.db");
+            optionsBuilder.UseSqlite("Data Source=databaseStudents.db")
+                          .LogTo(Console.WriteLine, LogLevel.Information);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // === Настройки для шаблона ===
+            modelBuilder.Entity<StudentTemplate>(entity =>
+            {
+                entity.HasMany(t => t.Columns)
+                      .WithOne(c => c.Template)
+                      .HasForeignKey(c => c.TemplateId);
+
+                entity.HasIndex(t => t.IsActive)
+                        .HasDatabaseName("IX_StudentTemplates_IsActive");
+
+                entity.HasIndex(t => t.Name)
+                        .HasDatabaseName("IX_StudentTemplates_Name");
+            });
+            
+            // === Настройки для колонки шаблона ===
+            modelBuilder.Entity<StudentTemplateColumn>(entity =>
+            {
+                entity.HasOne(c => c.Template)
+                      .WithMany(t => t.Columns)
+                      .HasForeignKey(c => c.TemplateId)
+                      .OnDelete(DeleteBehavior.Cascade); // при удалении шаблона удаляются и колонки
+
+                entity.HasIndex(st => st.TemplateId)
+                        .HasDatabaseName("IX_StudentTemplateColumns_TemplateId");
+            });
+
+
             // === Настройки для кастомных полей ===
             modelBuilder.Entity<CustomField>(entity =>
             {
                 // Уникальность комбинации типа сущности и имени поля
-                entity.HasIndex(e => new { e.EntityType, e.FieldName }).IsUnique();
-                entity.Property(e => e.PossibleValues).HasColumnType("nvarchar(max)");
-                entity.Property(e => e.EntityType).HasMaxLength(50);   // "Student", "Group" и т.д.
-                entity.Property(e => e.FieldName).HasMaxLength(100);
-                entity.Property(e => e.DisplayName).HasMaxLength(200);
+                entity.HasIndex(e => new { e.EntityType, e.FieldName })
+                        .IsUnique()
+                        .HasDatabaseName("UX_CustomFields_EntityType_FieldName");
+
+                entity.Property(e => e.PossibleValues).HasColumnType("TEXT");
+                entity.Property(e => e.EntityType).HasColumnType("VARCHAR(50)");  
+                entity.Property(e => e.FieldName).HasColumnType("VARCHAR(100)");
+                entity.Property(e => e.DisplayName).HasColumnType("VARCHAR(200)");
+
                 // Индекс для быстрого поиска всех полей конкретной сущности
-                entity.HasIndex(e => e.EntityType);
+                entity.HasIndex(e => e.EntityType)
+                        .HasDatabaseName("IX_CustomFields_EntityType");
             });
             modelBuilder.Entity<DynamicField>(entity =>
             {
                 // Уникальность значения для одного поля одной сущности
-                entity.HasIndex(e => new { e.EntityId, e.EntityType, e.CustomFieldId }).IsUnique();
+                entity.HasIndex(e => new { e.EntityId, e.EntityType, e.CustomFieldId })
+                        .IsUnique()
+                        .HasDatabaseName("UX_DynamicFields_EntityId_EntityType_CustomFieldId");
                 // Индекс для быстрого получения всех динамических полей сущности (без учёта конкретного поля)
-                entity.HasIndex(e => new { e.EntityId, e.EntityType });
+                entity.HasIndex(e => new { e.EntityId, e.EntityType })
+                        .HasDatabaseName("IX_DynamicFields_EntityId_EntityType");
                 entity.HasOne(d => d.CustomField)
                       .WithMany(c => c.DynamicValues)
                       .HasForeignKey(d => d.CustomFieldId)
                       .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(d => d.CustomFieldId)
+                        .HasDatabaseName("IX_DynamicFields_CustomFieldId");
             });
 
             // === Группы и программы ===
-            modelBuilder.Entity<GroupEntity>()
-                .HasOne(g => g.EducationalProgram)
-                .WithMany(p => p.EducationalGroups)
-                .HasForeignKey(g => g.ProgramId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<GroupEntity>(entity =>
+            {
+
+                entity.HasOne(g => g.EducationalProgram)
+                        .WithMany(p => p.EducationalGroups)
+                        .HasForeignKey(g => g.ProgramId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(g => g.ProgramId)
+                    .HasDatabaseName("IX_GroupEntities_ProgramId");
+            });
 
             // === Переводы студентов ===
             modelBuilder.Entity<StudentTransferEntity>(entity =>
@@ -76,14 +125,25 @@ namespace StudentBase.Infrastructure.EntityFramework
                       .WithMany()
                       .HasForeignKey(st => st.ToGroupId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(st => st.StudentId)
+                        .HasDatabaseName("IX_StudentTransfers_StudentId");
+                entity.HasIndex(st => st.FromGroupId)
+                        .HasDatabaseName("IX_StudentTransfers_FromGroupId");
+                entity.HasIndex(st => st.ToGroupId)
+                        .HasDatabaseName("IX_StudentTransfers_ToGroupId");
             });
 
             // === Квитанции об оплате ===
-            modelBuilder.Entity<PaymentEntity>()
-                .HasOne(p => p.Student)
-                .WithMany(s => s.Payments)
-                .HasForeignKey(p => p.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PaymentEntity>(entity =>
+            {
+                entity.HasOne(p => p.Student)
+                        .WithMany(s => s.Payments)
+                        .HasForeignKey(p => p.StudentId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(p => p.StudentId)
+                        .HasDatabaseName("IX_Payments_StudentId");
+            });
         }
     }
 }

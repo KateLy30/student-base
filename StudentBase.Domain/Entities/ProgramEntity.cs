@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudentBase.Domain.Entities
@@ -31,7 +30,7 @@ namespace StudentBase.Domain.Entities
         public DateTime? UpdateAt {  get; set; }
 
         // навигационное свойство
-        public ICollection<GroupEntity> EducationalGroups { get; set; } = [];
+        public virtual ICollection<GroupEntity> EducationalGroups { get; set; } = [];
 
         [NotMapped]
         public string DisplayText => $"{Specialty} с квалификацией {Qualification}";

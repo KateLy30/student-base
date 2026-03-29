@@ -1,5 +1,4 @@
-﻿
-using StudentBase.Infrastructure.EntityFramework;
+﻿using StudentBase.Infrastructure.EntityFramework;
 
 namespace StudentBase.MAUI
 {

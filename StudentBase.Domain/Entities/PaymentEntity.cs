@@ -32,6 +32,6 @@ public class PaymentEntity
 
     // навигационное свойство
     [Required]
-    public StudentEntity Student { get; set; }
+    public virtual StudentEntity Student { get; set; }
 
 }

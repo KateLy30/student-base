@@ -29,7 +29,10 @@ namespace StudentBase.Domain.Entities
         [Required]
         public FormsOfEducation FormOfEducation { get; set; }
 
-        public bool? IsPaidCurrentSemester { get; set; }
+        [Required]
+        public TermsOfStudy DurationTraining { get; set; }
+
+        public bool IsPaidCurrentSemester { get; set; }
 
         // внешний ключ
         [Required]
@@ -44,9 +47,9 @@ namespace StudentBase.Domain.Entities
         public DateTime? UpdateAt { get; set; }
 
         // навигационные свойства 
-        public GroupEntity EducationalGroup { get; set; }
-        public ICollection<StudentTransferEntity>? StudentTransfers { get; set; } = [];
-        public ICollection<PaymentEntity>? Payments { get; set; } = [];
+        public virtual GroupEntity EducationalGroup { get; set; }
+        public virtual ICollection<StudentTransferEntity>? StudentTransfers { get; set; } = [];
+        public virtual ICollection<PaymentEntity>? Payments { get; set; } = [];
 
         [NotMapped]
         public string? GroupName { get; set; }

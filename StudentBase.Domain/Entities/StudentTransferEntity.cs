@@ -27,9 +27,9 @@ public class StudentTransferEntity
     public DateTime? UpdateAt { get; set; }
 
     // навигационные свойства
-    public StudentEntity Student { get; set; } 
-    public GroupEntity FromGroup { get; set; }
-    public GroupEntity ToGroup { get; set; }
+    public virtual StudentEntity Student { get; set; } 
+    public virtual GroupEntity FromGroup { get; set; }
+    public virtual GroupEntity ToGroup { get; set; }
 
     [NotMapped]
     public string? DisplayHistory => $"{FromGroup.Name} \t ---> \t {ToGroup.Name}";

@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace StudentBase.Domain.Entities
 {
@@ -28,7 +27,7 @@ namespace StudentBase.Domain.Entities
 
         // навигационные свойства
         [Required]
-        public ProgramEntity EducationalProgram { get; set; }
-        public ICollection<StudentEntity> Students { get; set; } = [];
+        public virtual ProgramEntity EducationalProgram { get; set; }
+        public virtual ICollection<StudentEntity> Students { get; set; } = [];
     }
 }

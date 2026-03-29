@@ -52,7 +52,7 @@ public enum LevelsOfEducation
 
     [Description("Среднее общее образование (11 классов)")]
     SecondaryGeneralEducation  
-}
+} 
 public enum PaymentType
 {
     [Description("Наличные")]
@@ -61,14 +61,30 @@ public enum PaymentType
     [Description("Безналичные")]
     NonCash
 }
+
+/// <summary>
+/// Тип поля (хранится как строка в БД или enum)
+/// </summary>
 public enum FieldType
 {
-    Text = 0,           // Однострочный текст
-    MultilineText = 1,  // Многострочный текст
-    Number = 2,         // Число
-    Date = 3,           // Дата
-    Boolean = 4,        // Да/Нет
-    Email = 5,          // Email
-    Phone = 6,          // Телефон
-    Enumeration = 7,    // Выпадающий список
+    [Description("Текст")]
+    Text = 0,           // текст
+
+    [Description("Число")]
+    Number = 1,         // Число
+
+    [Description("Дата")]
+    Date = 2,           // Дата
+
+    [Description("Да/Нет")]
+    Boolean = 3,        // Да/Нет
+
+    [Description("Email")]
+    Email = 4,          // Email
+
+    [Description("Телефон")]
+    Phone = 5,          // Телефон
+
+    [Description("Список")]
+    Enumeration = 6,    // Выпадающий список
 }

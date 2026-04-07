@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using StudentBase.Application.Interfaces;
+﻿using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
 using StudentBase.Domain.Repositories;
 
@@ -8,9 +7,11 @@ namespace StudentBase.Application.Implementations
     public class StudentTransferService : IStudentTransferService
     {
         private readonly IStudentTransferRepository _studentTransferRepository;
-        public StudentTransferService(IStudentTransferRepository studentTransferRepository)
+        private readonly IStudentRepository _studentRepository;
+        public StudentTransferService(IStudentTransferRepository studentTransferRepository, IStudentRepository studentRepository)
         {
             _studentTransferRepository = studentTransferRepository;
+            _studentRepository = studentRepository;
         }
 
         public async Task<StudentTransferResult<object>> CreateStudentTransferAsync(StudentTransferEntity entity)
@@ -25,11 +26,29 @@ namespace StudentBase.Application.Implementations
                         ErrorMessage = "Данные пустые."
                     };
                 }
-                var result = await _studentTransferRepository.CreateAsync(entity);
+
+                var student = await _studentRepository.GetByIdAsync(entity.StudentId);
+                if (student == null)
+                {
+                    return new StudentTransferResult<object>
+                    {
+                        Success = false,
+                        ErrorMessage = $"Студента с ID {entity.StudentId} не существует."
+                    };
+                }
+
+                student.EducationalGroup = entity.ToGroup;
+                student.CurrentGroupId = entity.ToGroupId;
+                student.DurationTraining = entity.ToGroup.EducationalProgram.DurationTraining;
+                student.StudentTransfers?.Add(entity);
+
+                await _studentRepository.UpdateAsync(student);
+
+                await _studentTransferRepository.CreateAsync(entity);
                 return new StudentTransferResult<object>
                 {
                     Success = true,
-                    Message = "Данные успешно созранены."
+                    Message = "Данные успешно сохранены."
                 };
             }
             catch (Exception ex)

@@ -39,9 +39,6 @@ namespace StudentBase.Infrastructure.EntityFramework
                       .WithOne(c => c.Template)
                       .HasForeignKey(c => c.TemplateId);
 
-                entity.HasIndex(t => t.IsActive)
-                        .HasDatabaseName("IX_StudentTemplates_IsActive");
-
                 entity.HasIndex(t => t.Name)
                         .HasDatabaseName("IX_StudentTemplates_Name");
             });
@@ -67,7 +64,6 @@ namespace StudentBase.Infrastructure.EntityFramework
                         .IsUnique()
                         .HasDatabaseName("UX_CustomFields_EntityType_FieldName");
 
-                entity.Property(e => e.PossibleValues).HasColumnType("TEXT");
                 entity.Property(e => e.EntityType).HasColumnType("VARCHAR(50)");  
                 entity.Property(e => e.FieldName).HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.DisplayName).HasColumnType("VARCHAR(200)");

@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using StudentBase.Domain.Entities;
 using StudentBase.Domain.Repositories;
 

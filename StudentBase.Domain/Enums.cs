@@ -68,23 +68,68 @@ public enum PaymentType
 public enum FieldType
 {
     [Description("Текст")]
-    Text = 0,           // текст
+    Text,           // текст
 
     [Description("Число")]
-    Number = 1,         // Число
+    Number,         // Число
 
     [Description("Дата")]
-    Date = 2,           // Дата
+    Date,           // Дата
 
     [Description("Да/Нет")]
-    Boolean = 3,        // Да/Нет
+    Boolean,        // Да/Нет
 
     [Description("Email")]
-    Email = 4,          // Email
+    Email,          // Email
 
     [Description("Телефон")]
-    Phone = 5,          // Телефон
+    Phone,          // Телефон
+}
 
-    [Description("Список")]
-    Enumeration = 6,    // Выпадающий список
+public enum EntitiesPicker
+{
+    [Description("Программа обучения")]
+    Program,
+
+    [Description("Группа")]
+    Group,
+
+    [Description("Студент")]
+    Student,
+
+    [Description("Квитанция")]
+    Payment,
+
+    [Description("Перевод")]
+    Transfer
+}
+
+public enum StudentFieldsName
+{
+    [Description("ФИО")]
+    Name,
+
+    [Description("Номер телефона")]
+    Phone,
+
+    [Description("Дата рождения")]
+    DateOfBirth,
+
+    [Description("Дата поступления")]
+    DateOfReceipt,
+
+    [Description("Уровень образования")]
+    EducationLevel,
+
+    [Description("Форма обучения")]
+    FormOfEducation,
+
+    [Description("Продолжительность обучения")]
+    DurationTraining,
+
+    [Description("Статус")]
+    Status,
+
+    [Description("Группа")]
+    Group
 }

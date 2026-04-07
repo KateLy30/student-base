@@ -12,7 +12,7 @@ public class DynamicField
 
 
     /// Тип сущности (дублируется из CustomField для удобства фильтрации, но можно вычислить через навигацию)
-    public string EntityType { get; set; } = string.Empty;
+    public EntitiesPicker EntityType { get; set; } 
 
     /// Внешний ключ кастомного поля
     public int CustomFieldId { get; set; }

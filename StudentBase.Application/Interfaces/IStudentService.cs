@@ -1,5 +1,4 @@
-﻿using StudentBase.Domain;
-using StudentBase.Domain.Entities;
+﻿using StudentBase.Domain.Entities;
 
 namespace StudentBase.Application.Interfaces;
 

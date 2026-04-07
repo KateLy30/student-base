@@ -23,7 +23,7 @@ public class DataService : IDataService
         StudentService = new StudentService(_studentRepository);
         ProgramService = new ProgramService(_programRepository);
         GroupService = new GroupService(_groupRepository);
-        StudentTransferService = new StudentTransferService(_studentTransferRepository);
+        StudentTransferService = new StudentTransferService(_studentTransferRepository, _studentRepository);
         PaymentsService = new PaymentService(_paymentRepository);
     }
     public IStudentService StudentService { get; }

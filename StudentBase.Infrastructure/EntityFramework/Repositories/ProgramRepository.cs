@@ -33,9 +33,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllAsync()
         {
-            return await _context.Programs.Include(p => p.EducationalGroups)
-                                          .ThenInclude(p => p.Students)
-                                          .ToListAsync();
+            return await _context.Programs.Include(p => p.EducationalGroups).ThenInclude(g => g.Students).ToListAsync();
         }
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllBySpecialtyAsync(string specialty)

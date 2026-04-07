@@ -145,7 +145,7 @@ namespace StudentBase.Application.Implementations
             try
             {
                 var result = await _studentRepository.GetByNameAsync(name);
-                if(result == null)
+                if (result == null)
                 {
                     return new StudentResult<object>
                     {
@@ -220,11 +220,11 @@ namespace StudentBase.Application.Implementations
                     };
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new StudentResult<object>
                 {
-                    ErrorMessage= ex.Message,
+                    ErrorMessage = ex.Message,
                     Success = false
                 };
             }

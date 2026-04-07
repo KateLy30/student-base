@@ -20,7 +20,6 @@ public class StudentTemplateColumn
     // Для Dynamic полей — ID из таблицы CustomField
     public int? CustomFieldId { get; set; }
 
-    public bool IsRequired { get; set; } // обязательность заполнения
     public FieldType DataType { get; set; } // "string", "date", "number", "boolean"
 
     // Навигационное свойство шаблона

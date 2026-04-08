@@ -87,10 +87,6 @@ namespace StudentBase.MAUI.ViewModels
             }
 
             await Shell.Current.Navigation.PopModalAsync();
-            if (Shell.Current?.CurrentPage?.BindingContext is ProgramPageViewModel viewModel)
-            {
-                await viewModel.LoadAsync();
-            }
         }
 
         // заполнения формы ввода при редактировании

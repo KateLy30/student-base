@@ -13,9 +13,10 @@ public partial class ProgramPage : ContentPage
     }
 
     // подгрузка списка каждый раз при открытии окна
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         _programPageViewModel.SearchText = null;
+        await _programPageViewModel.LoadAsync();
     }
 }

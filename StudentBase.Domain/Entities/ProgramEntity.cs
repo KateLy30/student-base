@@ -7,7 +7,9 @@ namespace StudentBase.Domain.Entities
         public int Id { get; set; }
         public string Specialty { get; set; } = string.Empty;
         public string Qualification { get; set; } = string.Empty;
-        public TermsOfStudy DurationTraining { get; set; }
+        public TermsOfStudy DurationAfter9thGrade { get; set; }
+        public TermsOfStudy DurationAfter11thGrade { get; set; }
+        public TermsOfStudy DurationOfCorrespondence { get; set; }
         public decimal CostPerSemester { get; set; }
         public StatusPrograms Status { get; set; }
         public DateTime CreateAt { get; set; }

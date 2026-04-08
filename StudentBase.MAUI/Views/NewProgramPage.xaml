@@ -4,46 +4,23 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="StudentBase.MAUI.Views.NewProgramPage"
              BackgroundColor="{StaticResource BackgroundPageGray}">
-    
-    <ContentPage.Resources>
-        <Style x:Key="InvalidEntryStyle" TargetType="Entry" >
-            <Setter Property="TextColor" Value="#DC3545"/>
-            <Setter Property="BackgroundColor" Value="#FFF0F0" />
-        </Style>
-        
-        <!-- Стиль для основных Entry -->
-        <Style x:Key="ModernEntryStyle" TargetType="Entry">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="HeightRequest" Value="50"/>
-            <Setter Property="PlaceholderColor" Value="#9E9E9E"/>
-        </Style>
 
-        <!-- Стиль для Picker -->
-        <Style x:Key="ModernPickerStyle" TargetType="Picker">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="TitleColor" Value="#9E9E9E"/>
-        </Style>
-    </ContentPage.Resources>
-
-    <Grid RowDefinitions="Auto, *" RowSpacing="0" BackgroundColor="{StaticResource BackgroundPageGray}">
+    <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
 
         <!-- Заголовок -->
         <Border Style="{StaticResource BorderHeader}">
             <Label Text="{Binding Title}" 
-                FontSize="20" 
-                FontAttributes="Bold" 
-                TextColor="White"
-                VerticalOptions="Center"/>
+                    FontSize="20" 
+                    FontAttributes="Bold" 
+                    TextColor="White"
+                    VerticalOptions="Center"/>
         </Border>
-
 
         <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundPageGray}">
 
-            <VerticalStackLayout Spacing="15" Padding="15">
+            <VerticalStackLayout Spacing="10" Padding="8">
                 <Border>
-                    <VerticalStackLayout Spacing="12">
+                    <VerticalStackLayout Spacing="15">
                         
                         <!-- Специальность -->
                         <VerticalStackLayout Spacing="5">
@@ -87,16 +64,16 @@
                                    IsVisible="{Binding IsNotValid, Source={x:Reference QualificationValidator}}" />
                         </VerticalStackLayout>
 
-                        <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
 
-                            <!-- Продолжительность обучения -->
+                            <!-- Срок обучения после 9 класса -->
                             <VerticalStackLayout Spacing="5">
-                                <Label Text="Продолжительность" 
+                                <Label Text="Срок обучения после 9 класса" 
                                        FontSize="14" 
                                        TextColor="#757575"/>
                                 <Border Style="{StaticResource BorderPicker}">
                                     <Picker ItemsSource="{Binding TermsOfStudyList}"
-                                            SelectedItem="{Binding SelectedTermOfStudy, Mode=TwoWay}" 
+                                            SelectedItem="{Binding SelectedDurationAfter9thGrade, Mode=TwoWay}" 
                                             Title="Выберите срок"
                                             Style="{StaticResource ModernPickerStyle}">
                                         <Picker.ItemDisplayBinding>
@@ -106,24 +83,57 @@
                                 </Border>
                             </VerticalStackLayout>
 
-                            <!-- Статус -->
-                            <VerticalStackLayout Grid.Column="1" Spacing="5">
-                                <Label Text="Статус программы" 
-                                       FontSize="14" 
-                                       TextColor="#757575"/>
-                                <Border Style="{StaticResource BorderPicker}">
-                                    <Picker ItemsSource="{Binding StatusList}"
-                                            SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" 
-                                            Title="Выберите статус"
-                                            Style="{StaticResource ModernPickerStyle}">
+                            <!-- Срок обучения после 11 класса -->
+                            <VerticalStackLayout Spacing="5" Grid.Column="1">
+                                <Label Text="Срок обучения после 11 класса" 
+                                        FontSize="14" 
+                                        TextColor="#757575"/>  
+                                    <Border Style="{StaticResource BorderPicker}">
+                                    <Picker ItemsSource="{Binding TermsOfStudyList}"
+                                             SelectedItem="{Binding SelectedDurationAfter11thGrade, Mode=TwoWay}" 
+                                             Title="Выберите срок"
+                                             Style="{StaticResource ModernPickerStyle}">  
                                         <Picker.ItemDisplayBinding>
-                                            <Binding Path="." Converter="{StaticResource StatusProgramsToStringConverter}" />
+                                            <Binding Path="." Converter="{StaticResource TermsToStringConverter}" />
+                                        </Picker.ItemDisplayBinding>
+                                    </Picker>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Срок обучения  на заочном -->
+                            <VerticalStackLayout Spacing="5" Grid.Column="2">
+                                <Label Text="Срок обучения на заочной форме" 
+                                        FontSize="14" 
+                                        TextColor="#757575"/>  
+                                <Border Style="{StaticResource BorderPicker}">
+                                    <Picker ItemsSource="{Binding TermsOfStudyList}"
+                                             SelectedItem="{Binding SelectedDurationOfCorrespondence, Mode=TwoWay}" 
+                                             Title="Выберите срок"
+                                             Style="{StaticResource ModernPickerStyle}">  
+                                        <Picker.ItemDisplayBinding>
+                                            <Binding Path="." Converter="{StaticResource TermsToStringConverter}" />
                                         </Picker.ItemDisplayBinding>
                                     </Picker>
                                 </Border>
                             </VerticalStackLayout>
                         </Grid>
                         
+                        <VerticalStackLayout  Spacing="5">
+                            <Label Text="Статус программы" 
+                                    FontSize="14" 
+                                    TextColor="#757575"/>
+                            <Border Style="{StaticResource BorderPicker}">
+                                <Picker ItemsSource="{Binding StatusList}"
+                                         SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" 
+                                         Title="Выберите статус"
+                                         Style="{StaticResource ModernPickerStyle}">  
+                                    <Picker.ItemDisplayBinding>
+                                        <Binding Path="." Converter="{StaticResource StatusProgramsToStringConverter}" />
+                                    </Picker.ItemDisplayBinding>
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+
                         <!-- Стоимость обучения -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Стоимость обучения" 
@@ -149,7 +159,7 @@
                 </Border>
                 
                 <!-- Кнопки действий -->
-                <HorizontalStackLayout Spacing="10" 
+                <HorizontalStackLayout Spacing="20" 
                         HorizontalOptions="Center" 
                         Margin="20">
 
@@ -158,7 +168,8 @@
                             FontSize="16"
                             Padding="25,15"
                             CornerRadius="25"
-                            WidthRequest="150"/>
+                            WidthRequest="150"
+                            IsEnabled="{Binding CanSave}"/>
 
                     <Button Text="Отмена" 
                             Command="{Binding CancelCommand}"

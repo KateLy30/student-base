@@ -24,6 +24,5 @@ public interface IProgramService
     Task<ProgramResult<object>> GetProgramsCountAsync();
     Task<ProgramResult<object>> GetProgramByQualificationAsync(string qualification);
     Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsBySpecialtyAsync(string specialty);
-    Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsByDurationTrainingAsync(TermsOfStudy termsOfStudy);
     Task<ProgramResult<object>> GetStatusProgramAsync(int id);
 }

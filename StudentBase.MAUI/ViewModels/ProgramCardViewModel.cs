@@ -1,109 +1,50 @@
-﻿using StudentBase.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class ProgramCardViewModel : BaseViewModel
+    public partial class ProgramCardViewModel : ViewModelBase
     {
-        public AsyncCommand ExitCommand { get; }
+        [ObservableProperty]
+        public partial int Id { get; set; }
 
-        public ProgramCardViewModel() =>
-            ExitCommand = new AsyncCommand(ExitAsync);
+        [ObservableProperty]
+        public partial string Specialty {  get; set; }
 
-        public async Task ExitAsync() =>
+        [ObservableProperty]
+        public partial string Qualification {  get; set; }
+
+        [ObservableProperty]
+        public partial FormsOfEducation FormOfEducation {  get; set; }
+
+        [ObservableProperty]
+        public partial TermsOfStudy DurationAfter9thGrade {  get; set; }
+
+        [ObservableProperty]
+        public partial TermsOfStudy DurationAfter11thGrade { get; set; }
+
+        [ObservableProperty]
+        public partial TermsOfStudy DurationOfCorrespondence { get; set; }
+
+        [ObservableProperty]
+        public partial decimal Cost { get; set; }
+
+        [ObservableProperty]
+        public partial StatusPrograms Status { get; set; }
+
+        [ObservableProperty]
+        public partial int GroupsCount { get; set; }
+
+        [ObservableProperty]
+        public partial int StudentsCount { get; set; }
+
+
+        [RelayCommand]
+        public static async Task ExitAsync()
+        {
             await Shell.Current.Navigation.PopModalAsync();
-
-        // поля для вывода
-        private int id;
-        public int Id
-        {
-            get => id;
-            set
-            {
-                id = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? specialty;
-        public string? Specialty
-        {
-            get => specialty;
-            set
-            {
-                specialty = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? qualification;
-        public string? Qualification
-        {
-            get => qualification;
-            set
-            {
-                qualification = value;
-                OnPropertyChanged();
-            }
-        }
-        private FormsOfEducation formOfEducation;
-        public FormsOfEducation FormOfEducation
-        {
-            get => formOfEducation;
-            set
-            {
-                formOfEducation = value;
-                OnPropertyChanged();
-            }
-        }
-        private TermsOfStudy durationTraining;
-        public TermsOfStudy DurationTraining
-        {
-            get => durationTraining;
-            set
-            {
-                durationTraining = value;
-                OnPropertyChanged();
-            }
-        }
-        private decimal cost;
-        public decimal Cost
-        {
-            get => cost;
-            set
-            {
-                cost = value;
-                OnPropertyChanged();
-            }
-        }
-        private StatusPrograms status;
-        public StatusPrograms Status
-        {
-            get => status;
-            set
-            {
-                status = value;
-                OnPropertyChanged();
-            }
-        }
-        private int groupsCount;
-        public int GroupsCount
-        {
-            get => groupsCount;
-            set
-            {
-                groupsCount = value;
-                OnPropertyChanged();
-            }
-        }
-        private int studentsCount;
-        public int StudentsCount
-        {
-            get => studentsCount;
-            set
-            {
-                studentsCount = value;
-                OnPropertyChanged();
-            }
         }
 
         // заполнение полей
@@ -112,7 +53,9 @@ namespace StudentBase.MAUI.ViewModels
             Id = p.Id;
             Specialty = p.Specialty;
             Qualification = p.Qualification;
-            DurationTraining = p.DurationTraining;
+            DurationAfter9thGrade = p.DurationAfter9thGrade;
+            DurationAfter11thGrade = p.DurationAfter11thGrade;
+            DurationOfCorrespondence = p.DurationOfCorrespondence;
             Cost = p.CostPerSemester;
             Status = p.Status;
             GroupsCount = p.EducationalGroups.Count;

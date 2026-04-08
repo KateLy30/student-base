@@ -65,28 +65,6 @@ namespace StudentBase.Application.implementations
             }
         }
 
-        public async Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsByDurationTrainingAsync(TermsOfStudy termsOfStudy)
-        {
-            try
-            {
-                var result = await _programRepository.GetAllByDurationTrainingAsync(termsOfStudy);
-                return new ProgramResult<IEnumerable<ProgramEntity>>
-                {
-                    Success = true,
-                    DataList = [result]
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ProgramResult<IEnumerable<ProgramEntity>>
-                {
-                    ErrorMessage = ex.Message,
-                    Success = false,
-                    DataList = null
-                };
-            }
-        }
-
         public async Task<ProgramResult<IEnumerable<ProgramEntity>>> GetAllProgramsBySpecialtyAsync(string specialty)
         {
             try

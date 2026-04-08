@@ -1,77 +1,48 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class NewGroupViewModel : BaseViewModel
+    public partial class NewGroupViewModel(IDataService dataService) : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        private readonly IDataService _dataService = dataService;
         private GroupEntity _group = new();
-        public ObservableCollection<StatusGroups> StatusList { get; }
-        public ObservableCollection<ProgramEntity> Programs { get; } = [];
-        public AsyncCommand SaveCommand { get; }
-        public AsyncCommand CancelCommand { get; }
-        public NewGroupViewModel(IDataService dataService)
-        {
-            _dataService = dataService;
-            SaveCommand = new AsyncCommand(SaveAsync, CanSave);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
 
-            StatusList = new ObservableCollection<StatusGroups>(Enum.GetValues<StatusGroups>().Cast<StatusGroups>());
+        [ObservableProperty]
+        public partial ObservableCollection<StatusGroups> StatusList { get; set; } = new ObservableCollection<StatusGroups>(Enum.GetValues<StatusGroups>().Cast<StatusGroups>());
 
-            _ = LoadProgramsAsync();
-        }
-        private bool CanSave()
-        {
-            return !string.IsNullOrWhiteSpace(Name) && SelectedProgram != null;
-        }
-        private string _title = "Добавление группы";
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                if (_title == value) return;
-                _title = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? name;
-        public string? Name
-        {
-            get => name;
-            set
-            {
-                if (name == value) return;
-                name = value; OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-        private DateTime dateOfCreation;
-        public DateTime DateOfCreation
-        {
-            get => dateOfCreation;
-            set
-            {
-                dateOfCreation = value;
-                OnPropertyChanged();
+        [ObservableProperty]
+        public partial ObservableCollection<ProgramEntity> Programs { get; set; } = new ObservableCollection<ProgramEntity>();
 
-            }
-        }
-        private ProgramEntity? selectedProgram;
-        public ProgramEntity? SelectedProgram
+        [ObservableProperty]
+        public partial int SelectedProgramId { get; set; }
+
+        [ObservableProperty]
+        public partial string Title { get; set; } = "Добавление группы";
+
+        [ObservableProperty]
+        public partial string Name { get; set; }
+
+        [ObservableProperty]
+        public partial DateTime DateOfCreation { get; set; }
+
+        [ObservableProperty]
+        public partial ProgramEntity SelectedProgram { get; set; }  
+
+        [ObservableProperty]
+        public partial StatusGroups SelectedStatus {  get; set; }
+
+
+        [RelayCommand]
+        private static async Task CancelAsync()
         {
-            get => selectedProgram;
-            set
-            {
-                if (selectedProgram == value) return;
-                selectedProgram = value; OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
+            await Shell.Current.Navigation.PopModalAsync();
         }
+
         public async Task LoadProgramsAsync()
         {
             var programsFromDb = await _dataService.ProgramService.GetAllProgramsAsync();
@@ -80,16 +51,9 @@ namespace StudentBase.MAUI.ViewModels
             foreach (var p in programsFromDb)
                 Programs.Add(p);
         }
-        private StatusGroups selectedStatus;
-        public StatusGroups SelectedStatus
-        {
-            get => selectedStatus;
-            set
-            {
-                if (value == selectedStatus) return;
-                selectedStatus = value; OnPropertyChanged();
-            }
-        }
+
+
+        [RelayCommand]
         private async Task SaveAsync()
         {
             if (string.IsNullOrWhiteSpace(Name) || SelectedProgram == null)
@@ -102,16 +66,19 @@ namespace StudentBase.MAUI.ViewModels
             _group.ProgramId = SelectedProgram.Id;
             _group.EducationalProgram = SelectedProgram;
             _group.Status = SelectedStatus;
+
             if (_group.Id == 0)
-                await _dataService.GroupService.CreateGroupAsync(_group);
+            {
+                var result = await _dataService.GroupService.CreateGroupAsync(_group);
+                if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+            }
             else
-                await _dataService.GroupService.UpdateGroupAsync(_group);
+            {
+                var result = await _dataService.GroupService.UpdateGroupAsync(_group);
+                if (!result.Success) await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+            }
 
             await Shell.Current.Navigation.PopModalAsync();
-            if (Shell.Current?.CurrentPage?.BindingContext is GroupPageViewModel viewModel)
-            {
-                await viewModel.LoadAsync();
-            }
         }
         public void LoadFrom(GroupEntity? g)
         {
@@ -124,7 +91,7 @@ namespace StudentBase.MAUI.ViewModels
 
                 Name = _group.Name;
                 DateOfCreation = _group.DateOfCreation;
-                SelectedProgram = _group.EducationalProgram;
+                SelectedProgram = Programs.FirstOrDefault(p => p.Id == _group.ProgramId);
                 SelectedStatus = _group.Status;
             }
         }

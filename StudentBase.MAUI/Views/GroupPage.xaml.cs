@@ -1,5 +1,5 @@
-
 using StudentBase.MAUI.ViewModels;
+using System.Threading.Tasks;
 
 namespace StudentBase.MAUI.Views;
 
@@ -17,7 +17,8 @@ public partial class GroupPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _groupPageViewModel.LoadAsync();
+		_groupPageViewModel.SearchText = null;
+		await _groupPageViewModel.LoadAsync();
     }
 
 }

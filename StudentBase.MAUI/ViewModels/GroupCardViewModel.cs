@@ -1,110 +1,44 @@
-﻿using StudentBase.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class GroupCardViewModel : BaseViewModel
+    public partial class GroupCardViewModel : ViewModelBase
     {
-        public AsyncCommand ExitCommand { get; }
 
-        public GroupCardViewModel() =>
-            ExitCommand = new AsyncCommand(ExitAsync);
-
-        public async Task ExitAsync() =>
+        [RelayCommand]
+        public static async Task ExitAsync()
+        {
             await Shell.Current.Navigation.PopModalAsync();
+        }
 
-        // поля для вывода
-        private int id;
-        public int Id
-        {
-            get => id;
-            set
-            {
-                id = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? name;
-        public string? Name
-        {
-            get => name;
-            set
-            {
-                name = value;
-                OnPropertyChanged();
-            }
-        }
-        private int programId;
-        public int ProgramId
-        {
-            get => programId;
-            set
-            {
-                programId = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? programSpecialty;
-        public string? ProgramSpecialty
-        {
-            get => programSpecialty;
-            set
-            {
-                programSpecialty = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? programQualification;
-        public string? ProgramQualification
-        {
-            get => programQualification;
-            set
-            {
-                programQualification = value;
-                OnPropertyChanged();
-            }
-        }
-        private DateTime dateOfCreation;
-        public DateTime DateOfCreation
-        {
-            get => dateOfCreation;
-            set
-            {
-                dateOfCreation = value;
-                OnPropertyChanged();
-            }
-        }
-        private TermsOfStudy durationTraining;
-        public TermsOfStudy DurationTraining
-        {
-            get => durationTraining;
-            set
-            {
-                durationTraining = value;
-                OnPropertyChanged();
-            }
-        }
-        private StatusGroups status;
-        public StatusGroups Status
-        {
-            get => status;
-            set
-            {
-                status = value;
-                OnPropertyChanged();
-            }
-        }
-        private int studentsCount;
-        public int StudentsCount
-        {
-            get => studentsCount;
-            set
-            {
-                studentsCount = value;
-                OnPropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        public partial int Id { get; set; }
+
+        [ObservableProperty]
+        public partial string Name {  get; set; }
+
+        [ObservableProperty]
+        public partial int ProgramId { get; set; }
+
+        [ObservableProperty]
+        public partial string ProgramSpecialty { get; set; }
+
+        [ObservableProperty]
+        public partial string ProgramQualification { get; set; }
+
+        [ObservableProperty]
+        public partial DateTime DateOfCreation { get; set; }
+
+        [ObservableProperty]
+        public partial StatusGroups Status { get; set; }
+
+        [ObservableProperty]
+        public partial int StudentsCount { get; set; }
+
+
 
         // заполнение полей
         public void UploadData(GroupEntity g)
@@ -115,7 +49,6 @@ namespace StudentBase.MAUI.ViewModels
             ProgramId = g.ProgramId;
             ProgramSpecialty = g.EducationalProgram.Specialty;
             ProgramQualification = g.EducationalProgram.Qualification;
-            DurationTraining = g.EducationalProgram.DurationTraining;
             Status = g.Status;
             StudentsCount = g.Students.Count;
         }

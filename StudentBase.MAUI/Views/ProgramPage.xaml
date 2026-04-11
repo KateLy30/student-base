@@ -12,12 +12,13 @@
     <Grid RowDefinitions="Auto,Auto,*, Auto" RowSpacing="5" Padding="5">
 
         <Grid ColumnDefinitions="*,Auto" Padding="5" ColumnSpacing="5">
-            
-            <SearchBar Placeholder="Поиск.."
+
+            <SearchBar Placeholder="Поиск по специальности и квалификации.." SearchCommand="{Binding FindProgramCommand}"
                        Text="{Binding SearchText, Mode=TwoWay}" />
 
             <ImageButton Source="load_icon.png" Grid.Column="1"
-                        Command="{Binding LoadCommand}" BorderWidth="0" />
+                        Command="{Binding LoadCommand}" BorderWidth="0"
+                         ToolTipProperties.Text="Загрузка всего списка из базы."/>
         </Grid>
 
         <ActivityIndicator IsRunning="{Binding IsBusy}"

@@ -72,7 +72,12 @@
 		<ProjectReference Include="..\StudentBase.Domain\StudentBase.Domain.csproj" />
 		<ProjectReference Include="..\StudentBase.Infrastructure\StudentBase.Infrastructure.csproj" />
 	</ItemGroup>
-
+	
+	<PropertyGroup>
+		<!-- Убедитесь, что LangVersion установлен в 'preview' или '13.0' -->
+		<LangVersion>preview</LangVersion>
+	</PropertyGroup>
+	
 	<ItemGroup>
 	  <Compile Update="Views\GroupCardPage.xaml.cs">
 	    <DependentUpon>GroupCardPage.xaml</DependentUpon>
@@ -110,6 +115,9 @@
 	  <MauiXaml Update="Views\ImportStudentsListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\NewCustomFieldPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\NewGroupPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -129,6 +137,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ProgramPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\StudentCardPage.xaml">

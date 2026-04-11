@@ -214,7 +214,7 @@
                 </Border>
 
                 <!-- Секция: История переводов -->
-                <Border >
+                <Border IsVisible="{Binding HasTransfers}">
                     <Grid RowDefinitions="Auto,*" RowSpacing="10">
                         <Label Text="Переводы" 
                                 FontSize="18" 

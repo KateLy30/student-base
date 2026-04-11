@@ -1,4 +1,3 @@
-
 using StudentBase.MAUI.ViewModels;
 
 namespace StudentBase.MAUI.Views;
@@ -11,10 +10,5 @@ public partial class NewStudentPage : ContentPage
         InitializeComponent();
         _newStudentViewModel = newStudentViewModel;
         BindingContext = _newStudentViewModel;
-    }
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _newStudentViewModel.LoadGroupsAsync();
     }
 }

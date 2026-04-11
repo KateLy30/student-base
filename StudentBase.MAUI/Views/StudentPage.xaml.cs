@@ -15,6 +15,7 @@ public partial class StudentPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _studentPageViewModel.SearchText = null;
         await _studentPageViewModel.LoadAsync();
         await _studentPageViewModel.LoadPickerFilterAsync();
     }

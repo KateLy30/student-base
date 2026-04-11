@@ -1,166 +1,162 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class StudentPageViewModel : BaseViewModel
+    public partial class StudentPageViewModel(IDataService dataService, Func<object> createNewStudentPage,
+                                              Func<object> openStudentCardPage, Func<object> createNewTransferPage,
+                                              Func<object> createNewPaymentPage) : ViewModelBase
     {
-        private readonly IDataService _dataService;
-        private readonly Func<object> _createNewStudentPage;
-        private readonly Func<object> _openStudentCardPage;
-        public ObservableCollection<StudentEntity> Students { get; } = [];
-        public ObservableCollection<GroupEntity> ListGroupsFilter { get; } = [];
-        public ObservableCollection<ProgramEntity> ListProgramsFilter { get; } = [];
+        private readonly IDataService _dataService = dataService;
+        private readonly Func<object> _createNewStudentPage = createNewStudentPage;
+        private readonly Func<object> _openStudentCardPage = openStudentCardPage;
+        private readonly Func<object> _createNewTransferPage = createNewTransferPage;
+        private readonly Func<object> _createNewPaymentPage = createNewPaymentPage;
 
-        public StudentPageViewModel(IDataService dataService, Func<object> createNewStudentPage, Func<object> openStudentCardPage)
-        {
-            _dataService = dataService;
-            _createNewStudentPage = createNewStudentPage;
-            _openStudentCardPage = openStudentCardPage;
+        [ObservableProperty]
+        public partial ObservableCollection<StudentEntity> Students { get; set; } = new ObservableCollection<StudentEntity>();
 
-            LoadCommand = new AsyncCommand(LoadAsync);
-            AddCommand = new AsyncCommand(AddAsync);
-            EditCommand = new AsyncCommand(s => EditAsync(s as StudentEntity));
-            DeleteCommand = new AsyncCommand(s => DeleteAsync());
-            OpenCardCommand = new AsyncCommand(s => OpenCardAsync(s as StudentEntity));
-        }
+        [ObservableProperty]
+        public partial StudentEntity? SelectedStudent { get; set; }
 
-        // поле для вывода кол-ва записей
-        private string? numberOfEntries;
-        public string? NumberOfEntries
+        [ObservableProperty]
+        public partial string? SearchText { get; set; }
+
+        [ObservableProperty]
+        public partial string NumberOfEntries { get; set; }
+
+        [ObservableProperty]
+        public partial GroupEntity SelectedGroupsFilter { get; set; }
+
+        [ObservableProperty]
+        public partial ProgramEntity SelectedProgramFilter { get; set; }
+
+        [ObservableProperty]
+        public partial ObservableCollection<GroupEntity> ListGroupsFilter { get; set; } = new ObservableCollection<GroupEntity>();
+
+        [ObservableProperty]
+        public partial ObservableCollection<ProgramEntity> ListProgramsFilter { get; set; } = new ObservableCollection<ProgramEntity>();
+
+
+        // поиск
+        [RelayCommand]
+        public async Task FindStudentAsync()
         {
-            get => numberOfEntries;
-            set
+            if (SearchText == null || SearchText == "") return;
+            try
             {
-                numberOfEntries = value;
-                OnPropertyChanged();
-            }
-        }
-        // индикатор загрузки
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set
-            {
-                if (_isBusy == value) return;
-                _isBusy = value;
-                OnPropertyChanged();
-            }
-        }
-        // поле поиска
-        private string? searchText;
-        public string? SearchText
-        {
-            get => searchText;
-            set
-            {
-                if (searchText == value) return;
-                searchText = value;
-                OnPropertyChanged();
-                _ = LoadAsync();
-            }
-        }
-        // выбранный фильтр группы
-        private GroupEntity? selectedGroupsFilter;
-        public GroupEntity? SelectedGroupsFilter
-        {
-            get => selectedGroupsFilter;
-            set
-            {
-                if (selectedGroupsFilter != value)
+                IsBusy = true;
+                var students = await _dataService.StudentService.GetAllStudentsAsync();
+                if (students == null) return;
+
+                var filter = (SearchText ?? string.Empty).Trim();
+                if (filter.Length > 0)
                 {
-                    selectedGroupsFilter = value;
-                    OnPropertyChanged();
-
-                    // Проверяем, выбран ли элемент "Все" (по ID = -1)
-                    if (selectedGroupsFilter?.Id == -1)
-                    {
-                        // Показать все записи (без фильтрации по группе)
-                        _ = LoadAsync();
-                    }
-                    else
-                    {
-                        // Применить фильтр по выбранной группе
-                        _ = ApplyFilterGroups();
-                    }
+                    students = [.. students.Where(p => (p.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
                 }
-            }
-        }
-        // выбранный фильтр программы
-        private ProgramEntity? selectedProgramFilter;
-        public ProgramEntity? SelectedProgramFilter
-        {
-            get => selectedProgramFilter;
-            set
-            {
-                selectedProgramFilter = value;
-                OnPropertyChanged();
-                if(selectedProgramFilter?.Id == -1)
-                    _ = LoadAsync();
-                else 
-                    _ = ApplyFilterPrograms();
-            }
-        }
-        // выбранный из списка студент
-        private StudentEntity? selectedStudent;
-        public StudentEntity? SelectedStudent
-        {
-            get => selectedStudent;
-            set
-            {
-                if (selectedStudent == value) return;
-                selectedStudent = value; OnPropertyChanged();
-            }
-        }
-        private async Task ApplyFilterGroups()
-        {
-            if (SelectedGroupsFilter == null) return;
-            var list = await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
-            if (list == null) return;
-            Students.Clear();
-            foreach (var student in list)
-            {
-                student.GroupName = student.EducationalGroup.Name;
-                student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
-                student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
-                Students.Add(student);
-            }
+                Students.Clear();
+                foreach (var student in students)
+                    Students.Add(student);
 
-            NumberOfEntries = $"Записей: {Students.Count}";
-        }
-        private async Task ApplyFilterPrograms()
-        {
-            if (SelectedProgramFilter == null) return;
-            var list = await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
-            if (list == null) return;
-            Students.Clear();
-            foreach (var student in list)
-            {
-                student.GroupName = student.EducationalGroup.Name;
-                student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
-                student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
-                Students.Add(student);
+                NumberOfEntries = $"Записей: {Students.Count}";
             }
-
-            NumberOfEntries = $"Записей: {Students.Count}";
-
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Ошибка загрузки: {ex.Message}", "Ok");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
+        partial void OnSelectedGroupsFilterChanged(GroupEntity value)
+        {
+            if (value == null || value.Id == -1) return;
+            _ = ApplyFilterAsync();
+        }
+        partial void OnSelectedProgramFilterChanged(ProgramEntity value)
+        {
+            if (value == null || value.Id == -1) return;
+            _ = ApplyFilterAsync();
+        }
+        private async Task ApplyFilterAsync()
+        {
+            if (SelectedGroupsFilter.Id == -1 && SelectedProgramFilter.Id == -1)
+            {
+                await LoadAsync();
+                return;
+            }
+            if (SelectedProgramFilter.Id != -1)
+            {
+                var list = await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
+                if (list == null) return;
+                Students.Clear();
+                foreach (var student in list)
+                    Students.Add(student);
+
+                NumberOfEntries = $"Записей: {Students.Count}";
+            }
+            if (SelectedGroupsFilter.Id != -1)
+            {
+                var list = await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
+                if (list == null) return;
+                Students.Clear();
+                foreach (var student in list)
+                    Students.Add(student);
+
+                NumberOfEntries = $"Записей: {Students.Count}";
+            }
+        }
+
+        //private async Task ApplyFilterGroups()
+        //{
+        //    if (SelectedGroupsFilter.Id == -1) await LoadAsync();
+        //    var list = await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
+        //    if (list == null) return;
+        //    Students.Clear();
+        //    foreach (var student in list)
+        //    {
+        //        student.GroupName = student.EducationalGroup.Name;
+        //        student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
+        //        student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
+        //        Students.Add(student);
+        //    }
+
+        //    NumberOfEntries = $"Записей: {Students.Count}";
+        //}
+        //private async Task ApplyFilterPrograms()
+        //{
+        //    if (SelectedProgramFilter.Id == -1) await LoadAsync();
+        //    var list = await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
+        //    if (list == null) return;
+        //    Students.Clear();
+        //    foreach (var student in list)
+        //    {
+        //        student.GroupName = student.EducationalGroup.Name;
+        //        student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
+        //        student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
+        //        Students.Add(student);
+        //    }
+
+        //    NumberOfEntries = $"Записей: {Students.Count}";
+
+        //}
+
         public async Task LoadPickerFilterAsync()
         {
             var groupsFromDb = await _dataService.GroupService.GetAllGroupsAsync();
             var programsFromDb = await _dataService.ProgramService.GetAllProgramsAsync();
             if (groupsFromDb != null)
             {
-                ListGroupsFilter.Clear();
                 var allGroupsItem = new GroupEntity
                 {
                     Id = -1,
                     Name = "Все группы"
                 };
+                ListGroupsFilter.Clear();
                 ListGroupsFilter.Add(allGroupsItem);
                 foreach (var g in groupsFromDb)
                     ListGroupsFilter.Add(g);
@@ -168,55 +164,48 @@ namespace StudentBase.MAUI.ViewModels
             }
             if (programsFromDb != null)
             {
-                ListProgramsFilter.Clear();
                 var allProgramsItem = new ProgramEntity
                 {
                     Id = -1,
                     Specialty = "Все программы"
                 };
+                ListProgramsFilter.Clear();
                 ListProgramsFilter.Add(allProgramsItem);
                 foreach (var p in programsFromDb)
                     ListProgramsFilter.Add(p);
                 SelectedProgramFilter = allProgramsItem;
             }
         }
+
+        [RelayCommand]
         public async Task LoadAsync()
         {
+            SearchText = null;
             if (IsBusy) return;
             IsBusy = true;
             try
             {
                 var list = await _dataService.StudentService.GetAllStudentsAsync();
                 if (list == null) return;
-                var filter = (SearchText ?? string.Empty).Trim();
-                if (filter.Length > 0)
-                {
-                    list = [.. list.Where(e => (e.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
-                }
                 Students.Clear();
                 foreach (var student in list)
-                {
-                    student.GroupName = student.EducationalGroup.Name;
-                    student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
-                    student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
                     Students.Add(student);
-                }
 
                 NumberOfEntries = $"Записей: {Students.Count}";
+            }
+            catch (Exception ex)
+            {
+                HasError = true;
+                ErrorMessage = ex.Message;
             }
             finally
             {
                 IsBusy = false;
             }
         }
-        public AsyncCommand LoadCommand { get; }
-        public AsyncCommand AddCommand { get; }
-        public AsyncCommand DeleteCommand { get; }
-        public AsyncCommand EditCommand { get; }
-        public AsyncCommand OpenCardCommand { get; }
-        public AsyncCommand AddPaymentCommand { get; }
-        public AsyncCommand ImportListCommand { get; }
 
+
+        [RelayCommand]
         public async Task OpenCardAsync(StudentEntity? s)
         {
             if (s is null) return;
@@ -226,37 +215,74 @@ namespace StudentBase.MAUI.ViewModels
             await Shell.Current.Navigation.PushModalAsync(page);
         }
 
-        public async Task DeleteAsync()
+        [RelayCommand]
+        public async Task DeleteAsync(StudentEntity s)
         {
-            if (SelectedStudent is null) return;
-            var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {SelectedStudent.Name}?", "Да", "Нет");
+            if (s is null) return;
+            var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {s.Name}?", "Да", "Нет");
             if (!ok) return;
-            var result = await _dataService.StudentService.DeleteStudentAsync(SelectedStudent.Id);
-            if (result.Success == false)
+            var result = await _dataService.StudentService.DeleteStudentAsync(s.Id);
+            if (!result.Success)
+            {
                 await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "ОК");
+                return;
+            }
             await LoadAsync();
         }
+
+        [RelayCommand]
         public async Task AddAsync()
         {
             var page = (Page)_createNewStudentPage();
+            if (page.BindingContext is NewStudentViewModel viewModel)
+                await viewModel.LoadGroupsAsync();
             await Shell.Current.Navigation.PushModalAsync(page);
         }
+
+        [RelayCommand]
         public async Task EditAsync(StudentEntity? s)
         {
             if (s is null) return;
             var page = (Page)_createNewStudentPage();
             if (page.BindingContext is NewStudentViewModel viewModel)
+            {
+                await viewModel.LoadGroupsAsync();
                 viewModel.LoadFrom(s);
+            }
             await Shell.Current.Navigation.PushModalAsync(page);
         }
-        public async Task AddPaymnetAsync(StudentEntity? s)
-        {
 
+        [RelayCommand]
+        private async Task TransferAsync(StudentEntity? s)
+        {
+            if (s is null) return;
+            var page = (Page)_createNewTransferPage();
+            if (page.BindingContext is NewStudentTransferViewModel viewModel)
+            {
+                await viewModel.LoadStudentsAsync();
+                await viewModel.LoadGroupsAsync();
+                viewModel.LoadFormStudentPage(s);
+            }
+            await Shell.Current.Navigation.PushModalAsync(page);
         }
 
+        [RelayCommand]
+        private async Task PaymentAsync(StudentEntity? s)
+        {
+            if (s is null) return;
+            var page = (Page)_createNewPaymentPage();
+            if (page.BindingContext is NewPaymentViewModel viewModel)
+            {
+                await viewModel.LoadStudentsAsync();
+                viewModel.LoadForm(s);
+            }
+            await Shell.Current.Navigation.PushModalAsync(page);
+        }
+
+        [RelayCommand]
         public async Task ImportListAsync()
         {
-
+            // TODO
         }
     }
 }

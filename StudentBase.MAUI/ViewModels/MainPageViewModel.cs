@@ -1,103 +1,49 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class MainPageViewModel : BaseViewModel
+    public partial class MainPageViewModel(IDataService dataService, Func<object> createNewTransferPage, Func<object> createNewPaymentPage) : ViewModelBase
     {
-        private readonly IDataService _dataService;
-        private readonly Func<object> _createNewTransferPage;
-        public ObservableCollection<StudentEntity> Debtors { get; } = [];
-        public ObservableCollection<StudentTransferEntity> Translations { get; } = [];
-        public AsyncCommand ArchiveCommand { get; }
-        public AsyncCommand TransferStudentCommand { get; }
-        public AsyncCommand CreateReceiptCommand { get; }
-        public MainPageViewModel(IDataService dataService, Func<object> createNewTransferPage)
-        {
-            _dataService = dataService;
-            _createNewTransferPage = createNewTransferPage;
+        private readonly IDataService _dataService = dataService;
+        private readonly Func<object> _createNewTransferPage = createNewTransferPage;
+        private readonly Func<object> _createNewPaymentPage = createNewPaymentPage;
 
-            ArchiveCommand = new AsyncCommand(OpenArchiveAsync);
-            TransferStudentCommand = new AsyncCommand(TransferStudentAsync);
-            CreateReceiptCommand = new AsyncCommand(CreateReceiptAsync);
-        }
+        [ObservableProperty]
+        public partial ObservableCollection<StudentEntity> Debtors { get; set; } = [];
 
-        private int numberOfStudents;
-        public int NumberOfStudents
-        {
-            get => numberOfStudents; 
-            set
-            {
-                numberOfStudents = value;
-                OnPropertyChanged();
-            }
-        }
-        private int numberOfGroups;
-        public int NumberOfGroups
-        {
-            get => numberOfGroups;
-            set
-            {
-                numberOfGroups = value;
-                OnPropertyChanged();
-            }
-        }
-        private int numberOfPrograms;
-        public int NumberOfPrograms
-        {
-            get => numberOfPrograms; 
-            set
-            {
-                numberOfPrograms = value;
-                OnPropertyChanged();
-            }
-        }
-        private int numberOfOverduePayments;
-        public int NumberOfOverduePayments
-        {
-            get => numberOfOverduePayments;
-            set
-            {
-                numberOfOverduePayments = value;
-                OnPropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        public partial ObservableCollection<StudentTransferEntity> Translations { get; set; } = [];
 
+        [ObservableProperty]
+        public partial int NumberOfStudents { get; set; }
 
-        private StudentEntity? selectedDebtors;
-        public StudentEntity? SelectedDebtors
-        {
-            get => selectedDebtors;
-            set
-            {
-                selectedDebtors = value;
-                OnPropertyChanged();
-            }
-        }
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set
-            {
-                if (_isBusy == value) return;
-                _isBusy = value;
-                OnPropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        public partial int NumberOfGroups { get; set; }
+
+        [ObservableProperty]
+        public partial int NumberOfPrograms { get; set; }
+
+        [ObservableProperty]
+        public partial int NumberOfOverduePayments { get; set; }
+
+        [ObservableProperty]
+        public partial StudentEntity SelectedDebtors   { get; set; }
+
         public async Task LoadAsync()
         {
             if (IsBusy) return;
             IsBusy = true;
             try
             {
-                var list = await _dataService.StudentService.GetAllStudentsAsync();
-                if (list == null) return;
-                Debtors.Clear();
-                foreach (var student in list)
-                    Debtors.Add(student);
+                //var list = await _dataService.StudentService.GetAllStudentsAsync();
+                //if (list == null) return;
+                //Debtors.Clear();
+                //foreach (var student in list)
+                //    Debtors.Add(student);
 
                 var list2 = await _dataService.StudentTransferService.GetAllStudentTransfersAsync();
                 if (list2 == null) return;
@@ -116,17 +62,28 @@ namespace StudentBase.MAUI.ViewModels
             NumberOfGroups = (await _dataService.GroupService.GetGroupsCountAsync()).Count;
             NumberOfPrograms = (await _dataService.ProgramService.GetProgramsCountAsync()).Count;
         }
-        private async Task OpenArchiveAsync() { }  // #TODO
+
+
+        [RelayCommand]
+        private async Task OpenArchiveAsync() { }  // TODO
+
+
+        [RelayCommand]
         private async Task TransferStudentAsync()
         {
             var page = (Page)_createNewTransferPage();
+            if (page.BindingContext is NewStudentTransferViewModel viewModel)
+                await viewModel.LoadFormTransferPage();
             await Shell.Current.Navigation.PushModalAsync(page);
         }
 
-        private async Task CreateReceiptAsync() { } // #TODO
-
-
-
-
+        [RelayCommand]
+        private async Task CreateReceiptAsync()
+        {
+            var page = (Page)_createNewPaymentPage();
+            if (page.BindingContext is NewPaymentViewModel viewModel)
+                await viewModel.LoadStudentsAsync();
+            await Shell.Current.Navigation.PushModalAsync(page);
+        }
     }
 }

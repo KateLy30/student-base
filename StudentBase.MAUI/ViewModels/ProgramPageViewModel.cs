@@ -25,33 +25,60 @@ namespace StudentBase.MAUI.ViewModels
         public partial string? NumberOfEntries { get; set; }
 
 
-        // Автоматически вызывается при изменении SearchText
-        partial void OnSearchTextChanged(string? value)
+        // поиск
+        [RelayCommand]
+        public async Task FindProgramAsync()
         {
-            _ = LoadAsync();
+            if (SearchText == null || SearchText == "") return;
+            try
+            {
+                IsBusy = true;
+                var programs = await _dataService.ProgramService.GetAllProgramsAsync();
+                if (programs == null) return;
+
+                var filter = (SearchText ?? string.Empty).Trim();
+                if (filter.Length > 0)
+                {
+                    programs = [.. programs.Where(p => (p.Specialty ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase) 
+                                                    || (p.Qualification ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
+                }
+                Programs.Clear();
+                foreach (var program in programs)
+                    Programs.Add(program);
+
+                NumberOfEntries = $"Записей: {Programs.Count}";
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Ошибка загрузки: {ex.Message}", "Ok");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
+
 
         // загрузка списка программ
         [RelayCommand]
         public async Task LoadAsync()
         {
+            SearchText = null;
             if (IsBusy) return;
             IsBusy = true;
             try
             {
                 var list = await _dataService.ProgramService.GetAllProgramsAsync(); 
                 if (list == null) return;
-                var filter = (SearchText ?? string.Empty).Trim();
-                if (filter.Length > 0)
-                {
-                    list = [.. list.Where(e => (e.Specialty ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase) || 
-                                               (e.Qualification ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
-                }
                 Programs.Clear();
                 foreach (var program in list)
                     Programs.Add(program);
 
                 NumberOfEntries = $"Записей: {Programs.Count}";
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка загрузки", ex.Message, "OK");
             }
             finally
             {

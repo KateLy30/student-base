@@ -19,6 +19,9 @@ namespace StudentBase.MAUI.ViewModels
         public partial ObservableCollection<ProgramEntity> Programs { get; set; } = new ObservableCollection<ProgramEntity>();
 
         [ObservableProperty]
+        public partial bool ChangedProgram { get; set; } = true;
+
+        [ObservableProperty]
         public partial int SelectedProgramId { get; set; }
 
         [ObservableProperty]
@@ -88,6 +91,8 @@ namespace StudentBase.MAUI.ViewModels
             else
             {
                 Title = "Изменение данных группы";
+
+                ChangedProgram = false;
 
                 Name = _group.Name;
                 DateOfCreation = _group.DateOfCreation;

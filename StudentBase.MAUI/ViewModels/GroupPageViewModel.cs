@@ -24,31 +24,59 @@ namespace StudentBase.MAUI.ViewModels
         [ObservableProperty]
         public partial string NumberOfEntries { get; set; }
 
-        partial void OnSearchTextChanged(string? value)
+        // поиск
+        [RelayCommand]
+        public async Task FindGroupAsync()
         {
-            _ = LoadAsync();
-        }
+            if (SearchText == null || SearchText == "") return;
+            try
+            {
+                IsBusy = true;
+                var groups = await _dataService.GroupService.GetAllGroupsAsync();
+                if (groups == null) return;
 
+                var filter = (SearchText ?? string.Empty).Trim();
+                if (filter.Length > 0)
+                {
+                    groups = [.. groups.Where(p => (p.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase) 
+                                                || (p.ProgramSpecialty ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
+                }
+
+                Groups.Clear();
+                foreach (var group in groups)
+                    Groups.Add(group);
+
+                NumberOfEntries = $"Записей: {Groups.Count}";
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Ошибка загрузки: {ex.Message}", "Ok");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
 
         [RelayCommand]
         public async Task LoadAsync()
         {
+            SearchText = null;
             if (IsBusy) return;
             IsBusy = true;
             try
             {
                 var list = await _dataService.GroupService.GetAllGroupsAsync();
                 if (list == null) return;
-                var filter = (SearchText ?? string.Empty).Trim();
-                if (filter.Length > 0)
-                {
-                    list = [.. list.Where(e => (e.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
-                }
                 Groups.Clear();
                 foreach (var group in list)
                     Groups.Add(group);
 
                 NumberOfEntries = $"Записей: {Groups.Count}";
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка загрузки", ex.Message, "OK");
             }
             finally
             {

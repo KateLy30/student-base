@@ -76,9 +76,6 @@ public enum FieldType
     [Description("Да/Нет")]
     Boolean,        // Да/Нет
 
-    [Description("Email")]
-    Email,          // Email
-
     [Description("Телефон")]
     Phone,          // Телефон
 }

@@ -9,39 +9,63 @@
         <ToolbarItem Text="Новый перевод" Command="{Binding TransferCommand}" />
     </ContentPage.ToolbarItems>
     
-    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15" Padding="10">
-        
-        <SearchBar Placeholder="Поиск.."
+    <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="15" Padding="5">
+
+        <Grid ColumnDefinitions="*,Auto" 
+                ColumnSpacing="5"  Padding="5">
+            <SearchBar Placeholder="Поиск по ФИО студента.." SearchCommand="{Binding FindTransferCommand}"
                     Text="{Binding SearchText, Mode=TwoWay}" />
+            <ImageButton Source="load_icon.png" Grid.Column="1"
+                        Command="{Binding LoadCommand}" BorderWidth="0"
+                         ToolTipProperties.Text="Загрузка всего списка из базы."/>
+        </Grid>
 
         <ScrollView Grid.Row="1" >
             <CollectionView ItemsSource="{Binding TransferredStudents}" SelectionMode="Single" 
                                 SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" >
+
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                        <Label Text="Список переводов пуст"
+                                HorizontalOptions="Center"
+                                FontSize="16" TextColor="#757575"/>
+
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="15" ColumnDefinitions="*, Auto" >
-                            <StackLayout Spacing="5">
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
-                                <Label Text="{Binding DisplayHistory}" TextColor="Gray" FontSize="16" />
-                                <Label Text="{Binding EnrollmentDate, StringFormat='{0:dd.MM.yyyy}'}" TextColor="Gray" FontSize="16" />
-                            </StackLayout>
-                            <Button Text="Удалить"
-                                    Grid.Column="1" 
-                                    Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
-                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
+                        <StackLayout Padding="0,5,0,5">
+                            <Border Style="{StaticResource BorderCollectionItem}" >
+                                <Grid Padding="10,5,10,5" ColumnDefinitions="*, Auto" ColumnSpacing="5" >
+                                    <StackLayout >
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="20" />
+                                        <Label Text="{Binding DisplayHistory}" TextColor="Gray" FontSize="18" />
+                                        <Label Text="{Binding EnrollmentDate, StringFormat='{0:dd.MM.yyyy}'}" TextColor="Gray" FontSize="18" />
+                                    </StackLayout>
+                                    <ImageButton Source="delete_icon.png" 
+                                         Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
+                                         CommandParameter="{Binding}" HeightRequest="30"/>
 
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                             Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 
                                                             CommandParameter="{Binding}" />
-                            </Grid.GestureRecognizers>
-                        </Grid>
-
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </Border>
+                        </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
             
         </ScrollView>
         
+        <VerticalStackLayout Grid.Row="3">
+            <BoxView BackgroundColor="LightGray"  HeightRequest="0.5"/>
+            <Label HeightRequest="40" HorizontalOptions="End" Text="{Binding NumberOfEntries}" Padding="10" Margin="0,0,10,0" />
+        </VerticalStackLayout>
+
     </Grid>
 </ContentPage>

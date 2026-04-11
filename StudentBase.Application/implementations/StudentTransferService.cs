@@ -36,15 +36,25 @@ namespace StudentBase.Application.Implementations
                         ErrorMessage = $"Студента с ID {entity.StudentId} не существует."
                     };
                 }
-
                 student.EducationalGroup = entity.ToGroup;
                 student.CurrentGroupId = entity.ToGroupId;
-                student.DurationTraining = entity.ToGroup.EducationalProgram.DurationTraining;
-                student.StudentTransfers?.Add(entity);
+                switch (student.FormOfEducation)
+                {
+                    case Domain.FormsOfEducation.FullTime:
+                        if (student.EducationLevel == Domain.LevelsOfEducation.BasicGeneralEducation)
+                            student.DurationTraining = entity.ToGroup.EducationalProgram.DurationAfter9thGrade;
+                        else if (student.EducationLevel == Domain.LevelsOfEducation.SecondaryGeneralEducation)
+                            student.DurationTraining = entity.ToGroup.EducationalProgram.DurationAfter11thGrade;
+                            break;
 
-                await _studentRepository.UpdateAsync(student);
+                    case Domain.FormsOfEducation.Correspondence:
+                        student.DurationTraining = entity.ToGroup.EducationalProgram.DurationOfCorrespondence;
+                        break;
+                }
 
                 await _studentTransferRepository.CreateAsync(entity);
+
+                await _studentRepository.UpdateAsync(student);
                 return new StudentTransferResult<object>
                 {
                     Success = true,

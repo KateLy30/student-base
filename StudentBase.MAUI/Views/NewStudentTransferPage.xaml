@@ -4,22 +4,6 @@
              x:Class="StudentBase.MAUI.Views.NewStudentTransferPage"
              BackgroundColor="{StaticResource BackgroundPageGray}">
 
-    <ContentPage.Resources>
-        <!-- Стиль для Picker -->
-        <Style x:Key="ModernPickerStyle" TargetType="Picker">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="TitleColor" Value="#9E9E9E"/>
-        </Style>
-
-        <!-- Стиль для DatePicker -->
-        <Style x:Key="ModernDatePickerStyle" TargetType="DatePicker">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="1"/>
-            <Setter Property="HeightRequest" Value="50"/>
-        </Style>
-    </ContentPage.Resources>
-
     <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
 
         <!-- Заголовок -->
@@ -33,9 +17,9 @@
 
         <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundPageGray}">
 
-            <VerticalStackLayout Padding="8">
+            <VerticalStackLayout Padding="8" Spacing="10">
                 <Border>
-                    <VerticalStackLayout Spacing="12">
+                    <VerticalStackLayout Spacing="15">
 
                         <!-- Список студентов -->
                         <VerticalStackLayout Spacing="5">
@@ -47,11 +31,45 @@
                                         ItemDisplayBinding="{Binding Name}" 
                                         SelectedItem="{Binding SelectedStudent}"
                                         Title="Выберите студента"
-                                        Style="{StaticResource ModernPickerStyle}">
-                                </Picker>
+                                        Style="{StaticResource ModernPickerStyle}" 
+                                        IsEnabled="{Binding ChangedStudent}"/>
                             </Border>
                         </VerticalStackLayout>
                         
+                        <VerticalStackLayout Spacing="5" Margin="0,0,0,10"
+                                            IsVisible="{Binding IsStudentSelected}">
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Программа:                 " 
+                                                TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedStudent.EducationalGroup.ProgramSpecialty}" 
+                                                FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Дата поступления:      "
+                                                 TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedStudent.DateOfReceipt, StringFormat='{0:dd.MM.yyyy}'}" 
+                                                FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Текущая группа:          " 
+                                                TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedStudent.GroupName}" 
+                                                FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+
                         <!-- Список групп -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Новая группа"
@@ -66,7 +84,23 @@
                                 </Picker>
                             </Border>
                         </VerticalStackLayout>
-                        
+
+
+                        <VerticalStackLayout Spacing="5" Margin="0,0,0,10"
+                                            IsVisible="{Binding IsGroupSelected}">
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Программа:                 " 
+                                                TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedGroup.ProgramSpecialty}" 
+                                                FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+
+
                         <!-- Дата перевода -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Дата перевода" 
@@ -82,16 +116,15 @@
                 </Border>
                 
                 <!-- Кнопки действий -->
-                <HorizontalStackLayout Spacing="10" 
+                <HorizontalStackLayout Spacing="20" 
                          HorizontalOptions="Center" 
                          Margin="20">
 
-                    <Button Text="Сохранить" 
+                    <Button Text="{Binding TransferButtonText}" 
                             Command="{Binding SaveCommand}"
-                            FontSize="16"
-                            Padding="25,15"
-                            CornerRadius="25"
-                            WidthRequest="150"/>
+                            IsEnabled="{Binding CanCreateTransfer}"
+                            FontSize="16" Padding="25,15"
+                            CornerRadius="25"/>
 
                     <Button Text="Отмена" 
                             Command="{Binding CancelCommand}"

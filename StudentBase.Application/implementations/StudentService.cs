@@ -1,6 +1,4 @@
-﻿
-
-using StudentBase.Application.Interfaces;
+﻿using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
 using StudentBase.Domain.Repositories;
 
@@ -104,6 +102,18 @@ namespace StudentBase.Application.Implementations
             try
             {
                 return await _studentRepository.GetAllByProgramIdAsync(programId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<StudentEntity>?> GetAllStudentsWithPaymentsAsync()
+        {
+            try
+            {
+                return await _studentRepository.GetAllWithPaymentsAsync();
             }
             catch (Exception)
             {

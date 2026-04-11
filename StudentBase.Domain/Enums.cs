@@ -37,13 +37,13 @@ public enum FormsOfEducation
 public enum TermsOfStudy
 {
     [Description("1 г. 10 мес. ")]
-    OneYearTenMonths,   
+    OneYearTenMonths = 4, // 4 семестра
 
     [Description("2 г. 10 мес.")]
-    TwoYearsTenMonths,   
+    TwoYearsTenMonths = 6, // 6 семестров
 
     [Description("3 г. 10 мес.")]
-    ThreeYearsTenMonths
+    ThreeYearsTenMonths = 8 // 8 семестров
 }
 public enum LevelsOfEducation
 {
@@ -55,10 +55,7 @@ public enum LevelsOfEducation
 } 
 public enum PaymentType
 {
-    [Description("Наличные")]
     Cash,
-
-    [Description("Безналичные")]
     NonCash
 }
 

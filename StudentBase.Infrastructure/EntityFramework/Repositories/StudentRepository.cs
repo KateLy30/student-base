@@ -14,6 +14,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         }
         public async Task<bool> CreateAsync(StudentEntity entity)
         {
+            entity.CreateAt = DateTime.Now;
             await _context.Students.AddAsync(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -67,7 +68,9 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         }
         public async Task<bool> UpdateAsync(StudentEntity entity)
         {
-            _context.Students.Update(entity);
+            var student = await _context.Students.FindAsync(entity.Id);
+            if (student == null) return false;
+            UpdateEntity(student, entity);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -79,6 +82,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.Phone = updatedEntity.Phone;
             entityInDatabase.DateOfBirth = updatedEntity.DateOfBirth;
             entityInDatabase.DateOfReceipt = updatedEntity.DateOfReceipt;
+            entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
             entityInDatabase.CurrentGroupId = updatedEntity.CurrentGroupId;
             entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
             entityInDatabase.IsPaidCurrentSemester = updatedEntity.IsPaidCurrentSemester;
@@ -87,12 +91,18 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.EducationalGroup = updatedEntity.EducationalGroup;
             entityInDatabase.StudentTransfers = updatedEntity.StudentTransfers;
             entityInDatabase.Payments = updatedEntity.Payments;
+            entityInDatabase.UpdateAt = DateTime.Now;   
         }
 
         public async Task<IEnumerable<CustomField>> GetCustomFieldAsync()
         {
             return await _context.CustomFields.Where(cf => cf.EntityType == Domain.EntitiesPicker.Student)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<StudentEntity>?> GetAllWithPaymentsAsync()
+        {
+            return await _context.Students.Where(s => s.Payments.Count > 0).ToListAsync();
         }
     }
 }

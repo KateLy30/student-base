@@ -8,12 +8,25 @@ public class PaymentTypeToStringConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is PaymentType type)
-            return type.ToDisplayString();
-
-        return value?.ToString() ?? string.Empty;
+        if (value is PaymentType paymentType && parameter is string paramString)
+        {
+            if (paramString == "Cash" && paymentType == PaymentType.Cash)
+                return true;
+            if (paramString == "NonCash" && paymentType == PaymentType.NonCash)
+                return true;
+        }
+        return false;
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => 
-        throw new NotImplementedException();
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool isChecked && isChecked && parameter is string paramString)
+        {
+            if (paramString == "Cash")
+                return PaymentType.Cash;
+            if (paramString == "NonCash")
+                return PaymentType.NonCash;
+        }
+        return Binding.DoNothing;
+    }
 }

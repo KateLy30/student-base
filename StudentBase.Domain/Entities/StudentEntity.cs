@@ -27,7 +27,7 @@ namespace StudentBase.Domain.Entities
         public string? GroupName => EducationalGroup.Name;
 
         [NotMapped]
-        public string? ProgramSpecialty => EducationalGroup.EducationalProgram.Qualification;
+        public string? ProgramSpecialty => EducationalGroup.EducationalProgram.Specialty;
 
         [NotMapped]
         public string? ProgramQualification => EducationalGroup.EducationalProgram.Qualification;

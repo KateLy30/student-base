@@ -1,4 +1,5 @@
 using StudentBase.MAUI.ViewModels;
+using System.Threading.Tasks;
 
 namespace StudentBase.MAUI.Views;
 
@@ -11,4 +12,10 @@ public partial class PaymentPage : ContentPage
 		_paymentPageViewModel = paymentPageViewModel;
 		BindingContext = _paymentPageViewModel;
 	}
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+		await _paymentPageViewModel.LoadAsync();
+    }
 }

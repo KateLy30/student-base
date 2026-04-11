@@ -13,7 +13,6 @@ public class PaymentRepository : IPaymentRepository
     }
     public async Task<bool> CreateAsync(PaymentEntity entity)
     {
-        entity.CreateAt = DateTime.Now;
         await _context.Payments.AddAsync(entity);
         await _context.SaveChangesAsync();
         return true;
@@ -31,7 +30,8 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<IEnumerable<PaymentEntity>?> GetAllAsync()
     {
-        return await _context.Payments.Include(p => p.Student).ToListAsync();
+        return await _context.Payments.OrderByDescending(p => p.PaymentDate)
+            .Include(p => p.Student).ToListAsync();
     }
 
     public async Task<IEnumerable<PaymentEntity>?> GetAllByStudentAsync(int studentId)
@@ -60,9 +60,10 @@ public class PaymentRepository : IPaymentRepository
         entityInDatabase.PaidSemester = updatedEntity.PaidSemester;
         entityInDatabase.Amount = updatedEntity.Amount;
         entityInDatabase.PaymentDate = updatedEntity.PaymentDate;
-        entityInDatabase.UpdateAt = updatedEntity.UpdateAt;
         entityInDatabase.PaymentType = updatedEntity.PaymentType;
         entityInDatabase.Comment = updatedEntity.Comment;
         entityInDatabase.Student = updatedEntity.Student;
+        entityInDatabase.IsDiscount = updatedEntity.IsDiscount;
+        entityInDatabase.ReasonDiscount = updatedEntity.ReasonDiscount;
     }
 }

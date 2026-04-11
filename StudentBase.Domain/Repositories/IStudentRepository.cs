@@ -11,5 +11,6 @@ namespace StudentBase.Domain.Repositories
         Task<StudentEntity?> GetByNameAsync(string name);
         Task<int> GetStudentsCountAsync();
         Task<IEnumerable<CustomField>> GetCustomFieldAsync();
+        Task<IEnumerable<StudentEntity>?> GetAllWithPaymentsAsync();
     }
 }

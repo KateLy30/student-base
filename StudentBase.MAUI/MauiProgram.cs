@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Logging;
 using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Repositories;
+using StudentBase.Domain.Services;
 using StudentBase.Infrastructure.EntityFramework;
 using StudentBase.Infrastructure.EntityFramework.Repositories;
+using StudentBase.Infrastructure.Services;
 using StudentBase.MAUI.ViewModels;
 using StudentBase.MAUI.Views;
 
@@ -24,6 +26,8 @@ namespace StudentBase.MAUI
                 });
             builder.Services.AddDbContext<AppDbContext>();
 
+            builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
+
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
             builder.Services.AddScoped<IGroupRepository, GroupRepository>();
@@ -40,7 +44,8 @@ namespace StudentBase.MAUI
                 () => p.GetRequiredService<NewStudentPage>(),
                 () => p.GetRequiredService<StudentCardPage>(),
                 () => p.GetRequiredService<NewStudentTransferPage>(),
-                () => p.GetRequiredService<NewPaymentPage>()));
+                () => p.GetRequiredService<NewPaymentPage>(),
+                () => p.GetRequiredService<TemplateManagementPage>()));
 
             builder.Services.AddTransient<GroupPageViewModel>(g => new GroupPageViewModel(g.GetRequiredService<IDataService>(),
                 () => g.GetRequiredService<NewGroupPage>(),
@@ -65,7 +70,8 @@ namespace StudentBase.MAUI
                 () => p.GetRequiredService<NewCustomFieldPage>()));
 
             builder.Services.AddTransient<TemplateManagementViewModel>(p => new TemplateManagementViewModel(p.GetRequiredService<IStudentTemplateRepository>(),
-                () => p.GetRequiredService<TemplateEditorPage>()));
+                () => p.GetRequiredService<TemplateEditorPage>(),
+                p.GetRequiredService<IExcelImportService>()));
 
             builder.Services.AddTransient<NewStudentViewModel>();
             builder.Services.AddTransient<NewGroupViewModel>();
@@ -76,6 +82,7 @@ namespace StudentBase.MAUI
             builder.Services.AddTransient<StudentCardViewModel>();
             builder.Services.AddTransient<NewPaymentViewModel>();
             builder.Services.AddTransient<NewCustomFieldViewModel>();
+            builder.Services.AddTransient<NewTemplateViewModel>();
 
             builder.Services.AddTransient<MainPage>();
 

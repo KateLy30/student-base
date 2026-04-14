@@ -80,24 +80,6 @@ public enum FieldType
     Phone,          // Телефон
 }
 
-public enum EntitiesPicker
-{
-    [Description("Программа обучения")]
-    Program,
-
-    [Description("Группа")]
-    Group,
-
-    [Description("Студент")]
-    Student,
-
-    [Description("Квитанция")]
-    Payment,
-
-    [Description("Перевод")]
-    Transfer
-}
-
 public enum StudentFieldsName
 {
     [Description("ФИО")]

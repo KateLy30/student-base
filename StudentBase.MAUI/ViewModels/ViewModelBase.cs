@@ -8,7 +8,7 @@ namespace StudentBase.MAUI.ViewModels
         private bool _isBusy;
 
         [ObservableProperty]
-        private string _errorMessage;
+        private string? _errorMessage;
 
         [ObservableProperty]
         private bool _hasError;

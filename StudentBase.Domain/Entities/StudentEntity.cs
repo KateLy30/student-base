@@ -6,31 +6,34 @@ namespace StudentBase.Domain.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
+        public string? Phone { get; set; } 
+        public string? Email { get; set; }
+        public string? PassportNumber { get; set; } 
+        public string? Snils { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfReceipt { get; set; }
         public LevelsOfEducation EducationLevel { get; set; }
         public FormsOfEducation FormOfEducation { get; set; }
         public TermsOfStudy DurationTraining { get; set; }
         public bool IsPaidCurrentSemester { get; set; }
-        public int CurrentGroupId { get; set; }
+        public int? CurrentGroupId { get; set; }
         public StatusStudents Status { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
 
         // навигационные свойства 
-        public virtual GroupEntity EducationalGroup { get; set; } = null!;
+        public virtual GroupEntity? EducationalGroup { get; set; } = null!;
         public virtual ICollection<StudentTransferEntity> StudentTransfers { get; set; } = new List<StudentTransferEntity>();
         public virtual ICollection<PaymentEntity> Payments { get; set; } = new List<PaymentEntity>();
 
         [NotMapped]
-        public string? GroupName => EducationalGroup.Name;
+        public string? GroupName => EducationalGroup != null ? EducationalGroup?.Name : null;
 
         [NotMapped]
-        public string? ProgramSpecialty => EducationalGroup.EducationalProgram.Specialty;
+        public string? ProgramSpecialty => EducationalGroup?.EducationalProgram.Specialty;
 
         [NotMapped]
-        public string? ProgramQualification => EducationalGroup.EducationalProgram.Qualification;
+        public string? ProgramQualification => EducationalGroup?.EducationalProgram.Qualification;
 
     }
 }

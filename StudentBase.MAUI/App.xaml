@@ -17,7 +17,6 @@
             <local:StatusStudentsToStringConverter x:Key="StatusStudentsToStringConverter" />
             <local:FieldTypeToStringConverter x:Key="FieldTypeToStringConvereter"/>
             <local:PaymentTypeToStringConverter x:Key="PaymentTypeToStringConvereter"/>
-            <local:EntitiesPickerToStringConverter x:Key="EntitiesPickerToStringConverter"/>
             <local:StudentFieldsNameToStringConverter x:Key="StudentFieldsNameToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>

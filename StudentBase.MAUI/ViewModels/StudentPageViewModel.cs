@@ -8,13 +8,14 @@ namespace StudentBase.MAUI.ViewModels
 {
     public partial class StudentPageViewModel(IDataService dataService, Func<object> createNewStudentPage,
                                               Func<object> openStudentCardPage, Func<object> createNewTransferPage,
-                                              Func<object> createNewPaymentPage) : ViewModelBase
+                                              Func<object> createNewPaymentPage, Func<object> openImportPage) : ViewModelBase
     {
         private readonly IDataService _dataService = dataService;
         private readonly Func<object> _createNewStudentPage = createNewStudentPage;
         private readonly Func<object> _openStudentCardPage = openStudentCardPage;
         private readonly Func<object> _createNewTransferPage = createNewTransferPage;
         private readonly Func<object> _createNewPaymentPage = createNewPaymentPage;
+        private readonly Func<object> _openImportPage = openImportPage;
 
         [ObservableProperty]
         public partial ObservableCollection<StudentEntity> Students { get; set; } = new ObservableCollection<StudentEntity>();
@@ -39,6 +40,9 @@ namespace StudentBase.MAUI.ViewModels
 
         [ObservableProperty]
         public partial ObservableCollection<ProgramEntity> ListProgramsFilter { get; set; } = new ObservableCollection<ProgramEntity>();
+
+        private bool _isInitializing = true;
+
 
 
         // поиск
@@ -74,79 +78,101 @@ namespace StudentBase.MAUI.ViewModels
         }
         partial void OnSelectedGroupsFilterChanged(GroupEntity value)
         {
-            if (value == null || value.Id == -1) return;
+            if (_isInitializing) return;  // ← пропускаем при инициализации
+            if (value == null) return;
             _ = ApplyFilterAsync();
         }
         partial void OnSelectedProgramFilterChanged(ProgramEntity value)
         {
-            if (value == null || value.Id == -1) return;
+            if (_isInitializing) return;  // ← пропускаем при инициализации
+            if (value == null) return;
+            UpdateGroupsByProgram(value);
+            if (SelectedGroupsFilter != null && SelectedGroupsFilter.Id != -1)
+            {
+                var group = ListGroupsFilter.FirstOrDefault(g => g.Id == SelectedGroupsFilter.Id);
+                if (group == null || (value.Id != -1 && group.ProgramId != value.Id))
+                {
+                    SelectedGroupsFilter = ListGroupsFilter.FirstOrDefault(g => g.Id == -1);
+                }
+            }
             _ = ApplyFilterAsync();
         }
         private async Task ApplyFilterAsync()
         {
-            if (SelectedGroupsFilter.Id == -1 && SelectedProgramFilter.Id == -1)
+            if (SelectedGroupsFilter == null || SelectedProgramFilter == null) return;
+            if (ListGroupsFilter.Count == 0 || ListProgramsFilter.Count == 0) return;
+
+            List<StudentEntity>? list = null;
+
+            if (SelectedGroupsFilter.Id != -1)
+            {
+
+                list = (List<StudentEntity>?)await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
+                //if (list == null) return;
+
+                //Students.Clear();
+                //foreach (var student in list)
+                //    Students.Add(student);
+
+                //NumberOfEntries = $"Записей: {Students.Count}";
+                //return; // Важно: выходим
+            }
+            else if (SelectedProgramFilter.Id != -1)
+            {
+
+                list = (List<StudentEntity>?)await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
+                //if (list == null) return;
+                //Students.Clear();
+                //foreach (var student in list)
+                //    Students.Add(student);
+
+                //NumberOfEntries = $"Записей: {Students.Count}";
+                //return; // Важно: выходим, чтобы не применять группу
+            }
+            else
             {
                 await LoadAsync();
                 return;
             }
-            if (SelectedProgramFilter.Id != -1)
-            {
-                var list = await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
-                if (list == null) return;
-                Students.Clear();
-                foreach (var student in list)
-                    Students.Add(student);
 
-                NumberOfEntries = $"Записей: {Students.Count}";
-            }
-            if (SelectedGroupsFilter.Id != -1)
-            {
-                var list = await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
-                if (list == null) return;
-                Students.Clear();
-                foreach (var student in list)
-                    Students.Add(student);
+            if (list == null) return;
 
-                NumberOfEntries = $"Записей: {Students.Count}";
-            }
+            Students.Clear();
+            foreach (var student in list)
+                Students.Add(student);
+
+            NumberOfEntries = $"Записей: {Students.Count}";
         }
+        private void UpdateGroupsByProgram(ProgramEntity selectedProgram)
+        {
+            Students.Clear();
+            if (selectedProgram.Id == -1)
+            {
+                // Если выбрана "Все программы", показываем все группы
+                var allGroups = _dataService.GroupService.GetAllGroupsAsync().Result;
+                ListGroupsFilter.Clear();
+                ListGroupsFilter.Add(new GroupEntity { Id = -1, Name = "Все группы" });
+                foreach (var g in allGroups)
+                    ListGroupsFilter.Add(g);
 
-        //private async Task ApplyFilterGroups()
-        //{
-        //    if (SelectedGroupsFilter.Id == -1) await LoadAsync();
-        //    var list = await _dataService.StudentService.GetAllStudentsByGroupIdAsync(SelectedGroupsFilter.Id);
-        //    if (list == null) return;
-        //    Students.Clear();
-        //    foreach (var student in list)
-        //    {
-        //        student.GroupName = student.EducationalGroup.Name;
-        //        student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
-        //        student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
-        //        Students.Add(student);
-        //    }
+                SelectedGroupsFilter = ListGroupsFilter.FirstOrDefault(g => g.Id == -1);
+            }
+            else
+            {
+                // Показываем только группы выбранной программы
+                var groups = _dataService.GroupService.GetAllGroupsByProgramIdAsync(selectedProgram.Id).Result;
+                ListGroupsFilter.Clear();
+                ListGroupsFilter.Add(new GroupEntity { Id = -1, Name = "Все группы" });
+                foreach (var g in groups)
+                    ListGroupsFilter.Add(g);
 
-        //    NumberOfEntries = $"Записей: {Students.Count}";
-        //}
-        //private async Task ApplyFilterPrograms()
-        //{
-        //    if (SelectedProgramFilter.Id == -1) await LoadAsync();
-        //    var list = await _dataService.StudentService.GetAllStudentsByProgramIdAsync(SelectedProgramFilter.Id);
-        //    if (list == null) return;
-        //    Students.Clear();
-        //    foreach (var student in list)
-        //    {
-        //        student.GroupName = student.EducationalGroup.Name;
-        //        student.ProgramSpecialty = student.EducationalGroup.EducationalProgram.Specialty;
-        //        student.ProgramQualification = student.EducationalGroup.EducationalProgram.Qualification;
-        //        Students.Add(student);
-        //    }
-
-        //    NumberOfEntries = $"Записей: {Students.Count}";
-
-        //}
-
+                SelectedGroupsFilter = ListGroupsFilter.FirstOrDefault(g => g.Id == -1);
+            }
+            OnPropertyChanged(nameof(ListGroupsFilter));
+        }
         public async Task LoadPickerFilterAsync()
         {
+            _isInitializing = true;  // ← блокируем обработку
             var groupsFromDb = await _dataService.GroupService.GetAllGroupsAsync();
             var programsFromDb = await _dataService.ProgramService.GetAllProgramsAsync();
             if (groupsFromDb != null)
@@ -175,6 +201,7 @@ namespace StudentBase.MAUI.ViewModels
                     ListProgramsFilter.Add(p);
                 SelectedProgramFilter = allProgramsItem;
             }
+            _isInitializing = false;  // ← включаем обработку
         }
 
         [RelayCommand]
@@ -282,7 +309,7 @@ namespace StudentBase.MAUI.ViewModels
         [RelayCommand]
         public async Task ImportListAsync()
         {
-            // TODO
+            await Shell.Current.GoToAsync("//TemplateManagementPage");
         }
     }
 }

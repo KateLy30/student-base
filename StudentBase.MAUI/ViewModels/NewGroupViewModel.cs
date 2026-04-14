@@ -31,7 +31,7 @@ namespace StudentBase.MAUI.ViewModels
         public partial string Name { get; set; }
 
         [ObservableProperty]
-        public partial DateTime DateOfCreation { get; set; }
+        public partial DateTime DateOfCreation { get; set; } = DateTime.Now;
 
         [ObservableProperty]
         public partial ProgramEntity SelectedProgram { get; set; }  

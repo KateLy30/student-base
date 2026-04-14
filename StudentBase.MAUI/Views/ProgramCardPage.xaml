@@ -154,10 +154,6 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Border IsVisible="{Binding AdditionalFields}">
-                    
-                </Border>
-
             </VerticalStackLayout>
         </ScrollView>
 

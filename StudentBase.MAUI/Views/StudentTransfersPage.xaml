@@ -20,6 +20,11 @@
                          ToolTipProperties.Text="Загрузка всего списка из базы."/>
         </Grid>
 
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                    IsRunning="{Binding IsBusy}"
+                    HorizontalOptions="Center"
+                    Grid.Row="1"/>
+        
         <ScrollView Grid.Row="1" >
             <CollectionView ItemsSource="{Binding TransferredStudents}" SelectionMode="Single" 
                                 SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" >

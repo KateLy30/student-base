@@ -25,6 +25,15 @@ namespace StudentBase.MAUI.ViewModels
         public partial string Phone { get; set; }
 
         [ObservableProperty]
+        public partial string PassportNumber { get;set; }
+
+        [ObservableProperty]
+        public partial string Email { get; set; }
+
+        [ObservableProperty]
+        public partial string Snils { get; set; }
+
+        [ObservableProperty]
         public partial DateTime DateOfReceipt { get; set; }
 
         [ObservableProperty]
@@ -108,6 +117,9 @@ namespace StudentBase.MAUI.ViewModels
 
             _student.Name = Name;
             _student.Phone = Phone;
+            _student.PassportNumber = PassportNumber;
+            _student.Email = Email;
+            _student.Snils = Snils;
             _student.DateOfBirth = DateOfBirth;
             _student.DateOfReceipt = DateOfReceipt;
             _student.CurrentGroupId = SelectedGroup.Id;
@@ -142,6 +154,9 @@ namespace StudentBase.MAUI.ViewModels
                 CanChangedGroup = false;
                 Name = _student.Name;
                 Phone = _student.Phone!;
+                PassportNumber = _student.PassportNumber ?? "";
+                Snils = _student.Snils ?? "";
+                Email = _student.Email ?? "";
                 DateOfBirth = _student.DateOfBirth;
                 DateOfReceipt = _student.DateOfReceipt;
                 SelectedLevel = _student.EducationLevel;

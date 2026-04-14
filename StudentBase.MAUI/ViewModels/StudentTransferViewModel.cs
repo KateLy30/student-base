@@ -89,13 +89,14 @@ namespace StudentBase.MAUI.ViewModels
         }
 
         [RelayCommand]
-        private async Task OpenCardAsync(StudentTransferEntity s)
+        private async Task OpenCardAsync(StudentTransferEntity? s)
         {
             if (s is null) return;
-            var student = await _dataService.StudentService.GetStudentByIdAsync(s.Id);
+            var result = await _dataService.StudentService.GetStudentByIdAsync(s.StudentId);
+            if (!result.Success || result.Student == null) return;
             var page = (Page)_openStudentCardPage();
             if (page.BindingContext is StudentCardViewModel viewModel)
-                await viewModel.UploadData(student.Student);
+                await viewModel.UploadData(result.Student);
             await Shell.Current.Navigation.PushModalAsync(page);
 
             // TODO  fix bags

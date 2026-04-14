@@ -158,7 +158,7 @@ namespace StudentBase.MAUI.ViewModels
                 {
                     StudentId = SelectedStudent.Id,
                     Student = SelectedStudent,
-                    FromGroupId = SelectedStudent.CurrentGroupId,
+                    FromGroupId = (int)SelectedStudent.CurrentGroupId,
                     FromGroup = SelectedStudent.EducationalGroup,
                     ToGroupId = SelectedGroup.Id,
                     ToGroup = SelectedGroup,

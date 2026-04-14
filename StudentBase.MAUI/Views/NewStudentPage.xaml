@@ -94,6 +94,48 @@
                             </VerticalStackLayout>
                         </Grid>
 
+                        <!-- Паспорт -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Серия и номер паспорта" 
+                                    FontSize="14" 
+                                    TextColor="#757575"/>
+                            <Entry Text="{Binding PassportNumber, Mode=TwoWay}" 
+                                    Placeholder="Необязательное поле" FontSize="14"
+                                    Style="{StaticResource ModernEntryStyle}" >
+                                <Entry.Behaviors>
+                                    <toolkit:MaskedBehavior Mask="XX XX XXXXXX" UnmaskedCharacter="X" />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </VerticalStackLayout>
+
+                        <!-- Почта -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Электронная почта" 
+                                     FontSize="14" 
+                                     TextColor="#757575"/>
+                            <Entry Text="{Binding Email, Mode=TwoWay}" 
+                                     Placeholder="Необязательное поле" FontSize="14"
+                                     Style="{StaticResource ModernEntryStyle}" >   
+                            </Entry>
+                        </VerticalStackLayout>
+
+                        <!-- Номер снилса -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Номер снилса" 
+                                 FontSize="14" 
+                                 TextColor="#757575"/>  
+                            <Entry Text="{Binding Snils, Mode=TwoWay}" 
+                                     Placeholder="Необязательное поле" 
+                                     Style="{StaticResource ModernEntryStyle}" >
+                                <Entry.Behaviors>
+                                    <toolkit:MaskedBehavior Mask="XXX-XXX-XXX XX" UnmaskedCharacter="X" />
+                                    <toolkit:TextValidationBehavior MinimumLength="14" MaximumLength="14"
+                                         Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
+                                         InvalidStyle="{StaticResource InvalidEntryStyle}" />
+                                </Entry.Behaviors>
+                            </Entry>
+                        </VerticalStackLayout> 
+
                         <!-- Уровень и форма в две колонки -->
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
 

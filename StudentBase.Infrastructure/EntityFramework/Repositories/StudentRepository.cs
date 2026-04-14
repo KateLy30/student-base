@@ -32,7 +32,8 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<StudentEntity>?> GetAllAsync()
         {
-            return await _context.Students.Include(s => s.EducationalGroup)
+            return await _context.Students.OrderByDescending(s => s.CreateAt)
+                .Include(s => s.EducationalGroup)
                 .ThenInclude(g => g.EducationalProgram)
                 .ToListAsync();
         }
@@ -48,7 +49,8 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         }
         public async Task<StudentEntity?> GetByIdAsync(int id)
         {
-            return await _context.Students.FindAsync(id);
+            return await _context.Students.Include(s => s.EducationalGroup)
+                .ThenInclude(g => g.EducationalProgram).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<StudentEntity?> GetByNameAsync(string name)
@@ -79,6 +81,9 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         public static void UpdateEntity(StudentEntity entityInDatabase, StudentEntity updatedEntity)
         {
             entityInDatabase.Name = updatedEntity.Name;
+            entityInDatabase.PassportNumber = updatedEntity.PassportNumber;
+            entityInDatabase.Email = updatedEntity.Email;
+            entityInDatabase.Snils = updatedEntity.Snils;
             entityInDatabase.Phone = updatedEntity.Phone;
             entityInDatabase.DateOfBirth = updatedEntity.DateOfBirth;
             entityInDatabase.DateOfReceipt = updatedEntity.DateOfReceipt;
@@ -92,12 +97,6 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
             entityInDatabase.StudentTransfers = updatedEntity.StudentTransfers;
             entityInDatabase.Payments = updatedEntity.Payments;
             entityInDatabase.UpdateAt = DateTime.Now;   
-        }
-
-        public async Task<IEnumerable<CustomField>> GetCustomFieldAsync()
-        {
-            return await _context.CustomFields.Where(cf => cf.EntityType == Domain.EntitiesPicker.Student)
-                .ToListAsync();
         }
 
         public async Task<IEnumerable<StudentEntity>?> GetAllWithPaymentsAsync()

@@ -5,9 +5,9 @@
              Title="Главная"
              BackgroundColor="{StaticResource BackgroundPageGray}">
 
-    <ContentPage.ToolbarItems>
+    <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="Архив" Command="{Binding ArchiveCommand}" />
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
     <!-- Корневой Grid для адаптивного макета -->
     <Grid RowSpacing="12" 
@@ -113,14 +113,15 @@
                 <Border Padding="5">
                     <CollectionView ItemsSource="{Binding Translations}" 
                                     SelectedItem="{Binding SelectedTranslations}"
-                                    SelectionMode="Single">
+                                    SelectionMode="None">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <StackLayout Padding="0,5,0,5">
-                                    <Border Style="{StaticResource BorderCollectionItem}" Padding="10">
+                                <StackLayout Padding="0,3,0,3">
+                                    <Border Style="{StaticResource BorderCollectionItem}" Padding="5,3,5,3">
                                         <StackLayout >
                                             <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
-                                                <Label Text="{Binding DisplayHistory}" TextColor="Gray"/>
+                                            <Label Text="{Binding DisplayHistory}" TextColor="Gray"/>
+                                            <Label Text="{Binding EnrollmentDate, StringFormat='{0:dd.MM.yyyy}'}" TextColor="Gray" HorizontalOptions="End"/>
                                         </StackLayout>
                                     </Border>
                                 </StackLayout>

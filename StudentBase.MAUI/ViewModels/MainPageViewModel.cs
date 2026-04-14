@@ -31,7 +31,7 @@ namespace StudentBase.MAUI.ViewModels
         public partial int NumberOfOverduePayments { get; set; }
 
         [ObservableProperty]
-        public partial StudentEntity SelectedDebtors   { get; set; }
+        public partial StudentEntity SelectedDebtors { get; set; }
 
         public async Task LoadAsync()
         {
@@ -48,7 +48,8 @@ namespace StudentBase.MAUI.ViewModels
                 var list2 = await _dataService.StudentTransferService.GetAllStudentTransfersAsync();
                 if (list2 == null) return;
                 Translations.Clear();
-                foreach (var student in list2)
+                var list10 = list2.Take(10);
+                foreach (var student in list10)
                     Translations.Add(student);
             }
             finally

@@ -1,6 +1,6 @@
 using StudentBase.MAUI.ViewModels;
 
-namespace StudentBase.MAUI;
+namespace StudentBase.MAUI.Views;
 
 public partial class ProgramPage : ContentPage
 {
@@ -16,6 +16,7 @@ public partial class ProgramPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _programPageViewModel.SearchText = null;
         await _programPageViewModel.LoadAsync();
     }
 }

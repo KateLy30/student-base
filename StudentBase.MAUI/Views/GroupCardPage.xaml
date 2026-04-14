@@ -107,15 +107,6 @@
                                 Grid.Row="2" Grid.Column="1"
                                 FontAttributes="Bold"
                                 FontSize="16"/>
-
-                            <!-- Продолжительность обучения -->
-                            <Label Text="Продолжительность обучения:"
-                                Grid.Row="3"
-                                TextColor="#757575"/>
-                            <Label Text="{Binding Path=DurationTraining, Converter={StaticResource TermsToStringConverter}}"
-                                Grid.Row="3" Grid.Column="1"
-                                FontAttributes="Bold"
-                                FontSize="16"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>

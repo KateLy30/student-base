@@ -1,115 +1,200 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public  class NewStudentTransferViewModel : BaseViewModel
+    public partial class NewStudentTransferViewModel(IDataService dataService) : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        private readonly IDataService _dataService = dataService;
         private StudentTransferEntity _transfer = new();
 
-        public ObservableCollection<StudentEntity> Students { get; } = [];
-        public ObservableCollection<GroupEntity> Groups { get; } = [];
-        public NewStudentTransferViewModel(IDataService dataService)
-        {
-            _dataService = dataService;
+        [ObservableProperty]
+        public partial ObservableCollection<StudentEntity> Students { get; set; } = [];
 
-            SaveCommand = new AsyncCommand(SaveAsync, () => SelectedStudent != null && SelectedGroup != null);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
-            _ = LoadPickerListAsync();
-        }
-        public AsyncCommand SaveCommand { get; }
-        public AsyncCommand CancelCommand { get; }
+        [ObservableProperty]
+        public partial ObservableCollection<GroupEntity> Groups { get; set; } = [];
 
-        private string _title = "Добавление перевода";
-        public string Title
+        [ObservableProperty]
+        public partial bool ChangedStudent { get; set; } = true;
+
+        [ObservableProperty]
+        public partial string Title { get; set; } = "Добавление перевода";
+
+        [ObservableProperty]
+        public partial StudentEntity? SelectedStudent { get; set; }
+
+        [ObservableProperty]
+        public partial GroupEntity? SelectedGroup { get; set; }
+
+        [ObservableProperty]
+        public partial DateTime TransferDate { get; set; } = DateTime.Now;
+
+        [ObservableProperty]
+        public partial bool IsStudentSelected { get; set; }
+
+        [ObservableProperty]
+        public partial bool IsGroupSelected { get; set; }
+
+
+        // текст кнопки создания
+        public string TransferButtonText
         {
-            get => _title;
-            set
+            get
             {
-                if (_title == value) return;
-                _title = value;
-                OnPropertyChanged();
+                if (!IsStudentSelected) return "Выберите студента";
+                if (!IsGroupSelected) return "Выберите группу";
+                if(SelectedStudent != null && SelectedGroup != null)
+                    if (SelectedStudent.CurrentGroupId == SelectedGroup.Id) return "Выберите другую группу";
+                return "Перевести";
             }
         }
-        private StudentEntity? selectedStudent;
-        public StudentEntity? SelectedStudent
+
+        // можно ли создать перевод
+        public bool CanCreateTransfer
         {
-            get => selectedStudent;
-            set
+            get
             {
-                if(selectedStudent == value) return;    
-                selectedStudent = value;
-                OnPropertyChanged();   
-                SaveCommand.RaiseCanExecuteChanged();
+                if (SelectedStudent == null || !IsStudentSelected) return false;
+                if (SelectedGroup == null || !IsGroupSelected) return false;
+                if (SelectedStudent.CurrentGroupId == SelectedGroup.Id) return false;
+                return true;
             }
         }
-        private GroupEntity? selectedGroup;
-        public GroupEntity? SelectedGroup
+
+        // при выборе студента
+        partial void OnSelectedStudentChanged(StudentEntity? value)
         {
-            get => selectedGroup;
-            set
+            IsStudentSelected = value != null;
+            if (SelectedGroup != null && SelectedStudent != null)
             {
-                if (selectedGroup == value) return;
-                selectedGroup = value;
-                OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
+                if (SelectedGroup.Id == SelectedStudent.CurrentGroupId)
+                {
+                    Shell.Current.DisplayAlert("Ошибка", "Выбрана текущая группа студента. Выберите другую группу для перевода.", "OK");
+                }
             }
+            OnPropertyChanged(nameof(CanCreateTransfer));
+            OnPropertyChanged(nameof(TransferButtonText));
         }
-        private DateTime transferDate;
-        public DateTime TransferDate
+
+        // при выборе группы
+        partial void OnSelectedGroupChanged(GroupEntity? value)
         {
-            get =>  transferDate;
-            set
+            IsGroupSelected = value != null;
+            if (SelectedGroup != null && SelectedStudent != null)
             {
-                if (transferDate == value) return;
-                transferDate = value;
-                OnPropertyChanged();
+                if (SelectedGroup.Id == SelectedStudent.CurrentGroupId)
+                {
+                    Shell.Current.DisplayAlert("Ошибка", "Выбрана текущая группа студента. Выберите другую группу для перевода.", "OK");
+                }
             }
+            OnPropertyChanged(nameof(CanCreateTransfer));
+            OnPropertyChanged(nameof(TransferButtonText));
         }
-        public async Task LoadPickerListAsync()
+
+
+        [RelayCommand]
+        private static async Task CancelAsync()
         {
-            var studentsFromDb = await _dataService.StudentService.GetAllStudentsAsync();
-            var groupsFromDB = await _dataService.GroupService.GetAllGroupsAsync();
-            if (studentsFromDb != null)
+            await Shell.Current.Navigation.PopModalAsync();
+        }
+
+        public async Task LoadStudentsAsync()
+        {
+            try
             {
+                IsBusy = true;
+                var students = await _dataService.StudentService.GetAllStudentsAsync();
+                if (students == null) return;
                 Students.Clear();
-                foreach (var student in studentsFromDb)
+                foreach (var student in students)
                     Students.Add(student);
             }
-            if (groupsFromDB != null)
+            catch (Exception ex)
             {
+                await Shell.Current.DisplayAlert("Ошибка загрузки", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        public async Task LoadGroupsAsync()
+        {
+            try
+            {
+                IsBusy = true;
+                var groupsFromDB = await _dataService.GroupService.GetAllGroupsAsync();
+                if (groupsFromDB == null) return;
                 Groups.Clear();
                 foreach (var group in groupsFromDB)
                     Groups.Add(group);
             }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка загрузки", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
+        [RelayCommand]
         private async Task SaveAsync()
         {
-            _transfer.StudentId = SelectedStudent.Id;
-            _transfer.Student = SelectedStudent;
-            _transfer.FromGroupId = SelectedStudent.CurrentGroupId;
-            _transfer.FromGroup = SelectedStudent.EducationalGroup;
-            _transfer.ToGroupId = SelectedGroup.Id;
-            _transfer.ToGroup = SelectedGroup;
-            _transfer.EnrollmentDate = TransferDate;
-
-            await _dataService.StudentTransferService.CreateStudentTransferAsync(_transfer);
-
-            var student = (await _dataService.StudentService.GetStudentByIdAsync(SelectedStudent.Id)).Student;
-            student.CurrentGroupId = SelectedGroup.Id;
-            student.EducationalGroup = SelectedGroup;
-            student.StudentTransfers.Add(_transfer);
-            await _dataService.StudentService.UpdateStudentAsync(student);
-
-            await Shell.Current.Navigation.PopModalAsync();
-            if (Shell.Current?.CurrentPage?.BindingContext is StudentTransferViewModel viewModel)
+            try
             {
-                await viewModel.LoadAsync();
+                IsBusy = true;
+                if (!CanCreateTransfer) return;
+                if (SelectedStudent == null || SelectedGroup == null)
+                {
+                    await Shell.Current.DisplayAlert("Ошибка", "Не выбран студент или группа", "ОК");
+                    return;
+                }
+                var transfer = new StudentTransferEntity
+                {
+                    StudentId = SelectedStudent.Id,
+                    Student = SelectedStudent,
+                    FromGroupId = (int)SelectedStudent.CurrentGroupId,
+                    FromGroup = SelectedStudent.EducationalGroup,
+                    ToGroupId = SelectedGroup.Id,
+                    ToGroup = SelectedGroup,
+                    EnrollmentDate = TransferDate
+                };
+                var result = await _dataService.StudentTransferService.CreateStudentTransferAsync(transfer);
+                if (!result.Success)
+                {
+                    await Shell.Current.DisplayAlert("Ошибка", result.ErrorMessage, "OK");
+                    return;
+                }
+                else
+                    await Shell.Current.DisplayAlert("", result.Message, "OK");
+                await Shell.Current.Navigation.PopModalAsync();
             }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка",ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        public void LoadFormStudentPage(StudentEntity? s)
+        {
+            if (s == null) return;
+            ChangedStudent = false;
+            SelectedStudent = Students.FirstOrDefault(st => st.Id == s.Id);
+        }
+
+        public async Task LoadFormTransferPage()
+        {
+            await LoadGroupsAsync();
+            await LoadStudentsAsync();
         }
     }
 }

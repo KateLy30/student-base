@@ -13,9 +13,9 @@ public record PaymentResult<T>
 
 public interface IPaymentService
 {
-    Task<PaymentResult<object>> CreatePaymentTransferAsync(PaymentEntity entity);
-    Task<PaymentResult<object>> UpdatePaymentTransferAsync(PaymentEntity entity);
-    Task<PaymentResult<object>> DeletePaymentTransferAsync(int id);
+    Task<PaymentResult<object>> CreatePaymentAsync(PaymentEntity entity);
+    Task<PaymentResult<object>> UpdatePaymentAsync(PaymentEntity entity);
+    Task<PaymentResult<object>> DeletePaymentAsync(int id);
     Task<IEnumerable<PaymentEntity>?> GetAllPaymentsAsync();
     Task<PaymentResult<object>> GetPaymentById(int id);
     Task<IEnumerable<PaymentEntity>?> GetAllPaymentsByStudentAsync(int studentId);

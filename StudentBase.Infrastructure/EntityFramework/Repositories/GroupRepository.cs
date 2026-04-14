@@ -32,7 +32,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<GroupEntity>?> GetAllAsync()
         {
-            return await _context.Groups.Include(g => g.EducationalProgram)
+            return await _context.Groups.OrderByDescending(g => g.CreateAt).Include(g => g.EducationalProgram)
                                         .ToListAsync();
         }
 
@@ -48,7 +48,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<GroupEntity?> GetByNameAsync(string name)
         {
-            return await _context.Groups.FirstOrDefaultAsync(g => g.Name == name);
+            return await _context.Groups.Include(g => g.EducationalProgram).FirstOrDefaultAsync(g => g.Name == name);
         }
 
         public async Task<StatusGroups?> GetStatusGroupsAsync(int id)

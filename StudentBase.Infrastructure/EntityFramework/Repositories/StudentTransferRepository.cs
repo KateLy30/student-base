@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using StudentBase.Domain.Entities;
 using StudentBase.Domain.Repositories;
 
@@ -38,7 +37,7 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<StudentTransferEntity>?> GetAllAsync()
         {
-            return await _context.Transfers.Include(st => st.Student)
+            return await _context.Transfers.OrderByDescending(g => g.CreateAt).Include(st => st.Student)
                                              .Include(st => st.ToGroup)
                                              .Include(st => st.FromGroup)
                                              .ToListAsync();

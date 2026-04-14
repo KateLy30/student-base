@@ -1,5 +1,4 @@
-﻿using StudentBase.Domain;
-using StudentBase.Domain.Entities;
+﻿using StudentBase.Domain.Entities;
 
 namespace StudentBase.Application.Interfaces;
 
@@ -23,4 +22,5 @@ public interface IStudentService
     Task<StudentResult<object>> DeleteStudentAsync(int id);
     Task<IEnumerable<StudentEntity>?> GetAllStudentsAsync();
     Task<StudentResult<object>> GetStudentByIdAsync(int id);
+    Task<IEnumerable<StudentEntity>?> GetAllStudentsWithPaymentsAsync();
 }

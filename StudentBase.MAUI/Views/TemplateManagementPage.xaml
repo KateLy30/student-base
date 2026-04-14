@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.Views.TemplateManagementPage"
+             x:Name="ThisPage"
+             Title="Управление шаблонами импорта"
+             BackgroundColor="{StaticResource BackgroundPageGray}">
+
+    <!-- Кнопка инструкции в заголовке -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Инструкция" 
+                     Command="{Binding ShowInstructionCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,*" RowSpacing="20" Padding="5">
+
+        <!-- Кнопки действий -->
+        <Grid Padding="10" ColumnDefinitions="*,*,*,*" ColumnSpacing="20">
+            
+            <Button Text="Создать шаблон" Command="{Binding CreateTemplateCommand}" />
+            <Button Text="Импортировать студентов" Command="{Binding ImportWithTemplateCommand}"
+                    IsEnabled="{Binding IsTemplateSelected}" Grid.Column="1"/>
+            <!--<Button Text="Редактировать" Command="{Binding EditTemplateCommand}"
+                    IsEnabled="{Binding IsTemplateSelected}" Grid.Column="2" />-->
+            <Button Text="Удалить" Command="{Binding DeleteTemplateCommand}"
+                    IsEnabled="{Binding IsTemplateSelected}" Grid.Column="2" />
+
+        </Grid>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           Grid.Row="1"/>
+        
+        
+        <!-- Список шаблонов -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Templates}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedTemplate}">
+
+            <CollectionView.EmptyView>
+                <StackLayout HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                    <Label Text="Список шаблонов пуст"
+                            HorizontalOptions="Center"
+                            FontSize="16" TextColor="#757575"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate >
+                    <StackLayout Padding="0,5,0,5">
+                        <Border Style="{StaticResource BorderCollectionItem}" Padding="10">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="5">
+                                <StackLayout >
+                                    <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center"/>
+                                    <Label  Text="{Binding CreatedDate, StringFormat='{0:dd.MM.yyyy}'}" 
+                                                 VerticalOptions="Center" HorizontalOptions="End"/>
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+    
+</ContentPage>

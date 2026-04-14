@@ -1,61 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudentBase.Domain.Entities
 {
     public class StudentEntity
     {
-        [Key]   // первичный ключ
         public int Id { get; set; }
-
-        [Required]   // NOT NULL
-        [MaxLength(300)]   // ограничение длины
         public string Name { get; set; } = string.Empty;
-
-        [Phone]   // проверка формата номера
-        [Required]
-        [MaxLength(11)]
-        public string Phone { get; set; } = string.Empty;
-
-        [Required]
+        public string? Phone { get; set; } 
+        public string? Email { get; set; }
+        public string? PassportNumber { get; set; } 
+        public string? Snils { get; set; }
         public DateTime DateOfBirth { get; set; }
-
-        [Required]
         public DateTime DateOfReceipt { get; set; }
-
-        [Required]
         public LevelsOfEducation EducationLevel { get; set; }
-
-        [Required]
         public FormsOfEducation FormOfEducation { get; set; }
-
-        public bool? IsPaidCurrentSemester { get; set; }
-
-        // внешний ключ
-        [Required]
-        public int CurrentGroupId { get; set; }
-
-        [Required]
+        public TermsOfStudy DurationTraining { get; set; }
+        public bool IsPaidCurrentSemester { get; set; }
+        public int? CurrentGroupId { get; set; }
         public StatusStudents Status { get; set; }
-
-        [Required]
         public DateTime CreateAt { get; set; }
-
         public DateTime? UpdateAt { get; set; }
 
         // навигационные свойства 
-        public GroupEntity EducationalGroup { get; set; }
-        public ICollection<StudentTransferEntity>? StudentTransfers { get; set; } = [];
-        public ICollection<PaymentEntity>? Payments { get; set; } = [];
+        public virtual GroupEntity? EducationalGroup { get; set; } = null!;
+        public virtual ICollection<StudentTransferEntity> StudentTransfers { get; set; } = new List<StudentTransferEntity>();
+        public virtual ICollection<PaymentEntity> Payments { get; set; } = new List<PaymentEntity>();
 
         [NotMapped]
-        public string? GroupName { get; set; }
+        public string? GroupName => EducationalGroup != null ? EducationalGroup?.Name : null;
 
         [NotMapped]
-        public string? ProgramSpecialty { get; set; }
+        public string? ProgramSpecialty => EducationalGroup?.EducationalProgram.Specialty;
 
         [NotMapped]
-        public string? ProgramQualification { get; set; }
+        public string? ProgramQualification => EducationalGroup?.EducationalProgram.Qualification;
 
     }
 }

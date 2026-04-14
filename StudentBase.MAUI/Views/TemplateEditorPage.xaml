@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="ThisPage"
+             x:Class="StudentBase.MAUI.Views.TemplateEditorPage">
+    
+    <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
+        <!-- Заголовок -->
+        <Border Style="{StaticResource BorderHeader}">
+            <Label Text="Редактор шаблона" 
+                FontSize="20" 
+                FontAttributes="Bold" 
+                TextColor="White"
+                VerticalOptions="Center"/>
+        </Border>
+        
+        <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundPageGray}">
+            <VerticalStackLayout Padding="8" Spacing="10">
+
+                <!-- Шаг 1: Выбор файла -->
+                <Border>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Шаг 1: Загрузите Excel файл" 
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+
+                        <Label Text="Выберите Excel файл для анализа структуры" 
+                               FontSize="12"
+                               TextColor="#757575"/>
+
+                        <HorizontalStackLayout Spacing="10">
+                            <Button Text="Выбрать файл"
+                                    Command="{Binding SelectFileCommand}"
+                                    Style="{StaticResource ButtonInPage}"/>
+
+                            <Label Text="{Binding FileName}" 
+                                   FontSize="12"
+                                   TextColor="#757575"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <!-- Предпросмотр Excel -->
+                        <Border IsVisible="{Binding HasFile}">
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Предпросмотр данных:" 
+                                       FontSize="12" 
+                                       FontAttributes="Bold"/>
+                                <ScrollView>
+                                    <CollectionView ItemsSource="{Binding PreviewRows}">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <HorizontalStackLayout Spacing="5">
+                                                    <Label Text="{Binding .}" 
+                                                       FontSize="11"
+                                                       TextColor="#757575"/>
+                                                </HorizontalStackLayout>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </ScrollView>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Шаг 2: Название шаблона -->
+                <Border  IsVisible="{Binding HasFile}" >
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Шаг 2: Название шаблона" 
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+
+                        <Entry Placeholder="Например: Осенний набор 2024" 
+                               Text="{Binding TemplateName, Mode=TwoWay}" 
+                               Style="{StaticResource ModernEntryStyle}">
+                            <Entry.Behaviors>
+                                <toolkit:TextValidationBehavior 
+                                    MinimumLength="1" 
+                                    x:Name="NameValidator"
+                                    Flags="ValidateOnValueChanged, ValidateOnUnfocusing"
+                                    InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <Label Text="Поле обязательно" 
+                               FontSize="12" 
+                               TextColor="#DC3545" 
+                               IsVisible="{Binding IsNotValid, Source={x:Reference NameValidator}}" />
+                    </VerticalStackLayout>
+                </Border>
+
+
+                <!-- Шаг 3: Маппинг колонок -->
+                <Border IsVisible="{Binding HasFile}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Шаг 3: Сопоставление колонок" 
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+
+                        <Label Text="Для каждой колонки Excel выберите поле в системе" 
+                               FontSize="12"
+                               TextColor="#757575"/>
+
+                        <!-- Заголовки таблицы -->
+                        <Grid ColumnDefinitions="2*, 3*" RowDefinitions="Auto,Auto" 
+                              RowSpacing="15" Padding="5,0">
+                            <Label Text="Колонка в Excel" 
+                                   FontAttributes="Bold"
+                                   FontSize="13"/>
+                            <Button Text="➕ Новое дополнительное поле" Grid.Column="1" Grid.Row="1"
+                                 Command="{Binding CreateCustomFieldGlobalCommand}"
+                                 BackgroundColor="LightGray"
+                                 TextColor="Black"/>  
+                            <Label Text="Поле в системе" 
+                                   Grid.Column="1"
+                                   FontAttributes="Bold"
+                                   FontSize="13"/>
+                        </Grid>
+
+                        <!-- Список маппингов -->
+                        <CollectionView ItemsSource="{Binding Mappings}"
+                                       HeightRequest="500">
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            Padding="20">
+                                    <Label Text="Загрузите Excel файл для отображения колонок"
+                                           HorizontalOptions="Center"
+                                           TextColor="#757575"
+                                           FontSize="13"/>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="2*, 3*" 
+                                          Padding="5,8">
+
+                                        <!-- Название колонки Excel (только для чтения) -->
+                                        <Label Text="{Binding ExcelColumnName}"
+                                               VerticalOptions="Center"
+                                               FontSize="13" Grid.RowSpan="2"/>
+
+                                        <!-- Выбор целевого поля -->
+                                        <Picker Grid.Column="1" Grid.Row="1"
+                                                Title="Выберите поле"
+                                                SelectedItem="{Binding SelectedField}"
+                                                ItemsSource="{Binding BindingContext.AvailableFields, 
+                                              Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                ItemDisplayBinding="{Binding DisplayName}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+                
+                
+                <!-- Кнопки действий -->
+                <HorizontalStackLayout Spacing="20" 
+                        HorizontalOptions="Center" 
+                        Margin="20" >
+
+                    <!-- Кнопка оплаты -->
+                    <Button Text="Сохранить шаблон"
+                            Command="{Binding SaveCommand}"
+                            IsEnabled="{Binding CanSave}"
+                            FontSize="16" Padding="25,15"
+                            CornerRadius="25"/>
+
+                    <Button Text="Отмена" 
+                            Command="{Binding CancelCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"/>
+                </HorizontalStackLayout>
+
+                <!-- Сообщение об ошибке -->
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#DC3545"
+                       FontSize="12"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding HasError}"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Индикатор загрузки -->
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Grid.RowSpan="2"/>
+    </Grid>
+
+</ContentPage>

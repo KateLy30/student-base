@@ -38,7 +38,7 @@
                            TextColor="#512BD4"/>
 
                         <Grid ColumnDefinitions="Auto, *" 
-                              RowDefinitions="Auto,Auto,Auto"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                           ColumnSpacing="30" 
                           RowSpacing="10">
                             <!-- ID студента -->
@@ -71,6 +71,43 @@
                                Grid.Column="1" 
                                FontAttributes="Bold"
                                FontSize="16"/>
+
+
+                            <!-- Паспорт -->
+                            <Label Text="Паспортные данные:" 
+                               Grid.Row="3" 
+                               Grid.Column="0" 
+                               TextColor="#757575"/>
+                            <Label Text="{Binding PassportNumber}" 
+                               Grid.Row="3" 
+                               Grid.Column="1" 
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+
+
+                            <!-- Снилс -->
+                            <Label Text="Номер снилса:" 
+                               Grid.Row="4" 
+                               Grid.Column="0" 
+                               TextColor="#757575"/>
+                            <Label Text="{Binding Snils}" 
+                               Grid.Row="4" 
+                               Grid.Column="1" 
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+
+
+                            <!-- Email -->
+                            <Label Text="Email:" 
+                               Grid.Row="5" 
+                               Grid.Column="0" 
+                               TextColor="#757575"/>
+                            <Label Text="{Binding Email}" 
+                               Grid.Row="5" 
+                               Grid.Column="1" 
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+                            
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -213,31 +250,134 @@
                     </Grid>
                 </Border>
 
+                <!-- Секция: Дополнительные поля -->
+                <Border IsVisible="{Binding HasCustomField}">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="10">
+                        <Label Text="Дополнительные поля" 
+                                 FontSize="18" 
+                                 FontAttributes="Bold" 
+                                 TextColor="#512BD4"/>
+
+                        <VerticalStackLayout Spacing="8" Grid.Row="1"
+                              BindableLayout.ItemsSource="{Binding CustomFieldsWithValues}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="30">
+                                        <Label Text="{Binding DisplayName}" TextColor="#757575"/>
+                                        <Label Text="{Binding Value}"
+                                               FontSize="16" Grid.Column="1"
+                                               FontAttributes="Bold"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
                 <!-- Секция: История переводов -->
-                <Border >
+                <Border IsVisible="{Binding HasTransfers}">
                     <Grid RowDefinitions="Auto,*" RowSpacing="10">
                         <Label Text="Переводы" 
+                                FontSize="18" 
+                                FontAttributes="Bold" 
+                                TextColor="#512BD4"/>   
+
+                        <VerticalStackLayout Spacing="8" Grid.Row="1"
+                             BindableLayout.ItemsSource="{Binding Transfers}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <VerticalStackLayout Spacing="5">
+                                        <Label Text="{Binding DisplayHistory}"
+                               FontAttributes="Bold"
+                               FontSize="16"/>
+                                        <Label Text="{Binding EnrollmentDate, StringFormat='{0:dd.MM.yyyy}'}"
+                               TextColor="#757575"/>
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Секция: Квитанции  --><!--
+                <Border IsVisible="{Binding HasPayments}">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="10">
+                        <Label Text="Квитанции" 
                                 FontSize="18" 
                                 FontAttributes="Bold" 
                                 TextColor="#512BD4"/>
 
                         <VerticalStackLayout Spacing="8" Grid.Row="1"
-                                             BindableLayout.ItemsSource="{Binding Transfers}">
+                             BindableLayout.ItemsSource="{Binding Payments}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
-                                    <VerticalStackLayout Spacing="5">
-                                        <Label Text="{Binding DisplayHistory}"
-                                               FontAttributes="Bold"
-                                               FontSize="16"/>
-                                        <Label Text="{Binding EnrollmentDate, StringFormat='{0:dd.MM.yyyy}'}"
-                                               TextColor="#757575"/>
-                                    </VerticalStackLayout>
+                                    <Grid ColumnDefinitions="Auto,Auto"
+                              ColumnSpacing="200">
+                                        --><!-- Информация о платеже --><!--
+                                        <VerticalStackLayout Spacing="3">
+
+                                            <Label FontSize="14" FontAttributes="Bold">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Семестр:      " TextColor="#757575" FontSize="16"/>
+                                                        <Span Text="{Binding PaidSemester}" 
+                                                              FontAttributes="Bold"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            <Label FontSize="12" TextColor="#757575">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Дата:            " TextColor="#757575" FontSize="16"/>
+                                                        <Span Text="{Binding PaymentDate, StringFormat='{0:dd.MM.yyyy}'}"
+                                                              FontAttributes="Bold" FontSize="16"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            --><!-- Комментарий --><!--
+                                            <Label Text="{Binding Comment}" TextColor="#757575" FontSize="11"/>
+
+                                        </VerticalStackLayout>
+
+                                        --><!-- Сумма --><!--
+                                        <VerticalStackLayout Grid.Column="1"
+                                                 Spacing="3"
+                                                 HorizontalOptions="End"
+                                                 VerticalOptions="Center">
+
+                                            <Label Text="{Binding Amount, StringFormat='{0:N0} ₽'}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#28A745"
+                                       HorizontalTextAlignment="End"/>
+
+                                            <Label Text="{Binding PaymentType, Converter={StaticResource PaymentTypeToStringConvereter}}"
+                                       FontSize="11"
+                                       TextColor="#757575"
+                                       HorizontalTextAlignment="End"/>
+
+                                            --><!-- Льгота (простой вариант без конвертера) --><!--
+                                            <StackLayout IsVisible="{Binding IsDiscount}">
+                                                <Label TextColor="#DC3545" FontSize="11">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="Льгота: " FontAttributes="Bold"/>
+                                                            <Span Text="{Binding ReasonDiscount}"/>
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                            </StackLayout>
+
+                                        </VerticalStackLayout>
+                                    </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
-
                     </Grid>
-                </Border>
+                </Border>-->
+
             </VerticalStackLayout>
         </ScrollView>
         

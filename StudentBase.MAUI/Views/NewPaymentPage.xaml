@@ -5,35 +5,6 @@
              x:Class="StudentBase.MAUI.Views.NewPaymentPage"
              BackgroundColor="{StaticResource BackgroundPageGray}">
 
-    <ContentPage.Resources>
-        <Style x:Key="InvalidEntryStyle" TargetType="Entry" >
-            <Setter Property="TextColor" Value="Red"/>
-            <Setter Property="BackgroundColor" Value="#FFF0F0" />
-        </Style>
-
-        <!-- Стиль для основных Entry -->
-        <Style x:Key="ModernEntryStyle" TargetType="Entry">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="HeightRequest" Value="50"/>
-            <Setter Property="PlaceholderColor" Value="#9E9E9E"/>
-        </Style>
-
-        <!-- Стиль для Picker -->
-        <Style x:Key="ModernPickerStyle" TargetType="Picker">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="TitleColor" Value="#9E9E9E"/>
-        </Style>
-
-        <!-- Стиль для DatePicker -->
-        <Style x:Key="ModernDatePickerStyle" TargetType="DatePicker">
-            <Setter Property="BackgroundColor" Value="White"/>
-            <Setter Property="FontSize" Value="1"/>
-            <Setter Property="HeightRequest" Value="50"/>
-        </Style>
-    </ContentPage.Resources>
-
     <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
 
         <!-- Заголовок -->
@@ -47,94 +18,203 @@
 
         <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundPageGray}">
 
-            <VerticalStackLayout Padding="8">
+            <VerticalStackLayout Padding="8" Spacing="10">
                 <Border>
-                    <VerticalStackLayout Spacing="12">
+                    <VerticalStackLayout Spacing="15">
 
                         <!-- Список студентов -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Студент"
-                                    FontSize="14"
-                                    TextColor="#757575"/>
+                                    FontSize="14"/>
                             <Border Style="{StaticResource BorderPicker}">
                                 <Picker ItemsSource="{Binding Students}"
                                         ItemDisplayBinding="{Binding Name}" 
                                         SelectedItem="{Binding SelectedStudent}"
-                                        Title="Выберите студента"
+                                        Title="Выберите студента" IsEnabled="{Binding ChangedStudent}"
                                         Style="{StaticResource ModernPickerStyle}">
                                 </Picker>
                             </Border>
                         </VerticalStackLayout>
 
-                        <!-- Семестр -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Оплачиваемый семестр" 
-                                    FontSize="14" 
-                                    TextColor="#757575"/>
-                            <Entry Text="{Binding Semester, Mode=TwoWay}" 
-                                    Placeholder="Введите цифру семестра"
-                                    Style="{StaticResource ModernEntryStyle}">
-                                <Entry.Behaviors>
-                                    <toolkit:TextValidationBehavior x:Name="SemesterValidator" 
-                                                                    MinimumLength="1"
-                                                                    Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
-                                                                    InvalidStyle="{StaticResource InvalidEntryStyle}"/>
-                                </Entry.Behaviors>
-                            </Entry>
-                            <Label Text="Поле обязательно" 
-                                    FontSize="12" 
-                                    TextColor="#DC3545" 
-                                    IsVisible="{Binding IsNotValid, Source={x:Reference SemesterValidator}}" />
+                        <VerticalStackLayout Spacing="5" Margin="0,0,0,10"
+                                             IsVisible="{Binding IsStudentSelected}">
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Программа:                 " 
+                                              TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedStudent.EducationalGroup.ProgramSpecialty}" 
+                                              FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Дата поступления:      "
+                                              TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedStudent.DateOfReceipt, StringFormat='{0:dd.MM.yyyy}'}" 
+                                              FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Всего семестров:        " 
+                                              TextColor="#757575" FontSize="16"/>
+                                        <Span Text="{Binding SelectedStudent.TotalSemesters}" 
+                                              FontSize="16"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
                         </VerticalStackLayout>
 
-                        <!-- Сумма -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Сумма" 
-                                    FontSize="14" 
-                                    TextColor="#757575"/>
-                            <Entry Text="{Binding Amount, Mode=TwoWay}" 
-                                    Placeholder="Введите сумму"
-                                    Style="{StaticResource ModernEntryStyle}">
-                                <Entry.Behaviors>
-                                    <toolkit:TextValidationBehavior x:Name="AmountValidator" 
-                                             MinimumLength="1"
-                                             Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
-                                             InvalidStyle="{StaticResource InvalidEntryStyle}"/>
-                                </Entry.Behaviors>
-                            </Entry>
-                            <Label Text="Поле обязательно" 
-                                    FontSize="12" 
-                                    TextColor="#DC3545" 
-                                    IsVisible="{Binding IsNotValid, Source={x:Reference AmountValidator}}" />
+                        <!-- Список семестров для оплаты -->
+                        <VerticalStackLayout IsVisible="{Binding IsStudentSelected}" Spacing="10">
+                            <Label Text="Выберите семестр(ы) для оплаты" 
+                               FontSize="14"/>
+
+                            <CollectionView ItemsSource="{Binding AvailableSemesters}"
+                                       SelectionMode="None" >
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid  ColumnSpacing="20">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Чекбокс выбора семестра -->
+                                            <CheckBox IsChecked="{Binding IsSelected}"
+                                                      IsEnabled="{Binding IsSemesterSelectionEnabled}"
+                                                      VerticalOptions="Center" Grid.Column="0"/>
+
+                                            <!-- Информация о семестре -->
+                                            <Label Text="{Binding DisplayName}" Grid.Column="1" VerticalOptions="Center"/>
+
+                                                <!-- Стоимость -->
+                                            <Label Grid.Column="2" 
+                                               Text="{Binding Cost, StringFormat='{0:N0} ₽'}" 
+                                               FontAttributes="Bold"
+                                               TextColor="#28A745"
+                                               VerticalOptions="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
                         </VerticalStackLayout>
 
-                        <!-- Дата платежа -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Дата платежа" 
-                                    FontSize="14" 
-                                        TextColor="#757575"/>
-                            <DatePicker Format="d" 
-                                        Date="{Binding PaymentDate}" 
-                                        MinimumDate="01/01/2010"
-                                        TextColor="#333333"
-                                        FontSize="16"/>
+                        <!-- Информация о выбранных семестрах -->
+                        <VerticalStackLayout IsVisible="{Binding HasSelectedSemesters}"
+                                             Spacing="5" Margin="0,10,0,10">
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Выбрано семестров:       " TextColor="#757575"/>
+                                        <Span Text="{Binding SelectedSemesterCount}" 
+                                                  FontAttributes="Bold"
+                                                  TextColor="#28A745"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <Label FontSize="14" TextColor="Gray">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Общая стоимость:          " TextColor="#757575" />
+                                        <Span Text="{Binding TotalAmount, StringFormat='{0:N0} ₽'}" 
+                                                  FontAttributes="Bold"
+                                                  TextColor="#28A745"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
                         </VerticalStackLayout>
-                    
-                    
+
+                        <!-- Льгота -->
+                        <Border >
+                            <VerticalStackLayout Spacing="10">
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding IsDiscounted}"
+                                              HorizontalOptions="Start"/>
+                                    <Label Text="Льгота (своя сумма)" 
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           Margin="10,0"/>  
+                                </HorizontalStackLayout>
+
+                                <!-- Поля для льготы (появляются при включении) -->
+                                <VerticalStackLayout IsVisible="{Binding IsDiscounted}">
+                                    <Label Text="Сумма оплаты" 
+                                           FontSize="14" 
+                                           TextColor="Black"/>
+                                    <Entry Text="{Binding DiscountedAmountText}"
+                                           Keyboard="Numeric"
+                                           Placeholder="Введите сумму"
+                                           BackgroundColor="#F0F0F0"
+                                           HeightRequest="50"/>  
+
+                                    <Label Text="Причина льготы (обязательно)" 
+                                           FontSize="14" 
+                                           TextColor="Black"
+                                           Margin="0,10,0,0"/>  
+                                    <Entry Text="{Binding DiscountReason}"
+                                           Placeholder="Например: скидка 50%, социальная стипендия и т.д."
+                                           BackgroundColor="#F0F0F0"
+                                           HeightRequest="50"/>  
+
+                                    <Label Text="Внимание: при льготе можно оплатить только один семестр"
+                                           FontSize="12"
+                                           TextColor="Orange"
+                                           Margin="0,5"/>   
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Комментарий -->
+                        <Border>
+                            <VerticalStackLayout Spacing="10">
+                                <VerticalStackLayout>
+                                    <Label Text="Тип оплаты" 
+                                        TextColor="Black" Margin="0,0,0,10"/>
+                                    <RadioButton Content="Наличные" FontSize="13"
+                                                 IsChecked="{Binding SelectedPaymentType, 
+                                        Converter={StaticResource PaymentTypeToStringConvereter},
+                                        ConverterParameter=Cash, Mode=TwoWay}" GroupName="PaymentType"/>
+                                    <RadioButton Content="Безналичные" FontSize="13"
+                                                 IsChecked="{Binding SelectedPaymentType, 
+                                        Converter={StaticResource PaymentTypeToStringConvereter}, 
+                                        ConverterParameter=NonCash, Mode=TwoWay}" GroupName="PaymentType"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout>
+                                    <Label Text="Комментарий (необязательно)" 
+                                       FontSize="14" 
+                                       TextColor="Black"/>
+                                    <Entry Text="{Binding Comment}"
+                                       Placeholder="Дополнительная информация"
+                                       BackgroundColor="#F0F0F0"
+                                       HeightRequest="50"/>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+
                     </VerticalStackLayout>
                 </Border>
                 
                 <!-- Кнопки действий -->
-                <HorizontalStackLayout Spacing="10" 
+                <HorizontalStackLayout Spacing="20" 
                                         HorizontalOptions="Center" 
                                         Margin="20">
 
-                    <Button Text="Сохранить" 
-                            Command="{Binding SaveCommand}"
-                            FontSize="16"
-                            Padding="25,15"
-                            CornerRadius="25"
-                            WidthRequest="150"/>
+                    <!-- Кнопка оплаты -->
+                    <Button Text="{Binding PaymentButtonText}"
+                            Command="{Binding CreatePaymentCommand}"
+                            IsEnabled="{Binding CanCreatePayment}"
+                            FontSize="16" Padding="25,15"
+                            CornerRadius="25"/>
 
                     <Button Text="Отмена" 
                             Command="{Binding CancelCommand}"

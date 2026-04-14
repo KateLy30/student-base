@@ -12,7 +12,7 @@ namespace StudentBase.Application.Implementations
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<PaymentResult<object>> CreatePaymentTransferAsync(PaymentEntity entity)
+        public async Task<PaymentResult<object>> CreatePaymentAsync(PaymentEntity entity)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace StudentBase.Application.Implementations
             }
         }
 
-        public async Task<PaymentResult<object>> DeletePaymentTransferAsync(int id)
+        public async Task<PaymentResult<object>> DeletePaymentAsync(int id)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace StudentBase.Application.Implementations
             }
         }
 
-        public async Task<PaymentResult<object>> UpdatePaymentTransferAsync(PaymentEntity entity)
+        public async Task<PaymentResult<object>> UpdatePaymentAsync(PaymentEntity entity)
         {
             try
             {

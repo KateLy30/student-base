@@ -1,6 +1,6 @@
 using StudentBase.MAUI.ViewModels;
 
-namespace StudentBase.MAUI;
+namespace StudentBase.MAUI.Views;
 public partial class StudentPage : ContentPage
 {
     private readonly StudentPageViewModel _studentPageViewModel;
@@ -15,6 +15,7 @@ public partial class StudentPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _studentPageViewModel.SearchText = null;
         await _studentPageViewModel.LoadAsync();
         await _studentPageViewModel.LoadPickerFilterAsync();
     }

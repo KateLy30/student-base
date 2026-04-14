@@ -1,117 +1,76 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
-{
-    public class NewProgramViewModel : BaseViewModel
+{   
+    public partial class NewProgramViewModel(IDataService dataService) : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        /// <summary>
+        /// ViewModel для формы редактирования сущности "Программа обучения"
+        /// Если форма открывается для создания новой сущности, создается новый объект _program и заголовок по умолчанию
+        /// Если форма открывается для редактирования существующей сущности, то при открытии форма заполняется данными сущности и меняется заголовок
+        /// </summary>
+
+        private readonly IDataService _dataService = dataService;
         private ProgramEntity _program = new();
 
-        // списки для Enums
-        public ObservableCollection<TermsOfStudy> TermsOfStudyList { get; }
-        public ObservableCollection<StatusPrograms> StatusList { get; }
+        [ObservableProperty]
+        public partial string? Title { get; set; } = "Добавление программы обучения";
 
-        public AsyncCommand SaveCommand { get; }
-        public AsyncCommand CancelCommand { get; }
-        public NewProgramViewModel(IDataService dataService)
-        {
-            _dataService = dataService;
+        [ObservableProperty]
+        public partial string Specialty { get; set; }
 
-            SaveCommand = new AsyncCommand(SaveAsync, CanSave);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
+        [ObservableProperty]
+        public partial string Qualification { get; set; }
 
-            // заполнение списков из Enums
-            StatusList = new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
-            TermsOfStudyList = new ObservableCollection<TermsOfStudy>(Enum.GetValues<TermsOfStudy>().Cast<TermsOfStudy>());
-        }
-        private bool CanSave()
+        [ObservableProperty]
+        public partial ObservableCollection<TermsOfStudy> TermsOfStudyList { get; set; } = new ObservableCollection<TermsOfStudy>(Enum.GetValues<TermsOfStudy>().Cast<TermsOfStudy>());
+
+        [ObservableProperty]
+        public partial ObservableCollection<StatusPrograms> StatusList { get; set; } = new ObservableCollection<StatusPrograms>(Enum.GetValues<StatusPrograms>().Cast<StatusPrograms>());
+
+        [ObservableProperty]
+        public partial TermsOfStudy SelectedDurationAfter9thGrade { get; set; }
+
+        [ObservableProperty]
+        public partial TermsOfStudy SelectedDurationAfter11thGrade { get; set; }
+
+        [ObservableProperty]
+        public partial TermsOfStudy SelectedDurationOfCorrespondence { get; set; }
+
+        [ObservableProperty]
+        public partial StatusPrograms SelectedStatus { get; set; }
+
+        [ObservableProperty]
+        public partial decimal Cost { get; set; }
+
+
+        // кнопка отмены
+        [RelayCommand]
+        private static async Task CancelAsync()
         {
-            return !string.IsNullOrWhiteSpace(Specialty) && !string.IsNullOrWhiteSpace(Qualification) && Cost > 0;
-        }
-        // заголовок окна
-        private string _title = "Добавление программы обучения";
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                if (_title == value) return;
-                _title = value; OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
+            await Shell.Current.Navigation.PopModalAsync();
         }
 
-        // поля для ввода
-        private string? specialty;
-        public string? Specialty
-        {
-            get => specialty;
-            set
-            {
-                if (specialty == value) return;
-                specialty = value; OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-        private string? qualification;
-        public string? Qualification
-        {
-            get => qualification;
-            set
-            {
-                if (qualification == value) return;
-                qualification = value; OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-        private TermsOfStudy selectedTermOfStudy;
-        public TermsOfStudy SelectedTermOfStudy
-        {
-            get => selectedTermOfStudy;
-            set
-            {
-                if (selectedTermOfStudy == value) return;
-                selectedTermOfStudy = value; OnPropertyChanged();
-            }
-        }
-        private decimal cost;
-        public decimal Cost
-        {
-            get => cost;
-            set
-            {
-                cost = value;
-                OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-        private StatusPrograms selectedStatus;
-        public StatusPrograms SelectedStatus
-        {
-            get => selectedStatus;
-            set
-            {
-                if (selectedStatus == value) return;
-                selectedStatus = value;
-                OnPropertyChanged();
-            }
-        }
 
         // кнопка сохранения
+        [RelayCommand]
         private async Task SaveAsync()
         {
-            if (string.IsNullOrWhiteSpace(Specialty) || string.IsNullOrWhiteSpace(Qualification))
+            if (string.IsNullOrWhiteSpace(Specialty) || string.IsNullOrWhiteSpace(Qualification) || Cost == 0)
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите данные", "ОK");
                 return;
             }
             _program.Specialty = Specialty;
             _program.Qualification = Qualification;
-            _program.DurationTraining = SelectedTermOfStudy;
+            _program.DurationAfter9thGrade = SelectedDurationAfter9thGrade;
+            _program.DurationAfter11thGrade = SelectedDurationAfter11thGrade;
+            _program.DurationOfCorrespondence = SelectedDurationOfCorrespondence;
             _program.CostPerSemester = Cost;
             _program.Status = SelectedStatus;
 
@@ -143,7 +102,9 @@ namespace StudentBase.MAUI.ViewModels
 
                 Specialty = _program.Specialty!;
                 Qualification = _program.Qualification!;
-                SelectedTermOfStudy = _program.DurationTraining;
+                SelectedDurationAfter9thGrade = _program.DurationAfter9thGrade;
+                SelectedDurationAfter11thGrade = _program.DurationAfter11thGrade;
+                SelectedDurationOfCorrespondence = _program.DurationOfCorrespondence;
                 Cost = _program.CostPerSemester;
                 SelectedStatus = _program.Status;
             }

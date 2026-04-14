@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="StudentBase.MAUI.AppShell"
+    x:Name="ThisPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:StudentBase.MAUI"
+    xmlns:local="clr-namespace:StudentBase.MAUI.Views"
     Title="СУБД личных данных студентов"
     FlyoutBackgroundColor="{StaticResource Gray100}" 
     FlyoutBehavior="Locked" 
-    FlyoutWidth="200"
+    FlyoutWidth="170"
     TitleColor="{StaticResource Primary}">
 
 
@@ -59,5 +60,18 @@
             ContentTemplate="{DataTemplate local:PaymentPage}"
             Route="PaymentPage" />
     </FlyoutItem>
+
+    <FlyoutItem Title="Управление шаблонами импорта">
+        <ShellContent
+                ContentTemplate="{DataTemplate local:TemplateManagementPage}"
+                Route="TemplateManagementPage"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Настройки">
+        <ShellContent 
+            ContentTemplate="{DataTemplate local:SettingsPage}"
+            Route="SettingsPage" />
+    </FlyoutItem>
+
 
 </Shell>

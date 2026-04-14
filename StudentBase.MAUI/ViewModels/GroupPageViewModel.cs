@@ -1,113 +1,137 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class GroupPageViewModel : BaseViewModel
+    public partial class GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage, Func<object> openCardGroupPage) : ViewModelBase
     {
-        private readonly IDataService _dataService;
-        private readonly Func<object> _createNewGroupPage;
-        private readonly Func<object> _openCardGroupPage;
-        public ObservableCollection<GroupEntity> Groups { get; } = [];
+        private readonly IDataService _dataService = dataService;
+        private readonly Func<object> _createNewGroupPage = createNewGroupPage;
+        private readonly Func<object> _openCardGroupPage = openCardGroupPage;
 
-        public GroupPageViewModel(IDataService dataService, Func<object> createNewGroupPage, Func<object> openCardGroupPage)
-        {
-            _dataService = dataService;
-            _createNewGroupPage = createNewGroupPage;
-            _openCardGroupPage = openCardGroupPage;
+        [ObservableProperty]
+        public partial string? SearchText { get; set; }
 
-            LoadCommand = new AsyncCommand(LoadAsync);
-            AddCommand = new AsyncCommand(AddAsync);
-            EditCommand = new AsyncCommand(g => EditAsync(g as GroupEntity));
-            DeleteCommand = new AsyncCommand(g => DeleteAsync(g as GroupEntity));
-            OpenCardCommand = new AsyncCommand(g => OpenCardAsync(g as GroupEntity));
-        }
+        [ObservableProperty]
+        public partial ObservableCollection<GroupEntity> Groups { get; set; } = new ObservableCollection<GroupEntity>();
 
-        private bool _isBusy;
-        public bool IsBusy
+        [ObservableProperty]
+        public partial GroupEntity SelectedGroup { get; set; }
+
+        [ObservableProperty]
+        public partial string NumberOfEntries { get; set; }
+
+        // поиск
+        [RelayCommand]
+        public async Task FindGroupAsync()
         {
-            get => _isBusy;
-            set
-            {
-                if (_isBusy == value) return;
-                _isBusy = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? numberOfEntries;
-        public string? NumberOfEntries
-        {
-            get => numberOfEntries;
-            set
-            {
-                numberOfEntries = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? _searchText;
-        public string? SearchText
-        {
-            get => _searchText;
-            set
-            {
-                if (_searchText == value) return;
-                _searchText = value;
-                OnPropertyChanged();
-                _ = LoadAsync();
-            }
-        }
-        public async Task LoadAsync()
-        {
-            if (IsBusy) return;
-            IsBusy = true;
+            if (SearchText == null || SearchText == "") return;
             try
             {
-                var list = await _dataService.GroupService.GetAllGroupsAsync();
-                if (list == null) return;
+                IsBusy = true;
+                var groups = await _dataService.GroupService.GetAllGroupsAsync();
+                if (groups == null) return;
+
                 var filter = (SearchText ?? string.Empty).Trim();
                 if (filter.Length > 0)
                 {
-                    list = [.. list.Where(e => (e.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
+                    groups = [.. groups.Where(p => (p.Name ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase) 
+                                                || (p.ProgramSpecialty ?? "").Contains(filter, StringComparison.OrdinalIgnoreCase))];
                 }
+
                 Groups.Clear();
-                foreach (var group in list)
+                foreach (var group in groups)
                     Groups.Add(group);
 
                 NumberOfEntries = $"Записей: {Groups.Count}";
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Ошибка загрузки: {ex.Message}", "Ok");
             }
             finally
             {
                 IsBusy = false;
             }
         }
-        public AsyncCommand OpenCardCommand { get; }
-        public AsyncCommand LoadCommand { get; }
-        public AsyncCommand AddCommand { get; }
-        public AsyncCommand DeleteCommand { get; }
-        public AsyncCommand EditCommand { get; }
+
+        [RelayCommand]
+        public async Task LoadAsync()
+        {
+            SearchText = null;
+            if (IsBusy) return;
+            IsBusy = true;
+            try
+            {
+                var list = await _dataService.GroupService.GetAllGroupsAsync();
+                if (list == null) return;
+                Groups.Clear();
+                foreach (var group in list)
+                    Groups.Add(group);
+
+                NumberOfEntries = $"Записей: {Groups.Count}";
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка загрузки", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        [RelayCommand]
         public async Task DeleteAsync(GroupEntity? g)
         {
             if (g is null) return;
-            var ok = await Shell.Current.DisplayAlert("Подтверждение", $"Удалить {g.Name}?", "Да", "Нет");
-            if (!ok) return;
-            await _dataService.GroupService.DeleteGroupAsync(g.Id);
+            if (g.Students?.Count != 0)
+            {
+                var ok = await Shell.Current.DisplayAlert("Подтверждение",
+                    $"Количество студентов в группе: {g.Students?.Count}. Удалить группу {g.Name} со всеми студентами?", "Да", "Нет");
+                if (!ok) return;
+            }
+            else if (g.Students.Count == 0)
+            {
+                var ok = await Shell.Current.DisplayAlert("Подтверждение",
+                    $"Удалить группу {g.Name}. Студентов в этой группе нет.", "Да", "Нет");
+                if (!ok) return;
+            }
+            var result = await _dataService.GroupService.DeleteGroupAsync(g.Id);
+            if (!result.Success) 
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
+                return;
+            }
             await LoadAsync();
         }
+
+        [RelayCommand]
         public async Task AddAsync()
         {
             var page = (Page)_createNewGroupPage();
+            if (page.BindingContext is NewGroupViewModel viewModel)
+                await viewModel.LoadProgramsAsync();
             await Shell.Current.Navigation.PushModalAsync(page);
         }
+
+        [RelayCommand]
         public async Task EditAsync(GroupEntity? g)
         {
             if (g is null) return;
             var page = (Page)_createNewGroupPage();
             if (page.BindingContext is NewGroupViewModel viewModel)
+            {
+                await viewModel.LoadProgramsAsync();
                 viewModel.LoadFrom(g);
+            }
             await Shell.Current.Navigation.PushModalAsync(page);
         }
+
+        [RelayCommand]
         public async Task OpenCardAsync(GroupEntity? g)
         {
             if (g is null) return;

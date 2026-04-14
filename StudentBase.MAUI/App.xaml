@@ -15,6 +15,9 @@
             <local:LevelsOfEducationToStringConverter x:Key="LevelsOfEducationToStringConverter" />
             <local:StatusGroupsToStringConverter x:Key="StatusGroupsToStringConverter" />
             <local:StatusStudentsToStringConverter x:Key="StatusStudentsToStringConverter" />
+            <local:FieldTypeToStringConverter x:Key="FieldTypeToStringConvereter"/>
+            <local:PaymentTypeToStringConverter x:Key="PaymentTypeToStringConvereter"/>
+            <local:StudentFieldsNameToStringConverter x:Key="StudentFieldsNameToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

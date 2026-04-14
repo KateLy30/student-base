@@ -1,85 +1,108 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StudentBase.MAUI.StudentPage"
+             xmlns:viewmodels="clr-namespace:StudentBase.MAUI.ViewModels"
+             x:Class="StudentBase.MAUI.Views.StudentPage"
              x:Name="ThisPage"
              Title="Список студентов">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Добавить" Command="{Binding AddCommand}" />
-        <ToolbarItem Text="Удалить" Command="{Binding DeleteCommand}" />
         <ToolbarItem Text="Импортировать список из Excel" Command="{Binding ImportListCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="5" Padding="5">
-        
-        <VerticalStackLayout Padding="10,0" Spacing="10">
-            <SearchBar Placeholder="Поиск.."
-               Text="{Binding SearchText, Mode=TwoWay}" />
+    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5" Padding="5">
 
-            <HorizontalStackLayout Spacing="20" Padding="3">
-                <Picker Title="Фильтр группы"
-                        WidthRequest="400" HorizontalOptions="Start"
-                        ItemsSource="{Binding ListGroupsFilter}"
-                        SelectedItem="{Binding SelectedGroupsFilter}"
-                        ItemDisplayBinding="{Binding Name}" />
+        <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="*,*"
+              ColumnSpacing="15" RowSpacing="10" Padding="5">
 
-                <Picker Title="Фильтр программы"
-                        WidthRequest="400" HorizontalOptions="Start"
-                        ItemsSource="{Binding ListProgramsFilter}"
-                        SelectedItem="{Binding SelectedProgramFilter}"
-                        ItemDisplayBinding="{Binding Specialty}"/>
-            </HorizontalStackLayout>
+            <SearchBar Placeholder="Поиск по ФИО.." Grid.ColumnSpan="2"
+                       SearchCommand="{Binding FindStudentCommand}"
+                        Text="{Binding SearchText, Mode=TwoWay}" />
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                       IsVisible="{Binding IsBusy}"
-                       HorizontalOptions="End" />
-        </VerticalStackLayout>
+            <Picker Title="Фильтр группы" Grid.Row="1"
+                    ItemsSource="{Binding ListGroupsFilter}"
+                    SelectedItem="{Binding SelectedGroupsFilter}"
+                    ItemDisplayBinding="{Binding Name}"/>
 
-        <ScrollView Grid.Row="1">
+            <Picker Title="Фильтр программы" Grid.Column="1" Grid.Row="1"
+                    ItemsSource="{Binding ListProgramsFilter}"
+                    SelectedItem="{Binding SelectedProgramFilter}"
+                    ItemDisplayBinding="{Binding Specialty}"/>
+
+            <ImageButton Source="load_icon.png" Grid.Row="0" Grid.Column="2"
+                         Command="{Binding LoadCommand}" BorderWidth="0" 
+                         ToolTipProperties.Text="Загрузка всего списка из базы."/>
+
+        </Grid>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+           IsVisible="{Binding IsBusy}" Grid.Row="1"
+           HorizontalOptions="Center" />
+
+        <ScrollView Grid.Row="2">
             <CollectionView ItemsSource="{Binding Students}" SelectionMode="Single" 
                             SelectedItem="{Binding SelectedStudent}">
+
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                        <Label Text="Список студентов пуст"
+                               HorizontalOptions="Center"
+                               TextColor="#757575" FontSize="16"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="15" ColumnSpacing="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackLayout>
+                        <StackLayout Padding="0,5,0,5" >
+                            <Border Style="{StaticResource BorderCollectionItem}" >
+                                <Grid Padding="10,5,10,5" ColumnSpacing="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout>
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="20" />
+                                        <Label Text="{Binding GroupName}" TextColor="Gray" FontSize="18" />
+                                        <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" FontSize="18" />
+                                    </StackLayout>
 
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
-                                <Label Text="{Binding GroupName}" TextColor="Gray" />
-                                <Label Text="{Binding ProgramSpecialty}" TextColor="Gray" />
-                            </StackLayout>
+                                    <ImageButton Source="edit_icon.png"
+                                    Grid.Column="3" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
+                                    CommandParameter="{Binding}" HeightRequest="30"/>
 
-                            <Button Text="Редактировать" 
-                                    Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCommand}" 
-                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
+                                    <ImageButton Source="delete_icon.png" Grid.Column="4"
+                                         Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
+                                         CommandParameter="{Binding}" HeightRequest="30" />
 
-                            <Button Text="Перевести" 
+                                    <Button Text="Оплатить" BackgroundColor="Transparent" TextColor="Black" FontAttributes="Bold" BorderColor="{StaticResource Primary}" BorderWidth="1.5"
+                                            Grid.Column="1" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.PaymentCommand}" 
+                                            CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/> 
+                                    
+                                    <Button Text="Перевести" BackgroundColor="Transparent" TextColor="Black" FontAttributes="Bold" BorderColor="{StaticResource Primary}" BorderWidth="1.5"
                                         Grid.Column="2" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.TransferCommand}" 
                                         CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
-                            
-                            <Button Text="Внести оплату" 
-                                    Grid.Column="3" Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.AddPaymentCommand}" 
-                                    CommandParameter="{Binding}" Style="{StaticResource ButtonInPage}"/>
 
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="2" 
                                                       Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.OpenCardCommand}" 
                                                       CommandParameter="{Binding}" />
-                            </Grid.GestureRecognizers>
+                                    </Grid.GestureRecognizers>
 
-                        </Grid>
+                                </Grid>
+                            </Border>
+                        </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </ScrollView>
 
-        <VerticalStackLayout Grid.Row="2">
+        <VerticalStackLayout Grid.Row="3">
             <BoxView BackgroundColor="LightGray"  HeightRequest="0.5"/>
             <Label HeightRequest="40" HorizontalOptions="End" Text="{Binding NumberOfEntries}" Padding="10" Margin="0,0,10,0" />
         </VerticalStackLayout>

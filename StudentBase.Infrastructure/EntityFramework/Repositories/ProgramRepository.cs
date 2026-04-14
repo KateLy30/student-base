@@ -33,19 +33,14 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllAsync()
         {
-            return await _context.Programs.Include(p => p.EducationalGroups)
-                                          .ThenInclude(p => p.Students)
-                                          .ToListAsync();
+            return await _context.Programs.OrderByDescending(p => p.CreateAt)
+                .Include(p => p.EducationalGroups)
+                .ThenInclude(g => g.Students).ToListAsync();
         }
 
         public async Task<IEnumerable<ProgramEntity>?> GetAllBySpecialtyAsync(string specialty)
         {
             return await _context.Programs.Where(p => p.Specialty == specialty).ToListAsync();
-        }
-
-        public async Task<IEnumerable<ProgramEntity>?> GetAllByDurationTrainingAsync(TermsOfStudy termsOfStudy)
-        {
-            return await _context.Programs.Where(p => p.DurationTraining == termsOfStudy).ToListAsync();
         }
 
 
@@ -79,7 +74,9 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             entityInDatabase.Specialty = updatedEntity.Specialty;
             entityInDatabase.Qualification = updatedEntity.Qualification;
-            entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
+            entityInDatabase.DurationAfter9thGrade = updatedEntity.DurationAfter9thGrade;
+            entityInDatabase.DurationAfter11thGrade = updatedEntity.DurationAfter11thGrade;
+            entityInDatabase.DurationOfCorrespondence = updatedEntity.DurationOfCorrespondence;
             entityInDatabase.CostPerSemester = updatedEntity.CostPerSemester;
             entityInDatabase.Status = updatedEntity.Status;
             entityInDatabase.UpdateAt = DateTime.Now;

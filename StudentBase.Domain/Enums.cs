@@ -37,13 +37,13 @@ public enum FormsOfEducation
 public enum TermsOfStudy
 {
     [Description("1 г. 10 мес. ")]
-    OneYearTenMonths,   
+    OneYearTenMonths = 4, // 4 семестра
 
     [Description("2 г. 10 мес.")]
-    TwoYearsTenMonths,   
+    TwoYearsTenMonths = 6, // 6 семестров
 
     [Description("3 г. 10 мес.")]
-    ThreeYearsTenMonths
+    ThreeYearsTenMonths = 8 // 8 семестров
 }
 public enum LevelsOfEducation
 {
@@ -52,12 +52,60 @@ public enum LevelsOfEducation
 
     [Description("Среднее общее образование (11 классов)")]
     SecondaryGeneralEducation  
-}
+} 
 public enum PaymentType
 {
-    [Description("Наличные")]
     Cash,
-
-    [Description("Безналичные")]
     NonCash
+}
+
+/// <summary>
+/// Тип поля (хранится как строка в БД или enum)
+/// </summary>
+public enum FieldType
+{
+    [Description("Текст")]
+    Text,           // текст
+
+    [Description("Число")]
+    Number,         // Число
+
+    [Description("Дата")]
+    Date,           // Дата
+
+    [Description("Да/Нет")]
+    Boolean,        // Да/Нет
+
+    [Description("Телефон")]
+    Phone,          // Телефон
+}
+
+public enum StudentFieldsName
+{
+    [Description("ФИО")]
+    Name,
+
+    [Description("Номер телефона")]
+    Phone,
+
+    [Description("Дата рождения")]
+    DateOfBirth,
+
+    [Description("Дата поступления")]
+    DateOfReceipt,
+
+    [Description("Уровень образования")]
+    EducationLevel,
+
+    [Description("Форма обучения")]
+    FormOfEducation,
+
+    [Description("Продолжительность обучения")]
+    DurationTraining,
+
+    [Description("Статус")]
+    Status,
+
+    [Description("Группа")]
+    Group
 }

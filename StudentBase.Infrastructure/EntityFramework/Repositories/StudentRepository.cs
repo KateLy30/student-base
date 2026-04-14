@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentBase.Domain.Entities;
+using StudentBase.Domain.Entities.Dynamic;
 using StudentBase.Domain.Repositories;
 
 namespace StudentBase.Infrastructure.EntityFramework.Repositories
@@ -31,9 +32,10 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<StudentEntity>?> GetAllAsync()
         {
-            return await _context.Students.Include(s => s.EducationalGroup)
-                                          .ThenInclude(g => g.EducationalProgram)
-                                          .ToListAsync();
+            return await _context.Students.OrderByDescending(s => s.CreateAt)
+                .Include(s => s.EducationalGroup)
+                .ThenInclude(g => g.EducationalProgram)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<StudentEntity>?> GetAllByGroupIdAsync(int groupId)
@@ -47,12 +49,14 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         }
         public async Task<StudentEntity?> GetByIdAsync(int id)
         {
-            return await _context.Students.FindAsync(id);
+            return await _context.Students.Include(s => s.EducationalGroup)
+                .ThenInclude(g => g.EducationalProgram).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<StudentEntity?> GetByNameAsync(string name)
         {
             return await _context.Students.FirstOrDefaultAsync(s => s.Name == name);
+                
         }
 
         public async Task<StudentEntity?> GetByPhoneAsync(string phone)
@@ -64,12 +68,10 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         {
             return await _context.Students.CountAsync();
         }
-
         public async Task<bool> UpdateAsync(StudentEntity entity)
         {
             var student = await _context.Students.FindAsync(entity.Id);
             if (student == null) return false;
-
             UpdateEntity(student, entity);
             await _context.SaveChangesAsync();
             return true;
@@ -79,18 +81,27 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
         public static void UpdateEntity(StudentEntity entityInDatabase, StudentEntity updatedEntity)
         {
             entityInDatabase.Name = updatedEntity.Name;
+            entityInDatabase.PassportNumber = updatedEntity.PassportNumber;
+            entityInDatabase.Email = updatedEntity.Email;
+            entityInDatabase.Snils = updatedEntity.Snils;
             entityInDatabase.Phone = updatedEntity.Phone;
             entityInDatabase.DateOfBirth = updatedEntity.DateOfBirth;
             entityInDatabase.DateOfReceipt = updatedEntity.DateOfReceipt;
+            entityInDatabase.DurationTraining = updatedEntity.DurationTraining;
             entityInDatabase.CurrentGroupId = updatedEntity.CurrentGroupId;
             entityInDatabase.EducationLevel = updatedEntity.EducationLevel;
             entityInDatabase.IsPaidCurrentSemester = updatedEntity.IsPaidCurrentSemester;
             entityInDatabase.FormOfEducation = updatedEntity.FormOfEducation;
             entityInDatabase.Status = updatedEntity.Status;
-            entityInDatabase.UpdateAt = DateTime.Now;
             entityInDatabase.EducationalGroup = updatedEntity.EducationalGroup;
             entityInDatabase.StudentTransfers = updatedEntity.StudentTransfers;
             entityInDatabase.Payments = updatedEntity.Payments;
+            entityInDatabase.UpdateAt = DateTime.Now;   
+        }
+
+        public async Task<IEnumerable<StudentEntity>?> GetAllWithPaymentsAsync()
+        {
+            return await _context.Students.Where(s => s.Payments.Count > 0).ToListAsync();
         }
     }
 }

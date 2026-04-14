@@ -1,121 +1,69 @@
-﻿using StudentBase.Application.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using StudentBase.Application.Interfaces;
 using StudentBase.Domain;
 using StudentBase.Domain.Entities;
-using StudentBase.MAUI.Mvvm;
 using System.Collections.ObjectModel;
 
 namespace StudentBase.MAUI.ViewModels
 {
-    public class NewStudentViewModel : BaseViewModel
+    public partial class NewStudentViewModel(IDataService dataService) : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        private readonly IDataService _dataService = dataService;
         private StudentEntity _student = new();
-        public ObservableCollection<StatusStudents> StatusList { get; }
-        public ObservableCollection<LevelsOfEducation> EducationLevelsList { get; }
-        public ObservableCollection<FormsOfEducation> FormsOfEducationList { get; }
-        public ObservableCollection<GroupEntity> Groups { get; } = [];
 
-        public AsyncCommand SaveCommand { get; }
-        public AsyncCommand CancelCommand { get; }
+        [ObservableProperty]
+        public partial bool CanChangedGroup { get; set; } = true;
 
-        public NewStudentViewModel(IDataService dataService)
-        {
-            _dataService = dataService;
+        [ObservableProperty]
+        public partial string Title { get; set; } = "Добавление студента";
 
-            SaveCommand = new AsyncCommand(SaveAsync, CanSave);
-            CancelCommand = new AsyncCommand(() => Shell.Current.Navigation.PopModalAsync());
+        [ObservableProperty]
+        public partial string Name { get; set; }
 
-            StatusList = new ObservableCollection<StatusStudents>(Enum.GetValues<StatusStudents>().Cast<StatusStudents>());
-            EducationLevelsList = new ObservableCollection<LevelsOfEducation>(Enum.GetValues<LevelsOfEducation>().Cast<LevelsOfEducation>());
-            FormsOfEducationList = new ObservableCollection<FormsOfEducation>(Enum.GetValues<FormsOfEducation>().Cast<FormsOfEducation>());
+        [ObservableProperty]
+        public partial string Phone { get; set; }
 
-            _ = LoadGroupsAsync();
-        }
-        private bool CanSave()
-        {
-            return !string.IsNullOrWhiteSpace(Name) && Phone != null && SelectedGroup != null;
-        }
+        [ObservableProperty]
+        public partial string PassportNumber { get;set; }
 
-        private string _title = "Добавление студента";
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                if (_title == value) return;
-                _title = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? name;
-        public string? Name
-        {
-            get => name;
-            set
-            {
-                if (name == value) return;
-                name = value;
-                OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-        private string? phone;
-        public string? Phone
-        {
-            get => phone;
-            set
-            {
-                if (phone == value) return;
-                phone = value;
-                OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-        private DateTime dateOfReceipt;
-        public DateTime DateOfReceipt
-        {
-            get => dateOfReceipt;
-            set
-            {
-                if (dateOfReceipt == value) return;
-                dateOfReceipt = value;
-                OnPropertyChanged();
-            }
-        }
-        private DateTime dateOfBirth;
-        public DateTime DateOfBirth
-        {
-            get => dateOfBirth;
-            set
-            {
-                if (dateOfBirth == value) return;
-                dateOfBirth = value;
-                OnPropertyChanged();
-            }
-        }
-        private bool isChecked;
-        public bool IsChecked
-        {
-            get => isChecked;
-            set
-            {
-                isChecked = value;
-                OnPropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        public partial string Email { get; set; }
 
-        GroupEntity? selectedGroup;
-        public GroupEntity? SelectedGroup
-        {
-            get => selectedGroup;
-            set
-            {
-                if (selectedGroup == value) return;
-                selectedGroup = value;
-                OnPropertyChanged();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
+        [ObservableProperty]
+        public partial string Snils { get; set; }
+
+        [ObservableProperty]
+        public partial DateTime DateOfReceipt { get; set; }
+
+        [ObservableProperty]
+        public partial DateTime DateOfBirth { get; set; }
+
+        [ObservableProperty]
+        public partial GroupEntity SelectedGroup { get; set; }
+
+        [ObservableProperty]
+        public partial StatusStudents SelectedStatus { get; set; }
+
+        [ObservableProperty]
+        public partial LevelsOfEducation SelectedLevel { get; set; }
+
+        [ObservableProperty]
+        public partial FormsOfEducation SelectedForm { get; set; }
+
+        [ObservableProperty]
+        public partial ObservableCollection<StatusStudents> StatusList { get; set; } = new ObservableCollection<StatusStudents>(Enum.GetValues<StatusStudents>().Cast<StatusStudents>());
+
+        [ObservableProperty]
+        public partial ObservableCollection<LevelsOfEducation> EducationLevelsList { get; set; } = new ObservableCollection<LevelsOfEducation>(Enum.GetValues<LevelsOfEducation>().Cast<LevelsOfEducation>());
+
+        [ObservableProperty]
+        public partial ObservableCollection<FormsOfEducation> FormsOfEducationList { get; set; } = new ObservableCollection<FormsOfEducation>(Enum.GetValues<FormsOfEducation>().Cast<FormsOfEducation>());
+
+        [ObservableProperty]
+        public partial ObservableCollection<GroupEntity> Groups { get; set; } = new ObservableCollection<GroupEntity>();
+
+
         public async Task LoadGroupsAsync()
         {
             var groupsFromDb = await _dataService.GroupService.GetAllGroupsAsync();
@@ -125,76 +73,53 @@ namespace StudentBase.MAUI.ViewModels
                 Groups.Add(g);
         }
 
-        private StatusStudents selectedStatus;
-        public StatusStudents SelectedStatus
+        [RelayCommand]
+        private static async Task CancelAsync()
         {
-            get => selectedStatus;
-            set
-            {
-                if (selectedStatus == value) return;
-                selectedStatus = value;
-                OnPropertyChanged();
-            }
+            await Shell.Current.Navigation.PopModalAsync();
         }
 
-        private LevelsOfEducation selectedLevel;
-        public LevelsOfEducation SelectedLevel
-        {
-            get => selectedLevel;
-            set
-            {
-                if (selectedLevel == value) return;
-                selectedLevel = value;
-                OnPropertyChanged();
-            }
-        }
-        private FormsOfEducation selectedForm;
-        public FormsOfEducation SelectedForm
-        {
-            get => selectedForm;
-            set
-            {
-                if (selectedForm == value) return;
-                selectedForm = value;
-                OnPropertyChanged();
-            }
-        }
+        [RelayCommand]
         private async Task SaveAsync()
         {
-            await CreateStudent();
-
-            await Shell.Current.Navigation.PopModalAsync();
-            if (Shell.Current?.CurrentPage?.BindingContext is StudentPageViewModel viewModel)
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Phone)
+                || SelectedGroup == null)
             {
-                await viewModel.LoadAsync();
+                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите данные.", "Ок");
+                return;
             }
-        }
-        public void LoadFrom(StudentEntity? s)
-        {
-            _student = s ?? new StudentEntity();
-            if (s == null || s.Id == 0)
-                Title = "Добавление сотрудника";
-            else
-                Title = "Изменение данных студента";
 
-            Name = _student.Name;
-            Phone = _student.Phone!;
-            DateOfBirth = _student.DateOfBirth;
-            DateOfReceipt = _student.DateOfReceipt;
-            SelectedLevel = _student.EducationLevel;
-            SelectedForm = _student.FormOfEducation;
-            SelectedGroup = _student.EducationalGroup;
-            SelectedStatus = _student.Status;
-        }
+            var program = SelectedGroup.EducationalProgram;
 
-        private async Task CreateStudent()
-        {
-            if (string.IsNullOrWhiteSpace(Name))
+            switch (SelectedForm)
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Пожалуйста, введите имя.", "Ок");
+                case FormsOfEducation.FullTime:
+
+                    if (SelectedLevel == LevelsOfEducation.BasicGeneralEducation)
+                        _student.DurationTraining = program.DurationAfter9thGrade;
+                    else if (SelectedLevel == LevelsOfEducation.SecondaryGeneralEducation)
+                        _student.DurationTraining = program.DurationAfter11thGrade;
+
+                    break;
+
+                case FormsOfEducation.Correspondence:
+
+                    if (SelectedLevel == LevelsOfEducation.BasicGeneralEducation)
+                    {
+                        await Shell.Current.DisplayAlert("Ошибка", "Студент не может обучаться на заочной форме после 9 класаа.", "ОК");
+                        return;
+                    }
+                    else if (SelectedLevel == LevelsOfEducation.SecondaryGeneralEducation)
+                        _student.DurationTraining = program.DurationOfCorrespondence;
+
+                    break;
             }
+
             _student.Name = Name;
             _student.Phone = Phone;
+            _student.PassportNumber = PassportNumber;
+            _student.Email = Email;
+            _student.Snils = Snils;
             _student.DateOfBirth = DateOfBirth;
             _student.DateOfReceipt = DateOfReceipt;
             _student.CurrentGroupId = SelectedGroup.Id;
@@ -202,23 +127,43 @@ namespace StudentBase.MAUI.ViewModels
             _student.EducationLevel = SelectedLevel;
             _student.Status = SelectedStatus;
             _student.FormOfEducation = SelectedForm;
-            _student.GroupName = SelectedGroup.Name;
-            _student.ProgramSpecialty = SelectedGroup.EducationalProgram.Specialty;
-            _student.ProgramQualification = SelectedGroup.EducationalProgram.Qualification;
 
             if (_student.Id == 0)
             {
                 var result = await _dataService.StudentService.CreateStudentAsync(_student);
-                if (result.Success == false)
+                if (!result.Success)
                     await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             }
             else
             {
                 var result = await _dataService.StudentService.UpdateStudentAsync(_student);
-                if (result.Success == false)
+                if (!result.Success)
                     await Shell.Current.DisplayAlert("Ошибка", $"{result.ErrorMessage}", "OK");
             }
-        }
 
+            await Shell.Current.Navigation.PopModalAsync();
+        }
+        public void LoadFrom(StudentEntity? s)
+        {
+            _student = s ?? new StudentEntity();
+            if (s == null || s.Id == 0)
+                Title = "Добавление сотрудника";
+            else
+            {
+                Title = "Изменение данных студента";
+                CanChangedGroup = false;
+                Name = _student.Name;
+                Phone = _student.Phone!;
+                PassportNumber = _student.PassportNumber ?? "";
+                Snils = _student.Snils ?? "";
+                Email = _student.Email ?? "";
+                DateOfBirth = _student.DateOfBirth;
+                DateOfReceipt = _student.DateOfReceipt;
+                SelectedLevel = _student.EducationLevel;
+                SelectedForm = _student.FormOfEducation;
+                SelectedGroup = Groups.FirstOrDefault(g => g.Id == _student.CurrentGroupId);
+                SelectedStatus = _student.Status;
+            }
+        }
     }
 }

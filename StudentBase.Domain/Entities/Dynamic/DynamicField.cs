@@ -10,10 +10,6 @@ public class DynamicField
     /// ID записи сущности (например, Student.Id, Group.Id и т.д.)
     public int EntityId { get; set; }
 
-
-    /// Тип сущности (дублируется из CustomField для удобства фильтрации, но можно вычислить через навигацию)
-    public EntitiesPicker EntityType { get; set; } 
-
     /// Внешний ключ кастомного поля
     public int CustomFieldId { get; set; }
 

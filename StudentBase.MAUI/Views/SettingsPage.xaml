@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StudentBase.MAUI.Views.SettingsPage"
+             x:Name="ThisPage"
+             Title="Настройки"
+             BackgroundColor="{StaticResource BackgroundPageGray}">
+
+    <ScrollView Padding="5">
+        <VerticalStackLayout Spacing="5" >
+
+            <Border Padding="5">
+                <VerticalStackLayout Spacing="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Дополнительные поля" 
+                          FontSize="18" 
+                          FontAttributes="Bold" 
+                          TextColor="#512BD4"/>
+
+                        <Button Text="+" Style="{StaticResource ButtonInPage}"
+                            Command="{Binding AddNewCustomFieldCommand}" />
+
+                    </VerticalStackLayout>
+
+                    <!-- Список дополнительных полей -->
+                    <CollectionView ItemsSource="{Binding CustomFields}"
+                                    SelectedItem="{Binding SelectedField, Mode=TwoWay}"
+                                    SelectionMode="Single">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Padding="0,3,0,3">
+                                    <Border Style="{StaticResource BorderCollectionItem}">
+                                        <Grid Padding="6" ColumnSpacing="5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackLayout>
+                                                <Label Text="{Binding DisplayName}" FontSize="16"
+                                                       FontAttributes="Bold"/>
+                                                <Label Text="{Binding FieldType, Converter={StaticResource FieldTypeToStringConvereter}}" TextColor="#757575"/>
+                                            </StackLayout>
+
+                                            <ImageButton Source="delete_icon.png"
+                                                         Grid.Column="1" HeightRequest="30"
+                                                         Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteCommand}"
+                                                         CommandParameter="{Binding}"/>
+                                        </Grid>
+                                    </Border>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <StackLayout Padding="32" Spacing="8">
+                                <Label Text="Нет дополнительных полей"
+                           HorizontalOptions="Center"
+                           FontSize="14"
+                           TextColor="{StaticResource Gray500}"/>
+                                <Label Text="Нажмите '+' чтобы добавить поле"
+                           HorizontalOptions="Center"
+                           FontSize="12"
+                           TextColor="{StaticResource Gray400}"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

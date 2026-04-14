@@ -8,13 +8,8 @@ public class CustomField
 {
     public int Id { get; set; }
 
-    /// Имя сущности, к которой привязано поле (например, "StudentEntity", "GroupEntity", "ProgramEntity", "StudentTransferEntity", "PaymentEntity")
-    public EntitiesPicker EntityType { get; set; }
-
-
     /// Техническое имя поля (например, "CustomField1")
     public string FieldName { get; set; } = string.Empty;
-
 
     /// Отображаемое имя (например, "Паспортные данные")
     public string DisplayName { get; set; } = string.Empty;

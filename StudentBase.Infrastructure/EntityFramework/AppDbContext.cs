@@ -58,29 +58,12 @@ namespace StudentBase.Infrastructure.EntityFramework
 
             // === Настройки для кастомных полей ===
             modelBuilder.Entity<CustomField>(entity =>
-            {
-                // Уникальность комбинации типа сущности и имени поля
-                entity.HasIndex(e => new { e.EntityType, e.FieldName })
-                        .IsUnique()
-                        .HasDatabaseName("UX_CustomFields_EntityType_FieldName");
-
-                entity.Property(e => e.EntityType).HasColumnType("VARCHAR(50)");  
+            { 
                 entity.Property(e => e.FieldName).HasColumnType("VARCHAR(100)");
                 entity.Property(e => e.DisplayName).HasColumnType("VARCHAR(200)");
-
-                // Индекс для быстрого поиска всех полей конкретной сущности
-                entity.HasIndex(e => e.EntityType)
-                        .HasDatabaseName("IX_CustomFields_EntityType");
             });
             modelBuilder.Entity<DynamicField>(entity =>
             {
-                // Уникальность значения для одного поля одной сущности
-                entity.HasIndex(e => new { e.EntityId, e.EntityType, e.CustomFieldId })
-                        .IsUnique()
-                        .HasDatabaseName("UX_DynamicFields_EntityId_EntityType_CustomFieldId");
-                // Индекс для быстрого получения всех динамических полей сущности (без учёта конкретного поля)
-                entity.HasIndex(e => new { e.EntityId, e.EntityType })
-                        .HasDatabaseName("IX_DynamicFields_EntityId_EntityType");
                 entity.HasOne(d => d.CustomField)
                       .WithMany(c => c.DynamicValues)
                       .HasForeignKey(d => d.CustomFieldId)

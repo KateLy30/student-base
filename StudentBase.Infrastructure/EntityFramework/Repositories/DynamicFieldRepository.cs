@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentBase.Domain.Entities;
 using StudentBase.Domain.Entities.Dynamic;
 using StudentBase.Domain.Repositories;
 
@@ -42,9 +43,23 @@ namespace StudentBase.Infrastructure.EntityFramework.Repositories
 
         public async Task<bool> UpdateAsync(DynamicField entity)
         {
-            _context.DynamicFields.Update(entity);
+            var field = await _context.DynamicFields.FindAsync(entity.Id);
+            if (field == null) return false;
+            UpdateEntity(field, entity);
             await _context.SaveChangesAsync();
             return true;
+        }
+        public static void UpdateEntity(DynamicField entityInDatabase, DynamicField updatedEntity)
+        {
+            entityInDatabase.EntityId = updatedEntity.EntityId;
+            entityInDatabase.CustomFieldId = updatedEntity.CustomFieldId;
+            entityInDatabase.Value = updatedEntity.Value;
+            entityInDatabase.CustomField = updatedEntity.CustomField;
+        }
+
+        public async Task<IEnumerable<DynamicField>?> GetAllByEntityIdAsync(int entityId)
+        {
+            return await _context.DynamicFields.Where(d => d.EntityId == entityId).ToListAsync();
         }
     }
 }

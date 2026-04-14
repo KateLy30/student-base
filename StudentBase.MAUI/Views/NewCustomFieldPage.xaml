@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="StudentBase.MAUI.Views.NewCustomFieldPage"
+             BackgroundColor="{StaticResource BackgroundPageGray}">
+
+    <Grid RowDefinitions="Auto, *" BackgroundColor="{StaticResource BackgroundPageGray}">
+
+        <!-- Заголовок -->
+        <Border Style="{StaticResource BorderHeader}">
+            <Label Text="{Binding Title}" 
+               FontSize="20" 
+               FontAttributes="Bold" 
+               TextColor="White"
+               VerticalOptions="Center"/>
+        </Border>
+
+        <ScrollView Grid.Row="1"  BackgroundColor="{StaticResource BackgroundPageGray}">
+            
+            <VerticalStackLayout Padding="8" Spacing="10">
+                <Border>
+                    <VerticalStackLayout Spacing="15">
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Техническое имя поля (латинецей, без пробелов)"
+                                   FontSize="14" 
+                                   TextColor="#757575"/>
+                            <Entry Placeholder="Например: CustomField" 
+                                   Text="{Binding FieldName,Mode=TwoWay}"
+                                   Style="{StaticResource ModernEntryStyle}">
+                                <Entry.Behaviors>
+                                    <toolkit:TextValidationBehavior MinimumLength="1" 
+                                                   x:Name="TehNameValidator"
+                                                   Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
+                                                   InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                                </Entry.Behaviors>  
+                            </Entry>
+                            <Label Text="Поле обязательно" 
+                                   FontSize="12" 
+                                   TextColor="#DC3545" 
+                                   IsVisible="{Binding IsNotValid, Source={x:Reference TehNameValidator}}" />   
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Отображаемое имя поля"
+                                   FontSize="14" 
+                                   TextColor="#757575"/>
+                            <Entry Placeholder="Например: Паспортные данные" 
+                                   Text="{Binding DisplayName, Mode=TwoWay}" 
+                                   Style="{StaticResource ModernEntryStyle}">
+                                <Entry.Behaviors>
+                                    <toolkit:TextValidationBehavior MinimumLength="1" 
+                                                        x:Name="DisNameValidator"
+                                                        Flags="ValidateOnValueChanged,ValidateOnUnfocusing"
+                                                        InvalidStyle="{StaticResource InvalidEntryStyle}"/>  
+                                </Entry.Behaviors>              
+                            </Entry>
+                            <Label Text="Поле обязательно" 
+                                           FontSize="12" 
+                                           TextColor="#DC3545" 
+                                           IsVisible="{Binding IsNotValid, Source={x:Reference DisNameValidator}}" />   
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Тип данных"
+                                   FontSize="14"
+                                    TextColor="#757575"/>
+                            <Border Style="{StaticResource BorderPicker}">
+                                <Picker Title="Выберите тип данных" 
+                                        ItemsSource="{Binding FieldTypeList}"
+                                        SelectedItem="{Binding SelectedType, Mode=TwoWay}"
+                                        Style="{StaticResource ModernPickerStyle}">
+                                    <Picker.ItemDisplayBinding>
+                                        <Binding Path="." Converter="{StaticResource FieldTypeToStringConvereter}"/>
+                                    </Picker.ItemDisplayBinding>
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+                <!-- Кнопки действий -->
+                <HorizontalStackLayout Spacing="20" 
+                        HorizontalOptions="Center" 
+                        Margin="20">
+
+                    <Button Text="Сохранить" 
+                            Command="{Binding SaveCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"
+                            IsEnabled="{Binding CanSave}"/>
+
+                    <Button Text="Отмена" 
+                            Command="{Binding CancelCommand}"
+                            FontSize="16"
+                            Padding="25,15"
+                            CornerRadius="25"
+                            WidthRequest="150"/>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
